@@ -37,6 +37,13 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @return sip account ID uri as a string
      */
     public static String setAccount(Context context, SipAccountData sipAccount) {
+
+        final SipAccountData sipAccountData = new SipAccountData();
+        sipAccountData.setUsername(SipApplication.getSipUsername(context));
+        sipAccountData.setPassword(SipApplication.getSipPassword(context));
+        sipAccountData.setHost("apps.sip.phone.com");
+        sipAccountData.setRealm("*");
+
         if (sipAccount == null) {
             throw new IllegalArgumentException("sipAccount MUST not be null!");
         }
