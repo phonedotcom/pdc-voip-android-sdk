@@ -1,7 +1,6 @@
 package net.gotev.sipservice;
 
 import static net.gotev.sipservice.ObfuscationHelper.getValue;
-import static net.gotev.sipservice.SipServiceCommand.AGENT_NAME;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -695,7 +694,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 if (refresh) {
                     sipAccount.setRegistration(true);
                 } else {
-                    sipAccount.modify(sipAccount.getData().getAccountConfig());
+                    sipAccount.modify(sipAccount.getData().getAccountConfig(getApplicationContext()));
                     sipAccount.getData().setRegExpirationTimeout(100);
                 }
             } catch (Exception ex) {
@@ -859,20 +858,30 @@ public class SipService extends BackgroundService implements SipServiceConstants
             epConfig.getMedConfig().setEcOptions(1);
             epConfig.getMedConfig().setEcTailLen(200);
             epConfig.getMedConfig().setThreadCnt(2);
+
+            //TODO: Keep watch
+            /*final StringVector stun_servers = new StringVector();
+            final UaConfig uaConfig = epConfig.getUaConfig();
+            uaConfig.setStunServer(stun_servers);
+            if (own_worker_thread) {
+                ua_cfg.setThreadCnt(0);
+                ua_cfg.setMainThreadOnly(true);
+            }*/
+
             SipServiceUtils.setSipLogger(epConfig);
             mEndpoint.libInit(epConfig);
 
-            TransportConfig udpTransport = new TransportConfig();
-            udpTransport.setQosType(pj_qos_type.PJ_QOS_TYPE_VOICE);
+            /*TransportConfig udpTransport = new TransportConfig();
+            udpTransport.setQosType(pj_qos_type.PJ_QOS_TYPE_VOICE);*/
             TransportConfig tcpTransport = new TransportConfig();
             tcpTransport.setQosType(pj_qos_type.PJ_QOS_TYPE_VOICE);
-            TransportConfig tlsTransport = new TransportConfig();
+            /*TransportConfig tlsTransport = new TransportConfig();
             tlsTransport.setQosType(pj_qos_type.PJ_QOS_TYPE_VOICE);
-            SipTlsUtils.setTlsConfig(this, mSharedPreferencesHelper.isVerifySipServerCert(), tlsTransport);
+            SipTlsUtils.setTlsConfig(this, mSharedPreferencesHelper.isVerifySipServerCert(), tlsTransport);*/
 
-            mEndpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_UDP, udpTransport);
+            //mEndpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_UDP, udpTransport);
             mEndpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_TCP, tcpTransport);
-            mEndpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_TLS, tlsTransport);
+            //mEndpoint.transportCreate(pjsip_transport_type_e.PJSIP_TRANSPORT_TLS, tlsTransport);
             mEndpoint.libStart();
 
             ArrayList<CodecPriority> codecPriorities = getConfiguredCodecPriorities();

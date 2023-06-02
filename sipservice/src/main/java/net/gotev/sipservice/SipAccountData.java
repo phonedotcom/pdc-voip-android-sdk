@@ -1,7 +1,10 @@
 package net.gotev.sipservice;
 
+import static net.gotev.sipservice.SipApplication.getHeadersForPush;
+import static net.gotev.sipservice.SipApplication.isToAddHeadersForPushNotification;
 import static net.gotev.sipservice.SipServiceConstants.DEFAULT_SIP_PORT;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,6 +15,7 @@ import org.pjsip.pjsua2.pj_qos_type;
 import org.pjsip.pjsua2.pjmedia_srtp_use;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Contains the account's configuration data.
@@ -20,6 +24,7 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class SipAccountData implements Parcelable {
 
+    public static final String TAG = SipAccountData.class.getSimpleName();
     public static final String AUTH_TYPE_DIGEST = "digest";
     public static final String AUTH_TYPE_PLAIN = "plain";
 
@@ -275,32 +280,44 @@ public class SipAccountData implements Parcelable {
                 && (realm != null) && !realm.isEmpty());
     }
 
-    AccountConfig getAccountConfig() {
+    AccountConfig getAccountConfig(Context appContext) {
         AccountConfig accountConfig = new AccountConfig();
 
         // account configs
-        accountConfig.setIdUri(getIdUri());
+        accountConfig.setIdUri(Utility.Sip.INSTANCE.getSipUserUri(username, appContext));
+        //accountConfig.setIdUri(getIdUri());
 
         // account registration stuff configs
-        if (callId != null && !callId.isEmpty()) {
-            accountConfig.getRegConfig().setCallID(callId);
-        }
-        accountConfig.getRegConfig().setRegistrarUri(getRegistrarUri());
+        //if (callId != null && !callId.isEmpty()) {
+            accountConfig.getRegConfig().setCallID(UUID.randomUUID().toString());
+            //accountConfig.getRegConfig().setCallID(callId);
+        //}
+        accountConfig.getRegConfig().setRegistrarUri(Utility.Sip.INSTANCE.getDomainUri(appContext));
+        //accountConfig.getRegConfig().setRegistrarUri(getRegistrarUri());
         accountConfig.getRegConfig().setTimeoutSec(regExpirationTimeout);
         accountConfig.getRegConfig().setContactUriParams(contactUriParams);
 
+        if (isToAddHeadersForPushNotification(appContext)) {
+            Logger.debug(TAG, "Sending app headers");
+            accountConfig.getRegConfig().setHeaders(getHeadersForPush(appContext));
+        }
+
         // account sip stuff configs
         accountConfig.getSipConfig().getAuthCreds().add(getAuthCredInfo());
-        accountConfig.getSipConfig().getProxies().add(getProxyUri());
+        accountConfig.getSipConfig().getProxies().add(Utility.Sip.INSTANCE.getDomainUri(appContext));
+        //accountConfig.getSipConfig().getProxies().add(getProxyUri());
 
         // nat configs to allow call reconnection across networks
         accountConfig.getNatConfig().setSdpNatRewriteUse(pj_constants_.PJ_TRUE);
         accountConfig.getNatConfig().setViaRewriteUse(pj_constants_.PJ_TRUE);
+        //TODO: Check
+        //accountConfig.getNatConfig().setContactRewriteUse(1);
 
         // account media configs
-        accountConfig.getMediaConfig().getTransportConfig().setQosType(pj_qos_type.PJ_QOS_TYPE_VOICE);
-        accountConfig.getMediaConfig().setSrtpUse(srtpUse);
-        accountConfig.getMediaConfig().setSrtpSecureSignaling(srtpSecureSignalling);
+        accountConfig.getMediaConfig().getTransportConfig().setQosType(pj_qos_type.PJ_QOS_TYPE_VIDEO);
+        //accountConfig.getMediaConfig().getTransportConfig().setQosType(pj_qos_type.PJ_QOS_TYPE_VOICE);
+        //accountConfig.getMediaConfig().setSrtpUse(srtpUse);
+        //accountConfig.getMediaConfig().setSrtpSecureSignaling(srtpSecureSignalling);
         setVideoConfig(accountConfig);
 
         return accountConfig;
@@ -320,7 +337,7 @@ public class SipAccountData implements Parcelable {
     }
 
     private void setVideoConfig(AccountConfig accountConfig) {
-        accountConfig.getVideoConfig().setAutoTransmitOutgoing(false);
+        accountConfig.getVideoConfig().setAutoTransmitOutgoing(true);
         accountConfig.getVideoConfig().setAutoShowIncoming(true);
         accountConfig.getVideoConfig().setDefaultCaptureDevice(SipServiceConstants.FRONT_CAMERA_CAPTURE_DEVICE);
         accountConfig.getVideoConfig().setDefaultRenderDevice(SipServiceConstants.DEFAULT_RENDER_DEVICE);

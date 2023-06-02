@@ -15,13 +15,13 @@ import java.util.ArrayList;
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
-public class SipServiceCommand implements SipServiceConstants {
+public final class SipServiceCommand extends ServiceExecutor implements SipServiceConstants {
 
-    /**
-     * This should be changed on the app side
-     * to reflect app version/name/... or whatever might be useful for debugging
-     */
-    public static String AGENT_NAME = "AndroidSipService";
+
+
+    //Private Constructor
+    private SipServiceCommand(){
+    }
 
     /**
      * Enables pjsip logging (valid only for debug builds)
@@ -669,4 +669,99 @@ public class SipServiceCommand implements SipServiceConstants {
     public static void setVerifySipServerCert(Context context, boolean verify) {
         SharedPreferencesHelper.getInstance(context).setVerifySipServerCert(verify);
     }
+
+    /**
+     * This method is called after user login but before initializing the sdk library for passing the
+     * information needed for push registration.
+     *
+     * @param pushToken  firebase push token
+     * @param versionName app version name
+     * @param bundleID    application id
+     * @param deviceInfo  device unique identifier
+     * @param applicationID amazon server push notification id
+     * @param deviceType device type like android or iOS
+     * @param voipId user's VoIP id
+     * @param voipPhoneID user's VoiP phone ID
+     * @param context Android Context needed for shared preferences operations
+     * @see SipApplication#getHeadersForPush(Context)
+     */
+    public static void saveInformationForPushRegistration
+    (
+            String pushToken, String versionName,
+            String bundleID, String deviceInfo,
+            String applicationID, String deviceType,
+            String voipId, String voipPhoneID, Context context
+    ) {
+
+        SipApplication.saveInformationForPush(pushToken, versionName, bundleID, deviceInfo,
+                applicationID, deviceType, voipId, voipPhoneID,
+                context);
+    }
+
+    /**
+     *This method sets the file path in sdk for saving the VoIP logs.
+     *If file path is a valid path then VoIP logging is enabled,
+     *else not
+     *
+     * @param fileName  file path for saving the voip logs
+     * @param context Activity context
+     * @see org.pjsip.pjsua2.app.MyApp#init(MyAppObserver, String, boolean, boolean, Context)
+     */
+    public static void saveInformationForLogFiles(String fileName, Context context) {
+        SipApplication.setLogFilesPathInformation(fileName, context);
+    }
+
+    /** This method is called by client for passing information to SDK which is needed for login
+     * into SIP server.
+     *
+     * @param sipUsername  sipUsername credentials
+     * @param sipPassword sipPassword credentials
+     * @param domainName  VoIP domain name
+     * @param port VoIP port name
+     * @param securePort optional needed in case of encrypted communication
+     * @param secureProtocolName optional needed in case of encrypted communication
+     * @param protocolName transport protocol to be used
+     * @param context Android Context needed for shared preferences operations
+     *
+     * @see org.pjsip.pjsua2.app.service.PhoneSipService//login()
+     */
+    public static void saveInformationForSipLibraryInitialization
+    (
+            String sipUsername, String sipPassword,
+            String domainName, int port,
+            int securePort, String secureProtocolName,
+            String protocolName, Context context
+    ) {
+
+        SipApplication.saveInformationForSipLibraryInitialization(sipUsername,
+                sipPassword,
+                domainName,
+                port,
+                securePort,
+                secureProtocolName,
+                protocolName, context);
+    }
+
+    /**
+     * This method is called by client for passing information to SDK which is needed for showing
+     * foreground service notification {@link org.pjsip.pjsua2.app.service.PhoneSipService ForegroundServiceClass}.
+     *
+     * @param notificationTitle notification title
+     * @param notificationSubtitle notification subtitle
+     * @param notificationIcon notification icon id
+     * @param context Android Context needed for shared preferences operations
+     */
+
+    public static void saveInformationForForegroundServiceNotification
+    (
+            String notificationTitle,
+            String notificationSubtitle,
+            int notificationIcon,
+            Context context
+    ) {
+        SipApplication.saveInformationForForegroundServiceNotification(notificationTitle,
+                notificationSubtitle, notificationIcon, context);
+
+    }
 }
+

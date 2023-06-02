@@ -6,6 +6,8 @@ import static net.gotev.sipservice.SipServiceConstants.H264_DEF_WIDTH;
 import static net.gotev.sipservice.SipServiceConstants.PROFILE_LEVEL_ID_HEADER;
 import static net.gotev.sipservice.SipServiceConstants.PROFILE_LEVEL_ID_JANUS_BRIDGE;
 
+import com.voismart.crypto.BuildConfig;
+
 import org.pjsip.pjsua2.CodecFmtpVector;
 import org.pjsip.pjsua2.CodecInfo;
 import org.pjsip.pjsua2.EpConfig;
@@ -23,7 +25,7 @@ import java.util.ArrayList;
  */
 public class SipServiceUtils {
 
-    private static final String TAG = "SipServiceUtils";
+    private static final String TAG = SipServiceUtils.class.getSimpleName();
     public static boolean ENABLE_SIP_LOGGING = false;
     // Keeping the reference avoids the logger being garbage collected thus crashing the lib
     @SuppressWarnings("FieldCanBeLocal")
@@ -40,6 +42,7 @@ public class SipServiceUtils {
             sipLogger = new SipLogger();
             logCfg.setWriter(sipLogger);
             logCfg.setDecor(sipLogger.getDecor() | sipLogger.getDecor());
+            //logCfg.setConsoleLevel();
         }
     }
 

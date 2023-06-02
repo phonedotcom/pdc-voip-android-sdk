@@ -126,4 +126,10 @@ public interface SipServiceConstants {
      * PJSIP TLS VERIFY PEER ERROR
      */
     int PJSIP_TLS_ECERTVERIF = 171173;
+
+    /**
+     * This should be changed on the app side
+     * to reflect app version/name/... or whatever might be useful for debugging
+     */
+    String AGENT_NAME = "MobileOffice";
 }

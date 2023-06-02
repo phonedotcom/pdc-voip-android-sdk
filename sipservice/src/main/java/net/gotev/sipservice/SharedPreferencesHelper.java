@@ -1,5 +1,7 @@
 package net.gotev.sipservice;
 
+import static net.gotev.sipservice.SharedPreferenceConstant.PROTOCOL;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -8,6 +10,7 @@ import androidx.security.crypto.MasterKeys;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.voismart.crypto.BuildConfig;
 import com.voismart.crypto.Crypto;
 import com.voismart.crypto.EncryptionHelper;
 
@@ -25,7 +28,7 @@ import java.util.List;
 public class SharedPreferencesHelper {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final String PREFS_FILE_NAME = "sipservice_prefs";
+    private final String PREFS_FILE_NAME = "com.phone.preference";
     @SuppressWarnings("FieldCanBeLocal")
     private final String PREFS_ENCRYPTED_FILE_NAME = "sipservice_encrypted_prefs";
 
@@ -204,4 +207,82 @@ public class SharedPreferencesHelper {
         }
         return INSTANCE;
     }
+
+    /**
+     * This method is used to save string value in shared prefrences.
+     *
+     * @param key     Shared pref key
+     * @param context Android context needed
+     *
+     */
+    public void putInSharedPreference(String key, String value, Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+
+    /**
+     * This method is used to get shared pref string values on the basis of key.
+     *
+     * @param key     Shared pref key
+     * @param context Android context needed
+     *
+     * @return string value from shared pref
+     */
+    public String getStringSharedPreference(String key, Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(key, "");
+    }
+
+    /**
+     * This method is used to get shared pref integer values on the basis of key.
+     *
+     * @param key     Shared pref key
+     * @param context Android context needed
+     * @return integer value from shared pref
+     */
+    public int getIntSharedPreference(String key, Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+        return prefs.getInt(key, 0);
+    }
+
+    /**
+     * This method is used to save integer value in shared prefrences.
+     *
+     * @param key     Shared pref key
+     * @param context Android context needed
+     *
+     */
+    public void putInSharedPreference(String key, int value, Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(key, value);
+        editor.apply();
+    }
+
+    /**
+     * This method is used to get shared pref boolean on the basis of key.
+     *
+     * @param key          Shared pref key
+     * @param defaultValue default value if value doesn't exist
+     * @param context      Android context needed
+     * @return boolean value from shared pref
+     */
+    public boolean getBooleanPreference(String key, boolean defaultValue, Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(key, defaultValue);
+    }
+
+    /**
+     * This method is used to get secure protocol from shared prefs.
+     *
+     * @param context Android context needed
+     */
+    public boolean isSecureProtocol(Context context) {
+        return getBooleanPreference(PROTOCOL, false, context);
+    }
+
 }
+
