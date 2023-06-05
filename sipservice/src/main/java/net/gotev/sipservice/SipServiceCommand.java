@@ -33,28 +33,29 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Adds a new SIP account.
      * @param context application context
-     * @param sipAccount sip account data
+     * //@param sipAccount sip account data
      * @return sip account ID uri as a string
      */
-    public static String setAccount(Context context, SipAccountData sipAccount) {
+    public static String setAccount(Context context) {
 
-        final SipAccountData sipAccountData = new SipAccountData();
+        final SipAccountData sipAccountData = new SipAccountData(context);
         sipAccountData.setUsername(SipApplication.getSipUsername(context));
         sipAccountData.setPassword(SipApplication.getSipPassword(context));
-        sipAccountData.setHost("apps.sip.phone.com");
+        sipAccountData.setHost(SipApplication.getDomainName(context));
         sipAccountData.setRealm("*");
 
-        if (sipAccount == null) {
+        /*if (sipAccountData == null) {
             throw new IllegalArgumentException("sipAccount MUST not be null!");
-        }
+        }*/
 
-        String accountID = sipAccount.getIdUri();
+        String accountID = sipAccountData.getIdUri();
         checkAccount(accountID);
 
-        Intent intent = new Intent(context, SipService.class);
+        final Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_ACCOUNT);
-        intent.putExtra(PARAM_ACCOUNT_DATA, sipAccount);
-        context.startService(intent);
+        intent.putExtra(PARAM_ACCOUNT_DATA, sipAccountData);
+        executeSipServiceAction(context, intent);
+        //context.startService(intent);
 
         return accountID;
     }

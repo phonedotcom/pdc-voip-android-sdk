@@ -42,8 +42,13 @@ public class SipAccountData implements Parcelable {
     private int srtpUse = pjmedia_srtp_use.PJMEDIA_SRTP_OPTIONAL;
     private int srtpSecureSignalling = 0; // not required
     private SipAccountTransport transport = SipAccountTransport.UDP;
+    private Context mContext;
 
     public SipAccountData() { }
+
+    public SipAccountData(Context context) {
+        this.mContext = context;
+    }
 
     /*****          Parcelable overrides        ******/
     public static final Parcelable.Creator<SipAccountData> CREATOR =
@@ -246,10 +251,11 @@ public class SipAccountData implements Parcelable {
     }
 
     String getIdUri() {
-        if ("*".equals(realm))
+        /*if ("*".equals(realm))
             return "sip:" + username;
 
-        return "sip:" + username + "@" + realm;
+        return "sip:" + username + "@" + realm;*/
+       return Utility.Sip.INSTANCE.getSipUserUri(username, mContext);
     }
 
     String getProxyUri() {
@@ -257,7 +263,8 @@ public class SipAccountData implements Parcelable {
     }
 
     String getRegistrarUri() {
-        return "sip:" + host + ":" + port;
+        //return "sip:" + host + ":" + port;
+       return Utility.Sip.INSTANCE.getDomainUri(mContext);
     }
 
     String getTransportString() {
@@ -284,16 +291,14 @@ public class SipAccountData implements Parcelable {
         AccountConfig accountConfig = new AccountConfig();
 
         // account configs
-        accountConfig.setIdUri(Utility.Sip.INSTANCE.getSipUserUri(username, appContext));
-        //accountConfig.setIdUri(getIdUri());
+        accountConfig.setIdUri(getIdUri());
 
         // account registration stuff configs
         //if (callId != null && !callId.isEmpty()) {
             accountConfig.getRegConfig().setCallID(UUID.randomUUID().toString());
             //accountConfig.getRegConfig().setCallID(callId);
         //}
-        accountConfig.getRegConfig().setRegistrarUri(Utility.Sip.INSTANCE.getDomainUri(appContext));
-        //accountConfig.getRegConfig().setRegistrarUri(getRegistrarUri());
+        accountConfig.getRegConfig().setRegistrarUri(getRegistrarUri());
         accountConfig.getRegConfig().setTimeoutSec(regExpirationTimeout);
         accountConfig.getRegConfig().setContactUriParams(contactUriParams);
 

@@ -35,13 +35,13 @@ object Utility {
             } catch (e: UnsupportedEncodingException) {
                 e.printStackTrace()
             }
-            val protocolName = getProtocolName(context)
+
             return kotlin.String.format(
                 "sip:%s@%s:%d;%s",
                 usernameShadow,
                 domainName,
                 getPortNumber(context),
-                protocolName
+                getProtocolName(context)
             )
         }
 
