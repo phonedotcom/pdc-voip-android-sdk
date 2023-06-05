@@ -628,11 +628,11 @@ public class SipApplication {
 
     public static boolean isToAddHeadersForPushNotification(Context context) {
         if (
-                Utility.String.INSTANCE.validateString(SipApplication.getPushToken(context))
-                        && Utility.String.INSTANCE.validateString(SipApplication.getVersionName(context))
-                        && Utility.String.INSTANCE.validateString(SipApplication.getBundleID(context))
-                        && Utility.String.INSTANCE.validateString(SipApplication.getDeviceInfo(context))
-                        && Utility.String.INSTANCE.validateString(SipApplication.getApplicationID(context))
+                StringUtility.validateString(SipApplication.getPushToken(context))
+                        && StringUtility.validateString(SipApplication.getVersionName(context))
+                        && StringUtility.validateString(SipApplication.getBundleID(context))
+                        && StringUtility.validateString(SipApplication.getDeviceInfo(context))
+                        && StringUtility.validateString(SipApplication.getApplicationID(context))
         ) {
             Logger.debug(TAG, "Headers are present");
             return true;
