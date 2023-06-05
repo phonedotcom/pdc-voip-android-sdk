@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.regex.Pattern
 
-object Utility {
+class Utility {
 
     object String {
         fun validateString(value: kotlin.String?): Boolean {
@@ -14,7 +14,7 @@ object Utility {
         }
     }
 
-    object Sip {
+    companion object Sip {
 
 
         /**

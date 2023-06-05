@@ -255,7 +255,7 @@ public class SipAccountData implements Parcelable {
             return "sip:" + username;
 
         return "sip:" + username + "@" + realm;*/
-       return Utility.Sip.INSTANCE.getSipUserUri(username, mContext);
+       return Utility.Sip.getSipUserUri(username, mContext);
     }
 
     String getProxyUri() {
@@ -264,7 +264,7 @@ public class SipAccountData implements Parcelable {
 
     String getRegistrarUri() {
         //return "sip:" + host + ":" + port;
-       return Utility.Sip.INSTANCE.getDomainUri(mContext);
+       return Utility.Sip.getDomainUri(mContext);
     }
 
     String getTransportString() {
@@ -309,7 +309,7 @@ public class SipAccountData implements Parcelable {
 
         // account sip stuff configs
         accountConfig.getSipConfig().getAuthCreds().add(getAuthCredInfo());
-        accountConfig.getSipConfig().getProxies().add(Utility.Sip.INSTANCE.getDomainUri(appContext));
+        accountConfig.getSipConfig().getProxies().add(Utility.Sip.getDomainUri(appContext));
         //accountConfig.getSipConfig().getProxies().add(getProxyUri());
 
         // nat configs to allow call reconnection across networks
