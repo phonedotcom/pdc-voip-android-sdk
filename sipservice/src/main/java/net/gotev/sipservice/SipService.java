@@ -1047,7 +1047,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
      * @param account SIP account to add
      */
     private void addAccount(SipAccountData account) throws Exception {
-        String accountString = account.getIdUri();
+        String accountString = account.getIdUri(getApplicationContext());
 
         SipAccount sipAccount = mActiveSipAccounts.get(accountString);
 
@@ -1056,6 +1056,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 sipAccount.delete();
             }
             startStack();
+            Logger.debug(TAG, "ServiceInstance:" + this);
             SipAccount pjSipAndroidAccount = new SipAccount(this, account);
             pjSipAndroidAccount.create();
             mActiveSipAccounts.put(accountString, pjSipAndroidAccount);
