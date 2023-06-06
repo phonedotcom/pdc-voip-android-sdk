@@ -255,6 +255,7 @@ public class SipAccountData implements Parcelable {
             return "sip:" + username;
 
         return "sip:" + username + "@" + realm;*/
+        Logger.debug(TAG, "Context: "+mContext);
        return SipUtility.getSipUserUri(username, mContext);
     }
 
