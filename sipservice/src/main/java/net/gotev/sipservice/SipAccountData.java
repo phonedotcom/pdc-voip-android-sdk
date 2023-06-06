@@ -255,8 +255,16 @@ public class SipAccountData implements Parcelable {
             return "sip:" + username;
 
         return "sip:" + username + "@" + realm;*/
-        Logger.debug(TAG, "Context: "+mContext);
        return SipUtility.getSipUserUri(username, mContext);
+    }
+
+    String getIdUri(Context context) {
+        /*if ("*".equals(realm))
+            return "sip:" + username;
+
+        return "sip:" + username + "@" + realm;*/
+        Logger.debug(TAG, "Context: "+context);
+        return SipUtility.getSipUserUri(username, context);
     }
 
     String getProxyUri() {
@@ -292,7 +300,7 @@ public class SipAccountData implements Parcelable {
         AccountConfig accountConfig = new AccountConfig();
 
         // account configs
-        accountConfig.setIdUri(getIdUri());
+        accountConfig.setIdUri(getIdUri(appContext));
 
         // account registration stuff configs
         //if (callId != null && !callId.isEmpty()) {

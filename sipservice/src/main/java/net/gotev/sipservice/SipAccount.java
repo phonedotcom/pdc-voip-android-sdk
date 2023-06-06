@@ -75,7 +75,7 @@ public class SipAccount extends Account {
         SipCall call = new SipCall(this, callId);
         activeCalls.put(callId, call);
         Logger.debug(LOG_TAG, "Added incoming call with ID " + callId
-                + " to " + getValue(service.getApplicationContext(), data.getIdUri())
+                + " to " + getValue(service.getApplicationContext(), data.getIdUri(service.getApplicationContext()))
         );
         return call;
     }
@@ -139,7 +139,7 @@ public class SipAccount extends Account {
 
     @Override
     public void onRegState(OnRegStateParam prm) {
-        service.getBroadcastEmitter().registrationState(data.getIdUri(), prm.getCode());
+        service.getBroadcastEmitter().registrationState(data.getIdUri(service.getApplicationContext()), prm.getCode());
     }
 
     @Override

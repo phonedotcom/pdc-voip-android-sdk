@@ -48,7 +48,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
             throw new IllegalArgumentException("sipAccount MUST not be null!");
         }*/
 
-        String accountID = sipAccountData.getIdUri();
+        String accountID = sipAccountData.getIdUri(context);
         checkAccount(accountID);
 
         final Intent intent = new Intent(context, SipService.class);

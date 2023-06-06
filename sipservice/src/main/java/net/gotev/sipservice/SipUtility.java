@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 public class SipUtility {
 
 
+
     /**
      * This method is used to get uri of Sip user
      *

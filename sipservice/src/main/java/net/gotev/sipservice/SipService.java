@@ -760,7 +760,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         int index = mConfiguredAccounts.indexOf(data);
         if (index == -1) {
             handleResetAccounts();
-            Logger.debug(TAG, "Adding " + getValue(getApplicationContext(), data.getIdUri()));
+            Logger.debug(TAG, "Adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
 
             try {
                 handleSetCodecPriorities(intent);
@@ -768,10 +768,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mConfiguredAccounts.add(data);
                 persistConfiguredAccounts();
             } catch (Exception exc) {
-                Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri()), exc);
+                Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
             }
         } else {
-            Logger.debug(TAG, "Reconfiguring " + getValue(getApplicationContext(), data.getIdUri()));
+            Logger.debug(TAG, "Reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
 
             try {
                 //removeAccount(data.getIdUri());
@@ -780,7 +780,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mConfiguredAccounts.set(index, data);
                 persistConfiguredAccounts();
             } catch (Exception exc) {
-                Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri()), exc);
+                Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
             }
         }
     }
