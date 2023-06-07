@@ -38,7 +38,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static String setAccount(Context context) {
 
-        final SipAccountData sipAccountData = new SipAccountData(context);
+        final SipAccountData sipAccountData = new SipAccountData();
         sipAccountData.setUsername(SipApplication.getSipUsername(context));
         sipAccountData.setPassword(SipApplication.getSipPassword(context));
         sipAccountData.setHost(SipApplication.getDomainName(context));
@@ -75,7 +75,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
             throw new IllegalArgumentException("sipAccount MUST not be null!");
         }
 
-        String accountID = sipAccount.getIdUri();
+        String accountID = sipAccount.getIdUri(context);
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
