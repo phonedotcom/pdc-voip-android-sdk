@@ -150,7 +150,7 @@ public class SipCall extends Call {
             }
 
             account.getService().getBroadcastEmitter()
-                    .callState(account.getData().getIdUri(), callID, callState, callStatus, connectTimestamp);
+                    .callState(account.getData().getIdUri(account.getService().getApplicationContext()), callID, callState, callStatus, connectTimestamp);
 
             if (callState == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
                 account.getService().setLastCallStatus(0);
@@ -311,7 +311,7 @@ public class SipCall extends Call {
                     else mgr.getCaptureDevMedia().startTransmit(audioMedia);
                     localMute = mute;
                     account.getService().getBroadcastEmitter().callMediaState(
-                            account.getData().getIdUri(), getId(), MediaState.LOCAL_MUTE, localMute);
+                            account.getData().getIdUri(account.getService().getApplicationContext()), getId(), MediaState.LOCAL_MUTE, localMute);
                 } catch (Exception exc) {
                     Logger.error(LOG_TAG, "setMute: error while connecting audio media to sound device", exc);
                 }
@@ -372,7 +372,7 @@ public class SipCall extends Call {
             }
             localHold = hold;
             account.getService().getBroadcastEmitter().callMediaState(
-                    account.getData().getIdUri(), getId(), MediaState.LOCAL_HOLD, localHold);
+                    account.getData().getIdUri(account.getService().getApplicationContext()), getId(), MediaState.LOCAL_HOLD, localHold);
         } catch (Exception exc) {
             String operation = hold ? "hold" : "unhold";
             Logger.error(LOG_TAG, "Error while trying to " + operation + " call", exc);
@@ -547,7 +547,7 @@ public class SipCall extends Call {
                 new CallVidSetStreamParam());
             localVideoMute = videoMute;
             account.getService().getBroadcastEmitter().callMediaState(
-                    account.getData().getIdUri(), getId(), MediaState.LOCAL_VIDEO_MUTE, localVideoMute);
+                    account.getData().getIdUri(account.getService().getApplicationContext()), getId(), MediaState.LOCAL_VIDEO_MUTE, localVideoMute);
         } catch(Exception ex) {
             Logger.error(LOG_TAG, "Error while toggling video transmission", ex);
         }
