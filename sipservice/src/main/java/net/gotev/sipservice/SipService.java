@@ -767,6 +767,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 addAccount(data);
                 mConfiguredAccounts.add(data);
                 persistConfiguredAccounts();
+                mBroadcastEmitter.setAccount(data);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
             }
@@ -779,6 +780,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 addAccount(data);
                 mConfiguredAccounts.set(index, data);
                 persistConfiguredAccounts();
+                mBroadcastEmitter.setAccount(data);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
             }
