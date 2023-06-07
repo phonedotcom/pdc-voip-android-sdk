@@ -132,4 +132,6 @@ public interface SipServiceConstants {
      * to reflect app version/name/... or whatever might be useful for debugging
      */
     String AGENT_NAME = "MobileOffice";
+
+    String PARAM_USERNAME = "USERNAME";
 }
