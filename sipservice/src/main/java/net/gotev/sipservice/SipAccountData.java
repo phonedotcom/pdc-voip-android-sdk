@@ -250,13 +250,13 @@ public class SipAccountData implements Parcelable {
                 username, 0, password);
     }
 
-    String getIdUri() {
-        /*if ("*".equals(realm))
+    /*String getIdUri() {
+        *//*if ("*".equals(realm))
             return "sip:" + username;
 
-        return "sip:" + username + "@" + realm;*/
+        return "sip:" + username + "@" + realm;*//*
        return SipUtility.getSipUserUri(username, mContext);
-    }
+    }*/
 
     String getIdUri(Context context) {
         /*if ("*".equals(realm))
@@ -340,10 +340,10 @@ public class SipAccountData implements Parcelable {
     AccountConfig getGuestAccountConfig() {
         AccountConfig accountConfig = new AccountConfig();
         accountConfig.getMediaConfig().getTransportConfig().setQosType(pj_qos_type.PJ_QOS_TYPE_VIDEO);
-        String idUri = getGuestDisplayName().isEmpty()
+        /*String idUri = getGuestDisplayName().isEmpty()
                 ? getIdUri()
-                : "\""+getGuestDisplayName()+"\" <"+getIdUri()+">";
-        accountConfig.setIdUri(idUri);
+                : "\""+getGuestDisplayName()+"\" <"+getIdUri()+">";*/
+        //accountConfig.setIdUri(idUri);
         accountConfig.getSipConfig().getProxies().add(getProxyUri());
         accountConfig.getRegConfig().setRegisterOnAdd(false);
         setVideoConfig(accountConfig);
@@ -379,7 +379,7 @@ public class SipAccountData implements Parcelable {
         if (srtpSecureSignalling != that.srtpSecureSignalling) return false;
         if (!Objects.equals(transport, that.transport)) return false;
 
-        return getIdUri().equals(that.getIdUri());
+        return true;
 
     }
 

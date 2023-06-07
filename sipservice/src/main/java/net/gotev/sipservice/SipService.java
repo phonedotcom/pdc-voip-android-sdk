@@ -721,10 +721,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
             SipAccountData data = iterator.next();
 
             try {
-                removeAccount(data.getIdUri());
+                removeAccount(data.getIdUri(getApplicationContext()));
                 iterator.remove();
             } catch (Exception exc) {
-                Logger.error(TAG, "Error while removing account " + getValue(getApplicationContext(), data.getIdUri()), exc);
+                Logger.error(TAG, "Error while removing account " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
             }
         }
 
@@ -741,7 +741,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         while (iterator.hasNext()) {
             SipAccountData data = iterator.next();
 
-            if (data.getIdUri().equals(accountIDtoRemove)) {
+            if (data.getIdUri(getApplicationContext()).equals(accountIDtoRemove)) {
                 try {
                     removeAccount(accountIDtoRemove);
                     iterator.remove();
@@ -1038,7 +1038,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 try {
                     addAccount(accountData);
                 } catch (Exception exc) {
-                    Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), accountData.getIdUri()));
+                    Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), accountData.getIdUri(getApplicationContext())));
                 }
             }
         }
@@ -1062,7 +1062,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             SipAccount pjSipAndroidAccount = new SipAccount(this, account);
             pjSipAndroidAccount.create();
             mActiveSipAccounts.put(accountString, pjSipAndroidAccount);
-            Logger.debug(TAG, "SIP account " + getValue(getApplicationContext(), account.getIdUri()) + " successfully added");
+            Logger.debug(TAG, "SIP account " + getValue(getApplicationContext(), account.getIdUri(getApplicationContext())) + " successfully added");
         } else {
             sipAccount.setRegistration(true);
         }
@@ -1117,7 +1117,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     public void removeGuestAccount() {
-        removeAccount(mConfiguredGuestAccount.getIdUri());
+        removeAccount(mConfiguredGuestAccount.getIdUri(getApplicationContext()));
         mConfiguredGuestAccount = null;
     }
 }

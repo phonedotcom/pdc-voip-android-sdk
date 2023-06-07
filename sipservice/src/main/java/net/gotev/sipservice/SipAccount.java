@@ -199,7 +199,7 @@ public class SipAccount extends Account {
             CallInfo callInfo = call.getInfo();
             boolean isVideo = (callInfo.getRemOfferer() && callInfo.getRemVideoCount() > 0);
 
-            service.getBroadcastEmitter().incomingCall(data.getIdUri(), prm.getCallId(),
+            service.getBroadcastEmitter().incomingCall(data.getIdUri(service.getApplicationContext()), prm.getCallId(),
                             displayName, remoteUri, isVideo);
 
         } catch (Exception ex) {
