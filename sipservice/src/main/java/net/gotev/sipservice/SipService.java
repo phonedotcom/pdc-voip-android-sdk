@@ -2,11 +2,17 @@ package net.gotev.sipservice;
 
 import static net.gotev.sipservice.ObfuscationHelper.getValue;
 
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Surface;
+
+import androidx.core.app.NotificationCompat;
 
 import org.pjsip.pjsua2.AudDevManager;
 import org.pjsip.pjsua2.CallOpParam;
@@ -33,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Sip Service.
+ *
  * @author gotev (Aleksandar Gotev)
  */
 public class SipService extends BackgroundService implements SipServiceConstants {
@@ -86,7 +93,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
             if (action == null) return;
 
-            switch(action) {
+            switch (action) {
                 case ACTION_SET_ACCOUNT:
                     handleSetAccount(intent);
                     break;
@@ -180,7 +187,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 case ACTION_MAKE_SILENT_CALL:
                     handleMakeSilentCall(intent);
                     break;
-                default: break;
+                default:
+                    break;
             }
 
             if (mConfiguredAccounts.isEmpty() && mConfiguredGuestAccount == null) {
@@ -246,11 +254,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         SipCall sipCall = getCall(accountID, callID);
         if (sipCall != null) {
-             try {
+            try {
                 sipCall.dialDtmf(dtmf);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while dialing dtmf: " + dtmf + ". AccountID: "
-                             + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
             }
         }
     }
@@ -568,7 +576,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         boolean isTransfer = false;
         if (isVideo) {
             isVideoConference = intent.getBooleanExtra(PARAM_IS_VIDEO_CONF, false);
-        // do not allow attended transfer on video call for now
+            // do not allow attended transfer on video call for now
         } else {
             isTransfer = intent.getBooleanExtra(PARAM_IS_TRANSFER, false);
         }
@@ -602,8 +610,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
         );
 
         Logger.debug(TAG, "Making call to " + getValue(getApplicationContext(), uri.getUserInfo()));
-        String accountID = "sip:"+name+"@"+uri.getHost();
-        String sipUri = "sip:" + uri.getUserInfo()+"@"+uri.getHost();
+        String accountID = "sip:" + name + "@" + uri.getHost();
+        String sipUri = "sip:" + uri.getUserInfo() + "@" + uri.getHost();
 
         try {
             startStack();
@@ -672,7 +680,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         int regExpTimeout = intent.getIntExtra(PARAM_REG_EXP_TIMEOUT, 0);
         String regContactParams = intent.getStringExtra(PARAM_REG_CONTACT_PARAMS);
         boolean refresh = true;
-        if (!mActiveSipAccounts.isEmpty() && mActiveSipAccounts.containsKey(accountID)){
+        if (!mActiveSipAccounts.isEmpty() && mActiveSipAccounts.containsKey(accountID)) {
             try {
                 SipAccount sipAccount = mActiveSipAccounts.get(accountID);
                 if (sipAccount == null) return;
@@ -702,7 +710,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 ex.printStackTrace();
             }
         } else {
-            Logger.debug(TAG, "account "+getValue(getApplicationContext(), accountID)+" not set");
+            Logger.debug(TAG, "account " + getValue(getApplicationContext(), accountID) + " not set");
         }
     }
 
@@ -785,6 +793,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
             }
         }
+        startForeground(1, createForegroundServiceNotification(this, getString(R.string.app_name)));
+        enqueueDelayedJob(() -> stopForeground(false), 200);
     }
 
     private void handleGetRegistrationStatus(Intent intent) {
@@ -961,7 +971,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             for (int i = 0; i < codecs.size(); i++) {
                 CodecInfo codecInfo = codecs.get(i);
                 CodecPriority newCodec = new CodecPriority(codecInfo.getCodecId(),
-                                                           codecInfo.getPriority());
+                        codecInfo.getPriority());
                 if (!codecPrioritiesList.contains(newCodec))
                     codecPrioritiesList.add(newCodec);
                 codecInfo.delete();
@@ -1046,6 +1056,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     /**
      * Adds a new SIP Account and performs initial registration.
+     *
      * @param account SIP account to add
      */
     private void addAccount(SipAccountData account) throws Exception {
@@ -1119,5 +1130,22 @@ public class SipService extends BackgroundService implements SipServiceConstants
     public void removeGuestAccount() {
         removeAccount(mConfiguredGuestAccount.getIdUri(getApplicationContext()));
         mConfiguredGuestAccount = null;
+    }
+
+    Notification createForegroundServiceNotification(
+            Context context, String callName
+    ) {
+        Intent resultIntent = new Intent();
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? "CHANNEL_ID" : "";
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
+                .setContentText(callName);
+        mBuilder.setContentIntent(resultPendingIntent);
+        return mBuilder.build();
     }
 }
