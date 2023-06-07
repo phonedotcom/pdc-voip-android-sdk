@@ -271,9 +271,9 @@ public class SipAccountData implements Parcelable {
         return "sip:" + host + ":" + port + getTransportString();
     }
 
-    String getRegistrarUri() {
+    String getRegistrarUri(Context context) {
         //return "sip:" + host + ":" + port;
-       return SipUtility.getDomainUri(mContext);
+       return SipUtility.getDomainUri(context);
     }
 
     String getTransportString() {
@@ -307,7 +307,7 @@ public class SipAccountData implements Parcelable {
             accountConfig.getRegConfig().setCallID(UUID.randomUUID().toString());
             //accountConfig.getRegConfig().setCallID(callId);
         //}
-        accountConfig.getRegConfig().setRegistrarUri(getRegistrarUri());
+        accountConfig.getRegConfig().setRegistrarUri(getRegistrarUri(appContext));
         accountConfig.getRegConfig().setTimeoutSec(regExpirationTimeout);
         accountConfig.getRegConfig().setContactUriParams(contactUriParams);
 
