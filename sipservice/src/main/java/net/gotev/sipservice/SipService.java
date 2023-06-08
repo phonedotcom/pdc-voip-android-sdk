@@ -1143,7 +1143,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 resultIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
-        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL : "";
+        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? "SipServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID" : "";
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
                 .setContentText(callName);
         mBuilder.setContentIntent(resultPendingIntent);
