@@ -793,7 +793,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
             }
         }
-        startForeground(1, createForegroundServiceNotification(this, getString(R.string.app_name)));
+        startForeground(121, createForegroundServiceNotification(this, getString(R.string.app_name)));
         enqueueDelayedJob(() -> stopForeground(false), 200);
     }
 
@@ -1142,7 +1142,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 resultIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
-        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? "sipservicechannel" : "";
+        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? "SipServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID" : "";
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
                 .setContentText(callName);
         mBuilder.setContentIntent(resultPendingIntent);
