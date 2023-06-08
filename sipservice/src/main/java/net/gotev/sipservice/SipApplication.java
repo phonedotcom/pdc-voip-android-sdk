@@ -631,6 +631,28 @@ public class SipApplication {
         return headerVector;
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    void createChannelId(
+            Context context,
+            String channelId,
+            Boolean vibration,
+            int importance,
+            String channelName,
+            Boolean badge
+    ) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    channelId,
+                    channelName,
+                    importance
+            );
+            notificationChannel.enableVibration(vibration);
+            notificationChannel.setShowBadge(badge);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+    }
+
     public static boolean isToAddHeadersForPushNotification(Context context) {
         if (
                 StringUtility.validateString(SipApplication.getPushToken(context))
