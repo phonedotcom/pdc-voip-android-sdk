@@ -24,7 +24,12 @@ import static net.gotev.sipservice.SharedPreferenceConstant.SIP_USER_NAME;
 import static net.gotev.sipservice.SharedPreferenceConstant.VOIP_ID;
 import static net.gotev.sipservice.SharedPreferenceConstant.VOIP_PHONE_ID;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import org.pjsip.pjsua2.SipHeader;
 import org.pjsip.pjsua2.SipHeaderVector;
@@ -506,7 +511,7 @@ public class SipApplication {
      * This method is used to set notification title.
      *
      * @param notificationSubtitle title
-     * @param context               Android context needed
+     * @param context              Android context needed
      */
     public static void setNotificationContentTitle(String notificationSubtitle, Context context) {
         SharedPreferencesHelper.getInstance(context)
@@ -530,7 +535,7 @@ public class SipApplication {
      * This method is used to set notification icon.
      *
      * @param notificationIcon icon
-     * @param context           Android context needed
+     * @param context          Android context needed
      */
     public static void setNotificationIcon(int notificationIcon, Context context) {
         SharedPreferencesHelper.getInstance(context)
@@ -624,6 +629,28 @@ public class SipApplication {
         headerVector.add(hDebug);
 
         return headerVector;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    void createChannelId(
+            Context context,
+            String channelId,
+            Boolean vibration,
+            int importance,
+            String channelName,
+            Boolean badge
+    ) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    channelId,
+                    channelName,
+                    importance
+            );
+            notificationChannel.enableVibration(vibration);
+            notificationChannel.setShowBadge(badge);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
     }
 
     public static boolean isToAddHeadersForPushNotification(Context context) {
