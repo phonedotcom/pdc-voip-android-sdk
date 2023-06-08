@@ -134,6 +134,4 @@ public interface SipServiceConstants {
     String AGENT_NAME = "MobileOffice";
 
     String PARAM_USERNAME = "USERNAME";
-
-    String GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL = "GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL";
 }
