@@ -466,7 +466,7 @@ public class SipCall extends Call {
         stopPreviewVideoFeed();
     }
 
-    public void setIncomingVideoFeed(Surface surface) {
+    public void setIncomingVideoFeed(Surface surface) throws Exception{
         if (mVideoWindow != null) {
             VideoWindowHandle videoWindowHandle = new VideoWindowHandle();
             videoWindowHandle.getHandle().setWindow(surface);
@@ -480,7 +480,10 @@ public class SipCall extends Call {
                 setVideoMute(localVideoMute);
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Unable to setup Incoming Video Feed", ex);
+                throw new Exception("Unable to setup Incoming Video Feed");
             }
+        } else {
+            throw new InstantiationException("Video view is not found.");
         }
     }
 

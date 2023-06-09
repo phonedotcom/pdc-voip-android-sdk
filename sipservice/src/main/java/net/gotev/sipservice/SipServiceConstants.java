@@ -5,6 +5,7 @@ public interface SipServiceConstants {
     /*
      * Intent Actions for Sip Service
      */
+    String NOTIFICATION_TITLE = "Phone Service";
     String ACTION_RESTART_SIP_STACK = "restartSipStack";
     String ACTION_SET_ACCOUNT = "setAccount";
     String ACTION_REMOVE_ACCOUNT = "removeAccount";
@@ -136,4 +137,6 @@ public interface SipServiceConstants {
     String PARAM_USERNAME = "USERNAME";
 
     String GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL = "GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL";
+
+    String PARAM_ERROR_MESSAGE = "errorMessage";
 }

@@ -23,6 +23,7 @@ import org.pjsip.pjsua2.EpConfig;
 import org.pjsip.pjsua2.IpChangeParam;
 import org.pjsip.pjsua2.TransportConfig;
 import org.pjsip.pjsua2.VidDevManager;
+import org.pjsip.pjsua2.extras.CallbackMessageConst;
 import org.pjsip.pjsua2.pj_qos_type;
 import org.pjsip.pjsua2.pjmedia_orient;
 import org.pjsip.pjsua2.pjsip_inv_state;
@@ -452,6 +453,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetIncomingVideoFeed(Intent intent) {
+        startForeground(121, createForegroundServiceNotification(this, getString(R.string.app_name)));
+        enqueueDelayedJob(() -> stopForeground(false), 200);
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
 
@@ -460,12 +463,20 @@ public class SipService extends BackgroundService implements SipServiceConstants
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 Surface surface = bundle.getParcelable(PARAM_SURFACE);
-                sipCall.setIncomingVideoFeed(surface);
+                try {
+                    sipCall.setIncomingVideoFeed(surface);
+                } catch (Exception e) {
+                    mBroadcastEmitter.errorCallback(e.getMessage());
+                }
             }
+        } else {
+            mBroadcastEmitter.errorCallback(CallbackMessageConst.ERR_SIP_ACCOUNT_NULL);
         }
     }
 
     private void handleSetSelfVideoOrientation(Intent intent) {
+        startForeground(121, createForegroundServiceNotification(this, getString(R.string.app_name)));
+        enqueueDelayedJob(() -> stopForeground(false), 200);
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
 
@@ -476,6 +487,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 int orientation = intent.getIntExtra(PARAM_ORIENTATION, -1);
                 setSelfVideoOrientation(sipCall, orientation);
             }
+        } else {
+            mBroadcastEmitter.errorCallback(CallbackMessageConst.ERR_SIP_ACCOUNT_NULL);
         }
     }
 
@@ -1146,6 +1159,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? "SipServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID" : "";
 //        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL : "";
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
+                .setContentTitle(SipServiceConstants.NOTIFICATION_TITLE)
                 .setContentText(callName);
         mBuilder.setContentIntent(resultPendingIntent);
         return mBuilder.build();

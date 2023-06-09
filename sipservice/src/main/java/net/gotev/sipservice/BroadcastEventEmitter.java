@@ -39,7 +39,8 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         SILENT_CALL_STATUS,
         NOTIFY_TLS_VERIFY_STATUS_FAILED,
         CALLBACK_SET_ACCOUNT,
-        CALLBACK_REMOVE_ACCOUNT
+        CALLBACK_REMOVE_ACCOUNT,
+        CALLBACK_GENERIC_ERROR
     }
 
     public BroadcastEventEmitter(Context context) {
@@ -232,6 +233,13 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
         intent.putExtra(PARAM_ACCOUNT_ID, accountIDtoRemove);
+        sendExplicitBroadcast(intent);
+    }
+
+    public void errorCallback(String message) {
+        final Intent intent = new Intent();
+        intent.setAction(getAction(BroadcastAction.CALLBACK_GENERIC_ERROR));
+        intent.putExtra(PARAM_ERROR_MESSAGE, message);
         sendExplicitBroadcast(intent);
     }
 
