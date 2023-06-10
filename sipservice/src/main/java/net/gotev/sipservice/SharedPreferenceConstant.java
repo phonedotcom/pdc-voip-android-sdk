@@ -23,6 +23,7 @@ public final class SharedPreferenceConstant {
     public static final String NOTIFICATION_CONTENT_TITLE = "notificationContentTitle";
     public static final String NOTIFICATION_ICON = "notificationIcon";
     public static final String PROTOCOL = "protocol";
+    public static final String SIP_ACCOUNT_ID = "SIP_ACCOUNT_ID";
 
     private SharedPreferenceConstant() {
     }

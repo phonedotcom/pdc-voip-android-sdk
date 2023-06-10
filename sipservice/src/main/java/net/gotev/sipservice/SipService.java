@@ -187,6 +187,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 case ACTION_MAKE_SILENT_CALL:
                     handleMakeSilentCall(intent);
                     break;
+                case ACTION_INCOMING_CALL_NOTIFICATION:
+                    //TODO: Handle Incoming Call Notification
+                    handleIncomingCallNotification(intent);
+                    break;
                 default:
                     break;
             }
@@ -198,6 +202,37 @@ public class SipService extends BackgroundService implements SipServiceConstants
         });
 
         return START_NOT_STICKY;
+    }
+
+    private void handleIncomingCallNotification(Intent intent) {
+        //Stop Music (if any)
+        MediaPlayerController.getInstance(this).stopMusicPlayer();
+
+        final ICall iCall = SipUtility.createIncomingCallObject(intent);
+
+        //TODO : If required, put notification here
+
+        notifyIncomingCallNotification(intent, iCall);
+    }
+
+    private void notifyIncomingCallNotification(Intent intent, ICall iCall) {
+        final IncomingCall incomingCall = (IncomingCall) iCall;
+        //incomingCall.setVideoCall(isVideo);
+        //startForeground(createIncomingNotification(call, true));
+        final String callerName = incomingCall.getCallerName();
+        final String accountId = intent.getStringExtra(PARAM_ACCOUNT_ID);
+        getBroadcastEmitter().incomingCall
+                (
+                       accountId,
+                        incomingCall.getNumber(),
+                        incomingCall.getServer(),
+                        incomingCall.getSlot(),
+                        incomingCall.getSlot(),
+                        callerName,
+                        getActiveSipAccount(accountId).isActiveCallPresent(),
+                        false
+                );
+
     }
 
     @Override
@@ -1128,6 +1163,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
         return mActiveSipAccounts;
     }
 
+    public static SipAccount getActiveSipAccount(final String accountID) {
+        return mActiveSipAccounts.get(accountID);
+    }
+
     public void removeGuestAccount() {
         removeAccount(mConfiguredGuestAccount.getIdUri(getApplicationContext()));
         mConfiguredGuestAccount = null;
@@ -1150,4 +1189,5 @@ public class SipService extends BackgroundService implements SipServiceConstants
         mBuilder.setContentIntent(resultPendingIntent);
         return mBuilder.build();
     }
+
 }
