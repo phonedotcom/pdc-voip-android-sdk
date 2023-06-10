@@ -3,11 +3,9 @@ package net.gotev.sipservice;
 import static net.gotev.sipservice.ObfuscationHelper.getValue;
 
 import org.pjsip.pjsua2.Account;
-import org.pjsip.pjsua2.CallInfo;
 import org.pjsip.pjsua2.CallOpParam;
 import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
-import org.pjsip.pjsua2.pjsip_status_code;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -147,7 +145,9 @@ public class SipAccount extends Account {
     @Override
     public void onIncomingCall(OnIncomingCallParam prm) {
 
-        SipCall call = addIncomingCall(prm.getCallId());
+        System.out.println("======== Incoming call ======== ");
+
+        /*SipCall call = addIncomingCall(prm.getCallId());
 
         // Send 603 Decline if in DND mode
         if (service.isDND()) {
@@ -206,7 +206,7 @@ public class SipAccount extends Account {
 
         } catch (Exception ex) {
             Logger.error(LOG_TAG, "Error while getting caller info", ex);
-        }
+        }*/
     }
 
     public boolean isActiveCallPresent() {
