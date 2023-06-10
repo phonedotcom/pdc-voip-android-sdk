@@ -211,11 +211,11 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to save string value in shared prefrences.
      *
-     * @param key     Shared pref key
      * @param context Android context needed
+     * @param key     Shared pref key
      *
      */
-    public void putInSharedPreference(String key, String value, Context context) {
+    public void putInSharedPreference(Context context, String key, String value) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(key, value);
@@ -226,12 +226,12 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to get shared pref string values on the basis of key.
      *
-     * @param key     Shared pref key
      * @param context Android context needed
      *
+     * @param key     Shared pref key
      * @return string value from shared pref
      */
-    public String getStringSharedPreference(String key, Context context) {
+    public String getStringSharedPreference(Context context, String key) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
         return prefs.getString(key, "");
     }
@@ -239,11 +239,11 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to get shared pref integer values on the basis of key.
      *
-     * @param key     Shared pref key
      * @param context Android context needed
+     * @param key     Shared pref key
      * @return integer value from shared pref
      */
-    public int getIntSharedPreference(String key, Context context) {
+    public int getIntSharedPreference(Context context, String key) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
         return prefs.getInt(key, 0);
     }
@@ -251,11 +251,11 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to save integer value in shared prefrences.
      *
-     * @param key     Shared pref key
      * @param context Android context needed
+     * @param key     Shared pref key
      *
      */
-    public void putInSharedPreference(String key, int value, Context context) {
+    public void putInSharedPreference(Context context, String key, int value) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(key, value);
@@ -265,12 +265,12 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to get shared pref boolean on the basis of key.
      *
+     * @param context      Android context needed
      * @param key          Shared pref key
      * @param defaultValue default value if value doesn't exist
-     * @param context      Android context needed
      * @return boolean value from shared pref
      */
-    public boolean getBooleanPreference(String key, boolean defaultValue, Context context) {
+    public boolean getBooleanPreference(Context context, String key, boolean defaultValue) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
         return prefs.getBoolean(key, defaultValue);
     }
@@ -281,7 +281,7 @@ public class SharedPreferencesHelper {
      * @param context Android context needed
      */
     public boolean isSecureProtocol(Context context) {
-        return getBooleanPreference(PROTOCOL, false, context);
+        return getBooleanPreference(context, PROTOCOL, false);
     }
 
 }

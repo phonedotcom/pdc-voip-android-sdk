@@ -1,5 +1,7 @@
 package net.gotev.sipservice;
 
+import static net.gotev.sipservice.ObfuscationHelper.getValue;
+
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.CallInfo;
 import org.pjsip.pjsua2.CallOpParam;
@@ -9,8 +11,6 @@ import org.pjsip.pjsua2.pjsip_status_code;
 
 import java.util.HashMap;
 import java.util.Set;
-
-import static net.gotev.sipservice.ObfuscationHelper.getValue;
 
 /**
  * Wrapper around PJSUA2 Account object.
@@ -24,6 +24,8 @@ public class SipAccount extends Account {
     private final SipAccountData data;
     private final SipService service;
     private boolean isGuest = false;
+    private boolean isCallInitiated;
+    private ICall activeIncomingCall;
 
     protected SipAccount(SipService service, SipAccountData data) {
         super();
@@ -205,5 +207,23 @@ public class SipAccount extends Account {
         } catch (Exception ex) {
             Logger.error(LOG_TAG, "Error while getting caller info", ex);
         }
+    }
+
+    public boolean isActiveCallPresent() {
+        return !isCallInitiated && activeCalls.isEmpty() && activeIncomingCall == null;
+    }
+
+    /**
+     * Get active incoming call {@link ICall}
+     *
+     * @return {@link ICall}, which can be cast to {@link IncomingCall} as
+     * and when required
+     */
+    public ICall getActiveIncomingCall() {
+        return activeIncomingCall;
+    }
+
+    public void setActiveIncomingCall(ICall activeIncomingCall) {
+        this.activeIncomingCall = activeIncomingCall;
     }
 }

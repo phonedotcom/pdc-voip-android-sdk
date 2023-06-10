@@ -1,6 +1,15 @@
+/*
+ * Copyright (c) 2023 Phone.com®, All Rights Reserved.
+ */
 package net.gotev.sipservice;
 
+import static net.gotev.sipservice.SipServiceConstants.PARAM_INCOMING_FROM;
+import static net.gotev.sipservice.SipServiceConstants.PARAM_INCOMING_LINKED_UUID;
+import static net.gotev.sipservice.SipServiceConstants.PARAM_INCOMING_SERVER;
+import static net.gotev.sipservice.SipServiceConstants.PARAM_INCOMING_SLOT;
+
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 
@@ -8,19 +17,14 @@ import androidx.annotation.NonNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * SipUtility class is the utility class for sip related tasks.
- *
- * @author rajantalwar
- * @version 1.0
- * @since 2019-12-24.
  */
 public class SipUtility {
-
-
 
     /**
      * This method is used to get uri of Sip user
@@ -37,9 +41,11 @@ public class SipUtility {
             e.printStackTrace();
         }
         String protocolName = getProtocolName(context);
-        String format = String.format("sip:%s@%s:%d;%s", username, domainName, getPortNumber(context), protocolName);
 
-        return format;
+        return String.format(
+                Locale.getDefault(),
+                "sip:%s@%s:%d;%s", username, domainName, getPortNumber(context), protocolName
+        );
     }
 
 
@@ -179,6 +185,35 @@ public class SipUtility {
             return name.trim();
         }
         return message;
+    }
+
+
+    public static IncomingCall createIncomingCallObject(Intent intent) {
+        // assign caller name at this point to avoid multiple Utility calls
+        final String number = intent.getStringExtra(PARAM_INCOMING_FROM);
+        final String server = intent.getStringExtra(PARAM_INCOMING_SERVER);
+        final String slot = intent.getStringExtra(PARAM_INCOMING_SLOT);
+        final String linked_uid = intent.getStringExtra(PARAM_INCOMING_LINKED_UUID);
+
+        String callerName = number;
+
+        if (intent.hasExtra(SipServiceConstants.PARAM_DISPLAY_NAME)) {
+            callerName = intent.getStringExtra(SipServiceConstants.PARAM_DISPLAY_NAME);
+        }
+
+        // create a call over here
+        final IncomingCall incomingCall = new IncomingCall();
+        incomingCall.setLinkedUUID(linked_uid);
+        incomingCall.setServer(server);
+        incomingCall.setSlot(slot);
+        incomingCall.setNumber(number);
+
+        incomingCall.setCallerName(number);
+        incomingCall.setCallerName(callerName);
+        incomingCall.setCallType(CallType.INCOMING);
+        incomingCall.setTime(SipUtility.timeInSeconds());
+        incomingCall.setState(CallState.INCOMING_CALL);
+        return incomingCall;
     }
 
 }

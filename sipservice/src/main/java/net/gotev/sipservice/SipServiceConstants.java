@@ -82,6 +82,14 @@ public interface SipServiceConstants {
     String PARAM_CALL_RECONNECTION_STATE = "callReconnectionState";
     String PARAM_SILENT_CALL_STATUS = "silentCallStatus";
 
+    String PARAM_INCOMING_FROM = "incomingFrom";
+    String PARAM_INCOMING_SERVER = "incomingServer";
+    String PARAM_INCOMING_SLOT = "incomingSlot";
+    String PARAM_INCOMING_LINKED_UUID = "incomingLinkedUuid";
+    String PARAM_INCOMING_STATUS = "incomingStatus";
+    String PARAM_NO_ACTIVE_CALL = "isActiveCallPresent";
+
+
     /**
      * Specific Parameters passed in the broadcast intents for call stats.
      */
@@ -136,4 +144,12 @@ public interface SipServiceConstants {
     String PARAM_USERNAME = "USERNAME";
 
     String GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL = "GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL";
+
+
+    String INCOMING_CALL_DISCONNECTED = "incomingCallDisconnected";
+    String ACTION_INCOMING_CALL_NOTIFICATION = "incomingCallNotification";
+
+    String SERVICE_NOTIFICATION_CHANNEL_ID = "serviceNotificationChannelId";
+
+    String INTENT_HANDLED = "intentHandled";
 }

@@ -121,7 +121,7 @@ public class SipApplication {
      */
     public static String getSipUsername(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(SIP_USER_NAME, context);
+                .getStringSharedPreference(context, SIP_USER_NAME);
     }
 
 
@@ -133,7 +133,7 @@ public class SipApplication {
      */
     public static void setSipUsername(String sipUsername, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(SIP_USER_NAME, sipUsername, context);
+                .putInSharedPreference(context, SIP_USER_NAME, sipUsername);
     }
 
 
@@ -145,7 +145,7 @@ public class SipApplication {
      */
     public static String getSipPassword(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(SIP_PASSWORD, context);
+                .getStringSharedPreference(context, SIP_PASSWORD);
     }
 
 
@@ -157,7 +157,7 @@ public class SipApplication {
      */
     public static void setSipPassword(String sipPassword, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(SIP_PASSWORD, sipPassword, context);
+                .putInSharedPreference(context, SIP_PASSWORD, sipPassword);
     }
 
 
@@ -169,7 +169,7 @@ public class SipApplication {
      */
     public static String getDomainName(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(DOMAIN_NAME, context);
+                .getStringSharedPreference(context, DOMAIN_NAME);
     }
 
 
@@ -181,7 +181,7 @@ public class SipApplication {
      */
     public static void setDomainName(String domainName, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(DOMAIN_NAME, domainName, context);
+                .putInSharedPreference(context, DOMAIN_NAME, domainName);
     }
 
 
@@ -192,7 +192,7 @@ public class SipApplication {
      * @return port
      */
     public static int getPort(Context context) {
-        return SharedPreferencesHelper.getInstance(context).getIntSharedPreference(PORT, context);
+        return SharedPreferencesHelper.getInstance(context).getIntSharedPreference(context, PORT);
     }
 
 
@@ -204,7 +204,7 @@ public class SipApplication {
      */
     public static void setPort(int port, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(PORT, port, context);
+                .putInSharedPreference(context, PORT, port);
     }
 
 
@@ -216,7 +216,7 @@ public class SipApplication {
      */
     public static int getSecurePort(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getIntSharedPreference(SECURE_PORT, context);
+                .getIntSharedPreference(context, SECURE_PORT);
     }
 
 
@@ -228,7 +228,7 @@ public class SipApplication {
      */
     public static void setSecurePort(int securePort, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(SECURE_PORT, securePort, context);
+                .putInSharedPreference(context, SECURE_PORT, securePort);
     }
 
 
@@ -240,7 +240,7 @@ public class SipApplication {
      */
     public static String getSecureProtocolName(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(SECURE_PROTOCOL_NAME, context);
+                .getStringSharedPreference(context, SECURE_PROTOCOL_NAME);
     }
 
 
@@ -252,7 +252,7 @@ public class SipApplication {
      */
     public static void setSecureProtocolName(String secureProtocolName, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(SECURE_PROTOCOL_NAME, secureProtocolName, context);
+                .putInSharedPreference(context, SECURE_PROTOCOL_NAME, secureProtocolName);
     }
 
 
@@ -264,7 +264,7 @@ public class SipApplication {
      */
     public static String getProtocolName(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(PROTOCOL_NAME, context);
+                .getStringSharedPreference(context, PROTOCOL_NAME);
     }
 
 
@@ -276,7 +276,7 @@ public class SipApplication {
      */
     public static void setProtocolName(String protocolName, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(PROTOCOL_NAME, protocolName, context);
+                .putInSharedPreference(context, PROTOCOL_NAME, protocolName);
     }
 
 
@@ -288,7 +288,7 @@ public class SipApplication {
      */
     public static String getPushToken(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(PUSH_TOKEN, context);
+                .getStringSharedPreference(context, PUSH_TOKEN);
     }
 
 
@@ -300,7 +300,7 @@ public class SipApplication {
      */
     public static void setPushToken(String pushToken, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(PUSH_TOKEN, pushToken, context);
+                .putInSharedPreference(context, PUSH_TOKEN, pushToken);
     }
 
 
@@ -312,7 +312,7 @@ public class SipApplication {
      */
     public static String getVersionName(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(VERSION_NAME, context);
+                .getStringSharedPreference(context, VERSION_NAME);
     }
 
 
@@ -324,7 +324,7 @@ public class SipApplication {
      */
     private static void setVersionName(String versionName, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(VERSION_NAME, versionName, context);
+                .putInSharedPreference(context, VERSION_NAME, versionName);
     }
 
 
@@ -336,7 +336,7 @@ public class SipApplication {
      */
     public static String getBundleID(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(BUNDLE_ID, context);
+                .getStringSharedPreference(context, BUNDLE_ID);
     }
 
 
@@ -348,7 +348,7 @@ public class SipApplication {
      */
     private static void setBundleID(String bundleID, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(BUNDLE_ID, bundleID, context);
+                .putInSharedPreference(context, BUNDLE_ID, bundleID);
     }
 
 
@@ -360,7 +360,7 @@ public class SipApplication {
      */
     public static String getDeviceInfo(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(DEVICE_INFO, context);
+                .getStringSharedPreference(context, DEVICE_INFO);
     }
 
 
@@ -372,7 +372,7 @@ public class SipApplication {
      */
     private static void setDeviceInfo(String deviceInfo, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(DEVICE_INFO, deviceInfo, context);
+                .putInSharedPreference(context, DEVICE_INFO, deviceInfo);
     }
 
 
@@ -384,7 +384,7 @@ public class SipApplication {
      */
     public static String getApplicationID(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(APPLICATION_ID, context);
+                .getStringSharedPreference(context, APPLICATION_ID);
     }
 
 
@@ -396,7 +396,7 @@ public class SipApplication {
      */
     private static void setApplicationID(String applicationID, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(APPLICATION_ID, applicationID, context);
+                .putInSharedPreference(context, APPLICATION_ID, applicationID);
     }
 
 
@@ -408,7 +408,7 @@ public class SipApplication {
      */
     public static String getHdeviceType(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(DEVICE_TYPE, context);
+                .getStringSharedPreference(context, DEVICE_TYPE);
     }
 
 
@@ -420,7 +420,7 @@ public class SipApplication {
      */
     public static void setHdeviceType(String hDeviceType, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(DEVICE_TYPE, hDeviceType, context);
+                .putInSharedPreference(context, DEVICE_TYPE, hDeviceType);
     }
 
 
@@ -432,7 +432,7 @@ public class SipApplication {
      */
     public static String gethVoipID(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(VOIP_ID, context);
+                .getStringSharedPreference(context, VOIP_ID);
     }
 
 
@@ -444,7 +444,7 @@ public class SipApplication {
      */
     public static void sethVoipID(String hVoipID, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(VOIP_ID, hVoipID, context);
+                .putInSharedPreference(context, VOIP_ID, hVoipID);
     }
 
 
@@ -456,7 +456,7 @@ public class SipApplication {
      */
     public static String gethVoipPhoneID(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(VOIP_PHONE_ID, context);
+                .getStringSharedPreference(context, VOIP_PHONE_ID);
     }
 
     /**
@@ -467,7 +467,7 @@ public class SipApplication {
      */
     public static void sethVoipPhoneID(String hVoipPhoneID, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(VOIP_PHONE_ID, hVoipPhoneID, context);
+                .putInSharedPreference(context, VOIP_PHONE_ID, hVoipPhoneID);
     }
 
 
@@ -479,7 +479,7 @@ public class SipApplication {
      */
     public static String getNotificationBody(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(NOTIFICATION_BODY, context);
+                .getStringSharedPreference(context, NOTIFICATION_BODY);
     }
 
 
@@ -491,7 +491,7 @@ public class SipApplication {
      */
     public static void setNotificationBody(String notificationTitle, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(NOTIFICATION_BODY, notificationTitle, context);
+                .putInSharedPreference(context, NOTIFICATION_BODY, notificationTitle);
     }
 
 
@@ -503,7 +503,7 @@ public class SipApplication {
      */
     public static String getNotificationContentTitle(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(NOTIFICATION_CONTENT_TITLE, context);
+                .getStringSharedPreference(context, NOTIFICATION_CONTENT_TITLE);
     }
 
 
@@ -515,7 +515,7 @@ public class SipApplication {
      */
     public static void setNotificationContentTitle(String notificationSubtitle, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(NOTIFICATION_CONTENT_TITLE, notificationSubtitle, context);
+                .putInSharedPreference(context, NOTIFICATION_CONTENT_TITLE, notificationSubtitle);
     }
 
 
@@ -527,7 +527,7 @@ public class SipApplication {
      */
     public static int getNotificationIcon(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getIntSharedPreference(NOTIFICATION_ICON, context);
+                .getIntSharedPreference(context, NOTIFICATION_ICON);
     }
 
 
@@ -539,7 +539,7 @@ public class SipApplication {
      */
     public static void setNotificationIcon(int notificationIcon, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(NOTIFICATION_ICON, notificationIcon, context);
+                .putInSharedPreference(context, NOTIFICATION_ICON, notificationIcon);
     }
 
 
@@ -551,7 +551,7 @@ public class SipApplication {
      */
     public static void setLogFilesPathInformation(String fileName, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(LOGS_FILE_NAME, fileName, context);
+                .putInSharedPreference(context, LOGS_FILE_NAME, fileName);
     }
 
 
@@ -563,7 +563,7 @@ public class SipApplication {
      */
     public static String getLogFilesFolderPath(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(LOGS_FOLDER_PATH, context);
+                .getStringSharedPreference(context, LOGS_FOLDER_PATH);
     }
 
 
@@ -575,7 +575,7 @@ public class SipApplication {
      */
     public static String getLogFilePath(Context context) {
         return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(LOGS_FILE_NAME, context);
+                .getStringSharedPreference(context, LOGS_FILE_NAME);
     }
 
     public static SipHeaderVector getHeadersForPush(Context context) {

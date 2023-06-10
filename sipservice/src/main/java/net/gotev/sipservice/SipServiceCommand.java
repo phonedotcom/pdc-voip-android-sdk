@@ -56,6 +56,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.putExtra(PARAM_ACCOUNT_DATA, sipAccountData);
         executeSipServiceAction(context, intent);
         //context.startService(intent);
+        SharedPreferencesHelper.getInstance(context).putInSharedPreference(context,
+                SharedPreferenceConstant.SIP_ACCOUNT_ID,
+                accountID
+        );
 
         return accountID;
     }
@@ -731,7 +735,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @param protocolName transport protocol to be used
      * @param context Android Context needed for shared preferences operations
      *
-     * @see org.pjsip.pjsua2.app.service.PhoneSipService//login()
+     * @see SipService#ACTION_SET_ACCOUNT
      */
     public static void saveInformationForSipLibraryInitialization
     (
@@ -752,7 +756,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * This method is called by client for passing information to SDK which is needed for showing
-     * foreground service notification {@link org.pjsip.pjsua2.app.service.PhoneSipService ForegroundServiceClass}.
+     * foreground service notification {@link SipService ForegroundServiceClass}.
      *
      * @param notificationTitle notification title
      * @param notificationSubtitle notification subtitle
@@ -770,6 +774,41 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         SipApplication.saveInformationForForegroundServiceNotification(notificationTitle,
                 notificationSubtitle, notificationIcon, context);
 
+    }
+
+    /**
+     * Method to handle the push notifications
+     *
+     * @param status if canceled--> call is canceled by caller<br>
+     *               answered --> call has been answered on another device<br>
+     *               else it's an incoming call
+     * @param from number of caller
+     * @param server VoIP server
+     * @param slot VoIP slot
+     * @param linkedUUID unique id for identifying each call
+     * @param callerName name of caller
+     * @param context Android context needed for talking to SDK service
+     */
+    public static void handleIncomingCallPushNotification(Context context, String status,
+                                                          String from, String server, String slot,
+                                                          String linkedUUID,
+                                                          String callerName) {
+
+        final Intent intent = new Intent(context, SipService.class);
+        intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context)
+                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
+        if ("canceled".equalsIgnoreCase(status) || "answered".equalsIgnoreCase(status)) {
+            intent.setAction(INCOMING_CALL_DISCONNECTED);
+        } else {
+            intent.setAction(ACTION_INCOMING_CALL_NOTIFICATION);
+        }
+        intent.putExtra(PARAM_INCOMING_FROM, from);
+        intent.putExtra(PARAM_INCOMING_SERVER, server);
+        intent.putExtra(PARAM_INCOMING_SLOT, slot);
+        intent.putExtra(PARAM_DISPLAY_NAME, callerName);
+        intent.putExtra(PARAM_INCOMING_LINKED_UUID, linkedUUID);
+
+        executeSipServiceAction(context, intent);
     }
 }
 
