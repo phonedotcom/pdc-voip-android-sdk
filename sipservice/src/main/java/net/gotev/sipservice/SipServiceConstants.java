@@ -155,4 +155,7 @@ public interface SipServiceConstants {
     String INTENT_HANDLED = "intentHandled";
 
     int SERVICE_FOREGROUND_NOTIFICATION_ID = 121;
+
+    String MISS_CALL_NOTIFICATION_CHANNEL = "missCallNotificationChannelId";
+    String INCOMING_CALL_NOTIFICATION_CHANNEL_ID = "incomingCallNotificationChannelId";
 }
