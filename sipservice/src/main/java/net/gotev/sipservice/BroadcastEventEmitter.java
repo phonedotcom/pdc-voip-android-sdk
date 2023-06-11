@@ -39,7 +39,8 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         SILENT_CALL_STATUS,
         NOTIFY_TLS_VERIFY_STATUS_FAILED,
         CALLBACK_SET_ACCOUNT,
-        CALLBACK_REMOVE_ACCOUNT
+        CALLBACK_REMOVE_ACCOUNT,
+        INCOMING_CALL_NOTIFICATION_CLICK,
     }
 
     public BroadcastEventEmitter(Context context) {
@@ -268,6 +269,22 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.setAction(getAction(BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
         intent.putExtra(PARAM_ACCOUNT_ID, accountIDtoRemove);
         sendExplicitBroadcast(intent);
+    }
+
+    public Intent getExplicitIntent(Intent intent) {
+        PackageManager pm = mContext.getPackageManager();
+        List<ResolveInfo> matches = pm.queryBroadcastReceivers(intent, 0);
+
+        for (ResolveInfo resolveInfo : matches) {
+            ComponentName cn =
+                    new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName,
+                            resolveInfo.activityInfo.name);
+
+            intent.setComponent(cn);
+            intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        }
+
+        return intent;
     }
 
     private void sendExplicitBroadcast(Intent intent) {

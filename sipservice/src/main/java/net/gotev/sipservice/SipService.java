@@ -218,7 +218,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     private void notifyIncomingCallNotification(Intent intent, ICall iCall) {
         final IncomingCall incomingCall = (IncomingCall) iCall;
         //incomingCall.setVideoCall(isVideo);
-        //startForeground(createIncomingNotification(call, true));
+        startForeground(NotificationCreator.createForegroundServiceNotification(this, incomingCall.getCallerName(), true));
         final String callerName = incomingCall.getCallerName();
         final String accountId = intent.getStringExtra(PARAM_ACCOUNT_ID);
         getBroadcastEmitter().incomingCall
@@ -1188,6 +1188,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 .setContentText(callName);
         mBuilder.setContentIntent(resultPendingIntent);
         return mBuilder.build();
+    }
+
+    private void startForeground(Notification notification) {
+        startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, notification);
     }
 
 }

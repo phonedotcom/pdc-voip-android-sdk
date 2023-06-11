@@ -88,6 +88,7 @@ public interface SipServiceConstants {
     String PARAM_INCOMING_LINKED_UUID = "incomingLinkedUuid";
     String PARAM_INCOMING_STATUS = "incomingStatus";
     String PARAM_NO_ACTIVE_CALL = "isActiveCallPresent";
+    String PARAM_IS_CALL = "isCall";
 
 
     /**
@@ -152,4 +153,6 @@ public interface SipServiceConstants {
     String SERVICE_NOTIFICATION_CHANNEL_ID = "serviceNotificationChannelId";
 
     String INTENT_HANDLED = "intentHandled";
+
+    int SERVICE_FOREGROUND_NOTIFICATION_ID = 121;
 }
