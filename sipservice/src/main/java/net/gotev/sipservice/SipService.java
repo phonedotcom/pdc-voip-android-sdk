@@ -241,7 +241,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
             audioManager.setSpeakerphoneOn(false);
             NotificationCreator.createForegroundServiceNotification(this, "PhoneSip Service", false);
 
-
             startForeground(NotificationCreator.createForegroundServiceNotification(this, "PhoneSip Service", false));
 
             stopCallForegroundService(sipAccount);
