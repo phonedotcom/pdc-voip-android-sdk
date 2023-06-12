@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Surface;
 
 import androidx.core.app.NotificationCompat;
@@ -246,7 +245,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             startForeground(NotificationCreator.createForegroundServiceNotification(this, "PhoneSip Service", false));
 
             stopCallForegroundService(sipAccount);
-
+            sipAccount.setActiveIncomingCall(null);
             MediaPlayerController.getInstance(this).resumeMusicPlayer();
         }
     }
@@ -270,9 +269,15 @@ public class SipService extends BackgroundService implements SipServiceConstants
     private void handleIncomingCallNotification(Intent intent) {
         //Stop Music (if any)
         MediaPlayerController.getInstance(this).stopMusicPlayer();
+        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
         final ICall iCall = createIncomingCallObject(intent);
-
+        SipAccount sipAccount = mActiveSipAccounts.get(accountID);
+        if (sipAccount == null) {
+            mBroadcastEmitter.errorCallback(CallbackMessageConst.ERR_SIP_ACCOUNT_NULL);
+            return;
+        }
+        sipAccount.setActiveIncomingCall(iCall);
         //TODO : If required, put notification here
 
         notifyIncomingCallNotification(intent, iCall);
@@ -286,7 +291,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final String accountId = intent.getStringExtra(PARAM_ACCOUNT_ID);
         getBroadcastEmitter().incomingCall
                 (
-                       accountId,
+                        accountId,
                         incomingCall.getNumber(),
                         incomingCall.getServer(),
                         incomingCall.getSlot(),
