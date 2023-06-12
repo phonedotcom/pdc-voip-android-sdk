@@ -122,7 +122,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     handleSendDTMF(intent);
                     break;
                 case ACTION_ACCEPT_INCOMING_CALL:
-                    handleAcceptIncomingCall(intent);
+                    handleMakeCallForIncomingCall(intent);
+                    //handleAcceptIncomingCall(intent);
                     break;
                 case ACTION_DECLINE_INCOMING_CALL:
                     handleDeclineIncomingCall(intent);
@@ -600,6 +601,37 @@ public class SipService extends BackgroundService implements SipServiceConstants
             } catch (Exception ex) {
                 Logger.error(TAG, "Error while switching capture device", ex);
             }
+        }
+    }
+
+    private void handleMakeCallForIncomingCall(Intent intent) {
+
+        final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+
+        final String incomingFrom = intent.getStringExtra(PARAM_INCOMING_FROM);
+        final String incomingSlot = intent.getStringExtra(PARAM_INCOMING_SLOT);
+        final String incomingServer = intent.getStringExtra(PARAM_INCOMING_SERVER);
+        final String incomingLinkedUuid = intent.getStringExtra(PARAM_INCOMING_LINKED_UUID);
+
+        boolean isVideo = intent.getBooleanExtra(PARAM_IS_VIDEO, false);
+        boolean isVideoConference = false;
+
+        Logger.debug(TAG, "Making call to " + getValue(getApplicationContext(), incomingFrom));
+
+        try {
+//            SipCall call = mActiveSipAccounts.get(accountID).addOutgoingCall(number, isVideo, isVideoConference, isTransfer);
+            final SipCall call = getActiveSipAccount(accountID).addOutgoingForIncomingCall(
+                    incomingFrom,
+                    incomingSlot,
+                    incomingServer,
+                    incomingLinkedUuid,
+                    isVideo
+            );
+            call.setVideoParams(isVideo, isVideoConference);
+            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.ONGOING_CALL, true));
+        } catch (Exception exc) {
+            Logger.error(TAG, "Error while making outgoing call", exc);
+            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
         }
     }
 
