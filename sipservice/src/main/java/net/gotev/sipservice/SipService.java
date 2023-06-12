@@ -830,6 +830,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetAccount(Intent intent) {
+        startForeground(121, createForegroundServiceNotification(this, getString(R.string.app_name)));
         SipAccountData data = intent.getParcelableExtra(PARAM_ACCOUNT_DATA);
 
         int index = mConfiguredAccounts.indexOf(data);
@@ -845,6 +846,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mBroadcastEmitter.setAccount(data);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                enqueueDelayedJob(() -> stopForeground(false), 200);
+                return;
             }
         } else {
             Logger.debug(TAG, "Reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
@@ -858,9 +861,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mBroadcastEmitter.setAccount(data);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                enqueueDelayedJob(() -> stopForeground(false), 200);
+                return;
             }
         }
-        startForeground(121, createForegroundServiceNotification(this, getString(R.string.app_name)));
+
         enqueueDelayedJob(() -> stopForeground(false), 200);
     }
 
@@ -1214,7 +1219,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 resultIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
-        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? "SipServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID" : "";
+        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID : "";
 //        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL : "";
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
                 .setContentText(callName);
