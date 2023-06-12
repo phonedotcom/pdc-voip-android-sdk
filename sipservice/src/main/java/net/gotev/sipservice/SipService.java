@@ -895,7 +895,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
             }
         }
-        startForeground(121, createForegroundServiceNotification(this, getString(R.string.app_name)));
+        startForeground(121, createForegroundServiceNotification(this, "Phone service"));
         enqueueDelayedJob(() -> stopForeground(false), 200);
     }
 
