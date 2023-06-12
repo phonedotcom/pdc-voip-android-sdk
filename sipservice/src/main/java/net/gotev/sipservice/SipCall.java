@@ -39,7 +39,7 @@ import org.pjsip.pjsua2.pjsua_call_vid_strm_op;
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
-public class SipCall extends Call {
+public class SipCall extends Call implements ICall{
 
     private static final String LOG_TAG = SipCall.class.getSimpleName();
 
@@ -107,6 +107,8 @@ public class SipCall extends Call {
              * Thus, it is recommended to delete the call object inside the callback.
              */
 
+            CallScreenState callScreenState = null;
+
             try {
                 callStatus = info.getLastStatusCode();
                 account.getService().setLastCallStatus(callStatus);
@@ -119,6 +121,9 @@ public class SipCall extends Call {
                 stopVideoFeeds();
                 stopSendingKeyFrame();
                 account.removeCall(callID);
+
+                callScreenState = CallScreenState.DISCONNECTED;
+
                 if (connectTimestamp > 0 && streamInfo != null && streamStat != null) {
                     try {
                         sendCallStats(callID, info.getConnectDuration().getSec(), callStatus);
@@ -133,7 +138,12 @@ public class SipCall extends Call {
                 if (videoCall) {
                     setVideoMute(false);
                     startSendingKeyFrame();
+
+                    account.getService().getBroadcastEmitter().callState(new CallEvents.
+                            ScreenUpdate(CallScreenState.VIDEO_INITIATED, true));
                 }
+
+                callScreenState = CallScreenState.ONGOING_CALL;
 
                 // check whether the 183 has arrived or not
             } else if (callState == pjsip_inv_state.PJSIP_INV_STATE_EARLY){
@@ -144,13 +154,19 @@ public class SipCall extends Call {
                     toneGenerator = new ToneGenerator(AudioManager.STREAM_VOICE_CALL, 100);
                     toneGenerator.startTone(ToneGenerator.TONE_SUP_RINGTONE);
                     // check if 183
+
+                    callScreenState = CallScreenState.PLAY_RINGTONE;
                 } else if (statusCode == pjsip_status_code.PJSIP_SC_PROGRESS){
                     checkAndStopLocalRingBackTone();
                 }
             }
 
             account.getService().getBroadcastEmitter()
+                    .callState(new CallEvents.ScreenUpdate(callScreenState, true));
+
+            /*account.getService().getBroadcastEmitter()
                     .callState(account.getData().getIdUri(account.getService().getApplicationContext()), callID, callState, callStatus, connectTimestamp);
+*/
 
             if (callState == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
                 account.getService().setLastCallStatus(0);
@@ -533,6 +549,10 @@ public class SipCall extends Call {
         this.videoConference = videoConference;
     }
 
+    public void setVideoParam(boolean videoCall) {
+        this.videoCall = videoCall;
+    }
+
     private void setMediaParams(CallOpParam param) {
         CallSetting callSetting = param.getOpt();
         callSetting.setAudioCount(1);
@@ -620,5 +640,169 @@ public class SipCall extends Call {
         account.getService().getBroadcastEmitter().callStats(callID, duration, audioCodec, callStatus, rx, tx);
         streamInfo = null;
         streamStat = null;
+    }
+
+    /**
+     * Method for returning the CallerName, uses {@link #getCallerNumber()}, it performs operation on
+     * {@link #getCallerNumber()} to return name based on formatting and custom logic in implementatio
+     * class.
+     *
+     * @return the callerName
+     */
+    @Override
+    public String getCallName() {
+        return null;
+    }
+
+    /**
+     * Method for returning the CallerName
+     *
+     * @return the caller name
+     * @see #getCallName()
+     */
+    @Override
+    public String getCallerNumber() {
+        return null;
+    }
+
+    /**
+     * Method for setting the caller name
+     *
+     * @param callerCname
+     */
+    @Override
+    public void setCallerNumber(String callerCname) {
+
+    }
+
+    /**
+     * Method for checking the hold unhold status of current call
+     *
+     * @return boolean indicating whether the current call is on hold
+     * if true the call is on hold
+     * else not
+     */
+    @Override
+    public boolean isHoldCall() {
+        return false;
+    }
+
+    /**
+     * Method for setting the hold/ unhold status if current call
+     *
+     * @param isHoldCall boolean true-> call is on hold
+     *                   false -> call in not on hold
+     */
+    @Override
+    public void setHoldCall(boolean isHoldCall) {
+
+    }
+
+    /**
+     * Method for checking whether the current call is same as other one by comparing their call id
+     *
+     * @param callId callID to match
+     * @return boolean true if both the calls match else false
+     */
+    @Override
+    public boolean isCallIdPresent(int callId) {
+        return false;
+    }
+
+    /**
+     * Method to get the state of call
+     *
+     * @return the current state of call
+     * @see CallState
+     */
+    @Override
+    public CallState getState() {
+        return null;
+    }
+
+    /**
+     * Method for setting the state of call
+     *
+     * @param connected indicates the state of call
+     * @see CallState
+     */
+    @Override
+    public void setState(CallState connected) {
+
+    }
+
+    /**
+     * Method to set the active status of call
+     *
+     * @param active if true call is active else not
+     */
+    @Override
+    public void setActive(boolean active) {
+
+    }
+
+    @Override
+    public String getImageUrl() {
+        return null;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public String getLinkedUUID() {
+        return null;
+    }
+
+    @Override
+    public void setLinkedUUID(String linkedUUID) {
+
+    }
+
+    /**
+     * Method for setting the time of call
+     *
+     * @param time long time of call
+     */
+    @Override
+    public void setTime(long time) {
+
+    }
+
+    /**
+     * Method for getting the time of call
+     *
+     * @return the time of call in long
+     */
+    @Override
+    public long getTime() {
+        return 0;
+    }
+
+    /**
+     * Method to set the type of call
+     *
+     * @param callType the type of call
+     * @see CallType
+     */
+    @Override
+    public void setCallType(CallType callType) {
+
+    }
+
+    /**
+     * Method to retrieve the type of call
+     *
+     * @return the type of call
+     * @see CallType
+     */
+    @Override
+    public CallType getCallType() {
+        return null;
+    }
+
+    @Override
+    public boolean isCallOnMute() {
+        return false;
     }
 }
