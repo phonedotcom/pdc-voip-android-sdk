@@ -147,7 +147,7 @@ public interface SipServiceConstants {
     String GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL = "GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL";
 
 
-    String INCOMING_CALL_DISCONNECTED = "incomingCallDisconnected";
+    String ACTION_INCOMING_CALL_DISCONNECTED = "incomingCallDisconnected";
     String ACTION_INCOMING_CALL_NOTIFICATION = "incomingCallNotification";
 
     String SERVICE_NOTIFICATION_CHANNEL_ID = "serviceNotificationChannelId";
@@ -158,4 +158,11 @@ public interface SipServiceConstants {
 
     String MISS_CALL_NOTIFICATION_CHANNEL = "missCallNotificationChannelId";
     String INCOMING_CALL_NOTIFICATION_CHANNEL_ID = "incomingCallNotificationChannelId";
+    String PARAM_ERROR_MESSAGE = "errorMessage";
+    String PARAM_CALLER_NAME = "caller_name";
+    String PARAM_TIME = "time";
+    String PARAM_SECONDS = "seconds";
+    String PARAM_CALL_TYPE = "call_type";
+    String PARAM_IS_INCOMING_CALL = "isIncomingCall";
+    String PARAM_PHONE_NUMBER = "phone_number";
 }

@@ -798,7 +798,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context)
                 .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
         if ("canceled".equalsIgnoreCase(status) || "answered".equalsIgnoreCase(status)) {
-            intent.setAction(INCOMING_CALL_DISCONNECTED);
+            intent.setAction(ACTION_INCOMING_CALL_DISCONNECTED);
         } else {
             intent.setAction(ACTION_INCOMING_CALL_NOTIFICATION);
         }

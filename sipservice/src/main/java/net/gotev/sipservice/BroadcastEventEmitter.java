@@ -41,6 +41,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         CALLBACK_SET_ACCOUNT,
         CALLBACK_REMOVE_ACCOUNT,
         INCOMING_CALL_NOTIFICATION_CLICK,
+        CALLBACK_GENERIC_ERROR
     }
 
     public BroadcastEventEmitter(Context context) {
@@ -144,7 +145,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_CALL_STATUS, callStateStatus);
         intent.putExtra(PARAM_CONNECT_TIMESTAMP, connectTimestamp);
 
-        mContext.sendBroadcast(intent);
+        sendExplicitBroadcast(intent);
     }
 
     /**
@@ -268,6 +269,27 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
         intent.putExtra(PARAM_ACCOUNT_ID, accountIDtoRemove);
+        sendExplicitBroadcast(intent);
+    }
+
+    public void errorCallback(String message) {
+        final Intent intent = new Intent();
+        intent.setAction(getAction(BroadcastAction.CALLBACK_GENERIC_ERROR));
+        intent.putExtra(PARAM_ERROR_MESSAGE, message);
+        sendExplicitBroadcast(intent);
+    }
+
+    public void handleMissedCall(boolean isIncomingCall, String number, String linkedUUid,
+                                 String callerName, long time, long seconds, CallType callType) {
+        Intent intent = new Intent();
+        intent.putExtra(PARAM_IS_INCOMING_CALL, isIncomingCall);
+        intent.putExtra(PARAM_PHONE_NUMBER, number);
+        intent.putExtra(PARAM_INCOMING_LINKED_UUID, linkedUUid);
+        intent.putExtra(PARAM_CALLER_NAME, callerName);
+        intent.putExtra(PARAM_TIME, time);
+        intent.putExtra(PARAM_SECONDS, seconds);
+        intent.putExtra(PARAM_CALL_TYPE, callType);
+        intent.setAction(getAction(BroadcastAction.MISSED_CALL));
         sendExplicitBroadcast(intent);
     }
 
