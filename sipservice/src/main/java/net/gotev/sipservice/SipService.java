@@ -220,6 +220,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final IncomingCall incomingCall = (IncomingCall) iCall;
         //incomingCall.setVideoCall(isVideo);
         startForeground(NotificationCreator.createForegroundServiceNotification(this, incomingCall.getCallerName(), true));
+
+        getActiveSipAccount(this).setActiveIncomingCall(incomingCall);
+
         final String callerName = incomingCall.getCallerName();
         final String accountId = intent.getStringExtra(PARAM_ACCOUNT_ID);
         getBroadcastEmitter().incomingCall
@@ -1224,6 +1227,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     public static SipAccount getActiveSipAccount(final String accountID) {
         return mActiveSipAccounts.get(accountID);
+    }
+
+    public static SipAccount getActiveSipAccount(Context context) {
+        return mActiveSipAccounts.get(SharedPreferencesHelper.getInstance(context)
+                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
     }
 
     public void removeGuestAccount() {
