@@ -222,7 +222,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         if (activeIncomingCall != null && activeIncomingCall.getLinkedUUID().equalsIgnoreCase(linkedUUID) &&
                 activeIncomingCall.getState().equals(CallState.INCOMING_CALL)) {
             // disconnect call if active
-//            stopCallForegroundService(sipAccount);
+            stopCallForegroundService(sipAccount);
             String number = intent.getStringExtra(SipServiceConstants.PARAM_INCOMING_FROM);
             IncomingCall incomingCallObject = createIncomingCallObject(intent);
             incomingCallObject.setCallType(CallType.MISSED);
