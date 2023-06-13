@@ -608,10 +608,22 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
-        final String incomingFrom = intent.getStringExtra(PARAM_INCOMING_FROM);
+        final IncomingCall incomingCall = (IncomingCall) getActiveSipAccount(accountID).getActiveIncomingCall();
+
+        if(incomingCall == null) {
+            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
+            return;
+        }
+
+        final String incomingFrom = incomingCall.getNumber();
+        final String incomingSlot = incomingCall.getSlot();
+        final String incomingServer = incomingCall.getServer();
+        final String incomingLinkedUuid = incomingCall.getLinkedUUID();
+
+        /*final String incomingFrom = intent.getStringExtra(PARAM_INCOMING_FROM);
         final String incomingSlot = intent.getStringExtra(PARAM_INCOMING_SLOT);
         final String incomingServer = intent.getStringExtra(PARAM_INCOMING_SERVER);
-        final String incomingLinkedUuid = intent.getStringExtra(PARAM_INCOMING_LINKED_UUID);
+        final String incomingLinkedUuid = intent.getStringExtra(PARAM_INCOMING_LINKED_UUID);*/
 
         boolean isVideo = intent.getBooleanExtra(PARAM_IS_VIDEO, false);
         boolean isVideoConference = false;
