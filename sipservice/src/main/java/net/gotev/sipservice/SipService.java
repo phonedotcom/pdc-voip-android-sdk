@@ -228,15 +228,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             incomingCallObject.setCallType(CallType.MISSED);
             handleMissedCall(incomingCallObject, number);
 
-            SipCall sipCall = (SipCall) activeIncomingCall;
-            int callStatusCode;
-            try {
-                callStatusCode = sipCall.getInfo().getLastStatusCode();
-            } catch (Exception ex) {
-                callStatusCode = callStatus;
-                ex.printStackTrace();
-            }
-            mBroadcastEmitter.callState(accountID, sipCall.getId(), sipCall.getCurrentState(), callStatusCode, sipCall.getConnectTimestamp());
+            mBroadcastEmitter.callState(accountID, incomingCallObject.getId(), 0, callStatus, incomingCallObject.getTime());
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             audioManager.setSpeakerphoneOn(false);
             NotificationCreator.createForegroundServiceNotification(this, "PhoneSip Service", false);
@@ -457,6 +449,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                         + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
             }
         }
+
     }
 
     private void handleHangUpCall(Intent intent) {

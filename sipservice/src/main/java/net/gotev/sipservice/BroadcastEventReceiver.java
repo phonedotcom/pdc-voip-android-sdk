@@ -150,6 +150,8 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
                 BroadcastEventEmitter.BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
         intentFilter.addAction(BroadcastEventEmitter.getAction(
                 BroadcastEventEmitter.BroadcastAction.CALLBACK_GENERIC_ERROR));
+        intentFilter.addAction(BroadcastEventEmitter.getAction(
+                BroadcastEventEmitter.BroadcastAction.DECLINE_INCOMING_CALL));
         context.registerReceiver(this, intentFilter);
     }
 
