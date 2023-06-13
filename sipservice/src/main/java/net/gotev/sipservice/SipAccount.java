@@ -150,14 +150,15 @@ public class SipAccount extends Account {
         headerVector.add(hServer);
         callOpParam.getTxOption().setHeaders(headerVector);
 
-        callOpParam.getOpt().setVideoCount(1);
-
+        //callOpParam.getOpt().setVideoCount(1);
+        //callOpParam.getOpt().setAudioCount(1);
 
         try {
             //Put Number in SipCall for further use
             call.setCallerNumber(numberToDial);
 
             numberToDial = SipUtility.getSipUserUri(numberToDial, service.getApplicationContext());
+            Logger.debug(LOG_TAG, "Number To Dial: "+numberToDial);
 
             if (numberToDial.startsWith("sip:")) {
                 call.makeCall(numberToDial, callOpParam);

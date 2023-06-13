@@ -223,7 +223,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         getActiveSipAccount(this).setActiveIncomingCall(incomingCall);
 
-        final String callerName = incomingCall.getCallerName();
         final String accountId = intent.getStringExtra(PARAM_ACCOUNT_ID);
         getBroadcastEmitter().incomingCall
                 (
@@ -231,8 +230,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                         incomingCall.getNumber(),
                         incomingCall.getServer(),
                         incomingCall.getSlot(),
-                        incomingCall.getSlot(),
-                        callerName,
+                        incomingCall.getLinkedUUID(),
+                        incomingCall.getCallerName(),
                         getActiveSipAccount(accountId).isActiveCallPresent(),
                         false
                 );
@@ -652,7 +651,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingLinkedUuid,
                     isVideo
             );
-            call.setVideoParams(isVideo, isVideoConference);
+            //call.setVideoParams(isVideo, isVideoConference);
             mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.ONGOING_CALL, true));
         } catch (Exception exc) {
             Logger.error(TAG, "Error while making outgoing call", exc);
