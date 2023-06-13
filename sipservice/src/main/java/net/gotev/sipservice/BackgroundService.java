@@ -2,22 +2,30 @@ package net.gotev.sipservice;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.*;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.PowerManager;
+import android.os.Process;
 
 /**
  * Service with a background worker thread.
  * @author gotev (Aleksandar Gotev)
  */
-class BackgroundService extends Service {
+abstract class BackgroundService extends Service {
 
     private Handler mHandler;
     private PowerManager.WakeLock mWakeLock;
+    private HandlerThread mWorkerThread;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mHandler = new Handler(Looper.getMainLooper());
         acquireWakeLock();
+
+        startWorkerThread();
     }
 
     @Override
@@ -28,6 +36,7 @@ class BackgroundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mWorkerThread.quitSafely();
         releaseWakeLock();
     }
 
@@ -54,4 +63,14 @@ class BackgroundService extends Service {
             mWakeLock.release();
         }
     }
+
+    private synchronized void startWorkerThread() {
+        mWorkerThread = new HandlerThread(getClass().getSimpleName(), Process.THREAD_PRIORITY_FOREGROUND);
+        mWorkerThread.setPriority(Thread.MAX_PRIORITY);
+        mWorkerThread.start();
+        mHandler = new Handler(mWorkerThread.getLooper());
+        checkThread(mWorkerThread);
+    }
+
+    abstract void checkThread(Thread thread);
 }

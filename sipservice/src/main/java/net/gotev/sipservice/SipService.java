@@ -245,6 +245,16 @@ public class SipService extends BackgroundService implements SipServiceConstants
         super.onDestroy();
     }
 
+    @Override
+    void checkThread(Thread thread) {
+        try {
+            if (mEndpoint != null && !mEndpoint.libIsThreadRegistered())
+                mEndpoint.libRegisterThread(thread.getName());
+        } catch (Exception e) {
+            Logger.error(TAG, "CheckThread -> Threading: libRegisterThread failed: " + e.getMessage());
+        }
+    }
+
     /***   Sip Calls Management    ***/
 
     private SipCall getCall(String accountID, int callID) {
