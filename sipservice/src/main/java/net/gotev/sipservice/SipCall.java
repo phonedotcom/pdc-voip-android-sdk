@@ -138,7 +138,6 @@ public class SipCall extends Call implements ICall{
                 if (videoCall) {
                     //setVideoMute(false);
                     //startSendingKeyFrame();
-
                     account.getService().getBroadcastEmitter().callState(new CallEvents.
                             ScreenUpdate(CallScreenState.VIDEO_INITIATED, true));
                 }
