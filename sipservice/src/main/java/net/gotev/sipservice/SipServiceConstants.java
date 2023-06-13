@@ -158,4 +158,8 @@ public interface SipServiceConstants {
 
     String MISS_CALL_NOTIFICATION_CHANNEL = "missCallNotificationChannelId";
     String INCOMING_CALL_NOTIFICATION_CHANNEL_ID = "incomingCallNotificationChannelId";
+
+    int MISSED_NOTIFICATION_ID = 1674;
+    int HANGUP_BROADCAST_ACTION_ID = 2;
+    int ACCEPT_CALL_BROADCAST_ACTION_ID = 1;
 }
