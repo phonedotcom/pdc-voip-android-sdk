@@ -24,7 +24,6 @@ import org.pjsip.pjsua2.VideoPreview;
 import org.pjsip.pjsua2.VideoPreviewOpParam;
 import org.pjsip.pjsua2.VideoWindow;
 import org.pjsip.pjsua2.VideoWindowHandle;
-import org.pjsip.pjsua2.pjmedia_event_type;
 import org.pjsip.pjsua2.pjmedia_type;
 import org.pjsip.pjsua2.pjsip_inv_state;
 import org.pjsip.pjsua2.pjsip_role_e;
@@ -210,16 +209,17 @@ public class SipCall extends Call implements ICall{
 
     @Override
     public void onCallMediaEvent(OnCallMediaEventParam prm) {
-        if (prm.getEv().getType() == pjmedia_event_type.PJMEDIA_EVENT_FMT_CHANGED) {
+        //if (prm.getEv().getType() == pjmedia_event_type.PJMEDIA_EVENT_FMT_CHANGED) {
             // Sending new video size
             try {
                 account.getService().getBroadcastEmitter().videoSize(
                         (int) mVideoWindow.getInfo().getSize().getW(),
                         (int) mVideoWindow.getInfo().getSize().getH());
+                account.getService().getBroadcastEmitter().sendCallMediaEvent(prm.getEv().getType());
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Unable to get video dimensions", ex);
             }
-        }
+        //}
         super.onCallMediaEvent(prm);
     }
 

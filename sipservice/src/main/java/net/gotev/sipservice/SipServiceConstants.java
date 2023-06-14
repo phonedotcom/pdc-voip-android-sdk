@@ -89,6 +89,7 @@ public interface SipServiceConstants {
     String PARAM_INCOMING_STATUS = "incomingStatus";
     String PARAM_NO_ACTIVE_CALL = "isActiveCallPresent";
     String PARAM_IS_CALL = "isCall";
+    String PARAM_CALL_MEDIA_EVENT_TYPE = "callMediaEventType";
 
 
     /**
