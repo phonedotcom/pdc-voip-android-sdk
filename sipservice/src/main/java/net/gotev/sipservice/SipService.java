@@ -646,6 +646,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final String incomingSlot = incomingCall.getSlot();
         final String incomingServer = incomingCall.getServer();
         final String incomingLinkedUuid = incomingCall.getLinkedUUID();
+        final String callerName = incomingCall.getCallerName();
 
         /*final String incomingFrom = intent.getStringExtra(PARAM_INCOMING_FROM);
         final String incomingSlot = intent.getStringExtra(PARAM_INCOMING_SLOT);
@@ -664,6 +665,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingSlot,
                     incomingServer,
                     incomingLinkedUuid,
+                    callerName,
                     isVideo
             );
             //call.setVideoParams(isVideo, isVideoConference);

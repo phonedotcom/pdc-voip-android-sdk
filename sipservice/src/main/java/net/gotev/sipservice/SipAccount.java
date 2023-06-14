@@ -127,6 +127,7 @@ public class SipAccount extends Account {
                                               final String slot,
                                               final String server,
                                               final String linkedUuid,
+                                              final String callerName,
                                               boolean isVideo) {
         Logger.debug(LOG_TAG, "addOutgoingForIncomingCall()");
 
@@ -158,7 +159,7 @@ public class SipAccount extends Account {
             //Put Number in SipCall for further use
             call.setCallerNumber(numberToDial);
 
-            numberToDial = SipUtility.getSipUserUri(numberToDial, service.getApplicationContext());
+            numberToDial = SipUtility.getSipUserUri(callerName, service.getApplicationContext());
             Logger.debug(LOG_TAG, "Number To Dial: "+numberToDial);
 
             if (numberToDial.startsWith("sip:")) {
