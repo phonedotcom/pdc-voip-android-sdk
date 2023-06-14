@@ -158,7 +158,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      * @param screenUpdate CallEvents.ScreenUpdate
      */
     public synchronized void callState(CallEvents.ScreenUpdate screenUpdate) {
-        Logger.debug(TAG, "callState()");
+        Logger.debug(TAG, "callState() -> ScreenUpdate -> "+screenUpdate);
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_STATE, screenUpdate);
         intent.setAction(getAction(BroadcastAction.CALL_STATE));
