@@ -453,18 +453,29 @@ public class SipService extends BackgroundService implements SipServiceConstants
             return;
         }
 
-        SipCall sipCall = (SipCall) sipAccount.getActiveIncomingCall();
-        int callID = sipCall.getId();
-        if (sipCall != null) {
-            try {
-                sipCall.declineIncomingCall();
-                mBroadcastEmitter.declineIncomingCall();
-            } catch (Exception exc) {
-                Logger.error(TAG, "Error while declining incoming call. AccountID: "
-                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
-                mBroadcastEmitter.errorCallback("Error while declining incoming call. AccountID: "
-                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
-            }
+        try {
+            final IncomingCall incomingCall = (IncomingCall) sipAccount.getActiveIncomingCall();
+
+            final String incomingFrom = incomingCall.getNumber();
+            final String incomingSlot = incomingCall.getSlot();
+            final String incomingServer = incomingCall.getServer();
+            final String incomingLinkedUuid = incomingCall.getLinkedUUID();
+            boolean isVideo = intent.getBooleanExtra(PARAM_IS_VIDEO, false);
+
+            final SipCall sipCall = sipAccount.createSipCallFromICall(
+                    incomingFrom,
+                    incomingSlot,
+                    incomingServer,
+                    incomingLinkedUuid,
+                    isVideo
+            );
+            sipCall.declineIncomingCall();
+            mBroadcastEmitter.declineIncomingCall();
+        } catch (Exception exc) {
+            Logger.error(TAG, "Error while declining incoming call. AccountID: "
+                    + getValue(getApplicationContext(), accountID));
+            mBroadcastEmitter.errorCallback("Error while declining incoming call. AccountID: "
+                    + getValue(getApplicationContext(), accountID));
         }
     }
 

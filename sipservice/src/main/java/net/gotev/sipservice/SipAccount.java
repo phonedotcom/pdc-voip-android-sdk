@@ -14,6 +14,7 @@ import java.util.Set;
 
 /**
  * Wrapper around PJSUA2 Account object.
+ *
  * @author gotev (Aleksandar Gotev)
  */
 public class SipAccount extends Account {
@@ -86,7 +87,7 @@ public class SipAccount extends Account {
 
         // check if there's already an ongoing call
         int totalCalls = 0;
-        for (SipAccount _sipAccount: SipService.getActiveSipAccounts().values()) {
+        for (SipAccount _sipAccount : SipService.getActiveSipAccounts().values()) {
             totalCalls += _sipAccount.getCallIDs().size();
         }
 
@@ -158,7 +159,7 @@ public class SipAccount extends Account {
             call.setCallerNumber(numberToDial);
 
             numberToDial = SipUtility.getSipUserUri(numberToDial, service.getApplicationContext());
-            Logger.debug(LOG_TAG, "Number To Dial: "+numberToDial);
+            Logger.debug(LOG_TAG, "Number To Dial: " + numberToDial);
 
             if (numberToDial.startsWith("sip:")) {
                 call.makeCall(numberToDial, callOpParam);
@@ -186,6 +187,60 @@ public class SipAccount extends Account {
 
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "Error while making outgoing call", exc);
+            return null;
+        }
+    }
+
+    public SipCall createSipCallFromICall(String numberToDial,
+                                          final String slot,
+                                          final String server,
+                                          final String linkedUuid,
+                                          boolean isVideo) {
+
+        // allow calls only if there are no other ongoing calls
+        SipCall call = new SipCall(this);
+        call.setVideoParam(isVideo);
+
+        CallOpParam callOpParam = new CallOpParam(true);
+
+        final SipHeader hSlot = new SipHeader();
+        hSlot.setHName("X-Slot");
+        hSlot.setHValue(slot);
+
+        final SipHeader hServer = new SipHeader();
+        hServer.setHName("X-Server");
+        hServer.setHValue(server);
+
+        final SipHeaderVector headerVector = new SipHeaderVector();
+        headerVector.add(hSlot);
+        headerVector.add(hServer);
+        callOpParam.getTxOption().setHeaders(headerVector);
+
+        try {
+            //Put Number in SipCall for further use
+            call.setCallerNumber(numberToDial);
+
+            numberToDial = SipUtility.getSipUserUri(numberToDial, service.getApplicationContext());
+            Logger.debug(LOG_TAG, "Number To Dial: " + numberToDial);
+
+            if (numberToDial.startsWith("sip:")) {
+                call.makeCall(numberToDial, callOpParam);
+            } else {
+                if ("*".equals(data.getRealm())) {
+                    call.makeCall("sip:" + numberToDial, callOpParam);
+                } else {
+                    call.makeCall("sip:" + numberToDial + "@" + data.getRealm(), callOpParam);
+                }
+            }
+
+            call.setLinkedUUID(linkedUuid);
+            call.setState(CallState.CONNECTED);
+            call.setCallType(CallType.INCOMING);
+
+            return call;
+
+        } catch (Exception exc) {
+            Logger.error(LOG_TAG, "Error while making sip call", exc);
             return null;
         }
     }
