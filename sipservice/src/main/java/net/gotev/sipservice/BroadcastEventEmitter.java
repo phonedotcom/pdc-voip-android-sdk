@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class BroadcastEventEmitter implements SipServiceConstants {
 
+    public static final String TAG = BroadcastEventEmitter.class.getSimpleName();
     public static String NAMESPACE = "com.phone";
 
     private final Context mContext;
@@ -157,6 +158,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      * @param screenUpdate CallEvents.ScreenUpdate
      */
     public synchronized void callState(CallEvents.ScreenUpdate screenUpdate) {
+        Logger.debug(TAG, "callState()");
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_STATE, screenUpdate);
         intent.setAction(getAction(BroadcastAction.CALL_STATE));
@@ -237,7 +239,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_INCOMING_VIDEO_WIDTH, width);
         intent.putExtra(PARAM_INCOMING_VIDEO_HEIGHT, height);
 
-        mContext.sendBroadcast(intent);
+        sendExplicitBroadcast(intent);
     }
 
     void callStats(int callID, int duration, String audioCodec, int callStateStatus, RtpStreamStats rx, RtpStreamStats tx) {
@@ -293,6 +295,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      * @param mediaEventType Type of mediaEvent  {@link org.pjsip.pjsua2.pjmedia_event_type}
      */
     public void sendCallMediaEvent(int mediaEventType) {
+        Logger.debug(TAG, "sendCallMediaEvent() : "+mediaEventType);
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, mediaEventType);
         intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));

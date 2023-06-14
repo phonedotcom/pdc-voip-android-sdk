@@ -128,6 +128,7 @@ public class SipAccount extends Account {
                                               final String server,
                                               final String linkedUuid,
                                               boolean isVideo) {
+        Logger.debug(LOG_TAG, "addOutgoingForIncomingCall()");
 
         isCallInitiated = true;
 
