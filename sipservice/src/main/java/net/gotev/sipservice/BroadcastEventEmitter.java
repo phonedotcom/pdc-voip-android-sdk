@@ -42,7 +42,6 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         CALLBACK_REMOVE_ACCOUNT,
         INCOMING_CALL_NOTIFICATION_CLICK,
         CALLBACK_GENERIC_ERROR,
-        DECLINE_INCOMING_CALL,
         ACCEPT_INCOMING_CALL_ACTION,
         END_SERVICE_ACTION,
         CALL_MEDIA_EVENT
