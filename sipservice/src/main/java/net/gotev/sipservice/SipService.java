@@ -456,9 +456,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
             mBroadcastEmitter.errorCallback(CallbackMessageConst.ERR_SIP_ACCOUNT_NULL);
             return;
         }
-        int callID = sipAccount.getActiveIncomingCall().getId();
 
-        SipCall sipCall = getCall(accountID, callID);
+        SipCall sipCall = (SipCall) sipAccount.getActiveIncomingCall();
+        int callID = sipCall.getId();
         if (sipCall != null) {
             try {
                 sipCall.declineIncomingCall();
