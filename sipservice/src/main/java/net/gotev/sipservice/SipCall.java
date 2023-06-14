@@ -24,6 +24,7 @@ import org.pjsip.pjsua2.VideoPreview;
 import org.pjsip.pjsua2.VideoPreviewOpParam;
 import org.pjsip.pjsua2.VideoWindow;
 import org.pjsip.pjsua2.VideoWindowHandle;
+import org.pjsip.pjsua2.pjmedia_event_type;
 import org.pjsip.pjsua2.pjmedia_type;
 import org.pjsip.pjsua2.pjsip_inv_state;
 import org.pjsip.pjsua2.pjsip_role_e;
@@ -179,7 +180,7 @@ public class SipCall extends Call implements ICall{
 
     @Override
     public void onCallMediaState(OnCallMediaStateParam prm) {
-
+        Logger.debug(LOG_TAG, "onCallMediaState()");
         CallInfo info;
         try {
             info = getInfo();
@@ -210,17 +211,17 @@ public class SipCall extends Call implements ICall{
     @Override
     public void onCallMediaEvent(OnCallMediaEventParam prm) {
         Logger.debug(LOG_TAG, "onCallMediaEvent()");
-        //if (prm.getEv().getType() == pjmedia_event_type.PJMEDIA_EVENT_FMT_CHANGED) {
+        if (prm.getEv().getType() == pjmedia_event_type.PJMEDIA_EVENT_FMT_CHANGED) {
             // Sending new video size
             try {
-                /*account.getService().getBroadcastEmitter().videoSize(
+                account.getService().getBroadcastEmitter().videoSize(
                         (int) mVideoWindow.getInfo().getSize().getW(),
-                        (int) mVideoWindow.getInfo().getSize().getH());*/
+                        (int) mVideoWindow.getInfo().getSize().getH());
                 account.getService().getBroadcastEmitter().sendCallMediaEvent(prm.getEv().getType());
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Unable to get video dimensions", ex);
             }
-        //}
+        }
         super.onCallMediaEvent(prm);
     }
 
@@ -425,6 +426,7 @@ public class SipCall extends Call implements ICall{
     }
 
     private void handleAudioMedia(Media media) {
+        Logger.debug(LOG_TAG, "handleAudioMedia()");
         AudioMedia audioMedia = AudioMedia.typecastFromMedia(media);
 
         // connect the call audio media to sound device
