@@ -462,6 +462,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         if (sipCall != null) {
             try {
                 sipCall.declineIncomingCall();
+                mBroadcastEmitter.declineIncomingCall();
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while declining incoming call. AccountID: "
                         + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);

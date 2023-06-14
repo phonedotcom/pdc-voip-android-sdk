@@ -231,6 +231,12 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         sendExplicitBroadcast(intent);
     }
 
+    void declineIncomingCall() {
+        final Intent intent = new Intent();
+        intent.setAction(getAction(BroadcastAction.END_SERVICE_ACTION));
+        sendExplicitBroadcast(intent);
+    }
+
     void videoSize(int width, int height) {
         final Intent intent = new Intent();
 
