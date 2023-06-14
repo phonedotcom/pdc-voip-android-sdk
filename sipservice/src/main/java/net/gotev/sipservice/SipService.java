@@ -451,7 +451,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void handleDeclineIncomingCall(Intent intent) {
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
-        int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
+        SipAccount sipAccount = mActiveSipAccounts.get(accountID);
+        if (sipAccount == null) {
+            mBroadcastEmitter.errorCallback(CallbackMessageConst.ERR_SIP_ACCOUNT_NULL);
+            return;
+        }
+        int callID = sipAccount.getActiveIncomingCall().getId();
 
         SipCall sipCall = getCall(accountID, callID);
         if (sipCall != null) {
@@ -460,9 +465,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while declining incoming call. AccountID: "
                         + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                mBroadcastEmitter.errorCallback("Error while declining incoming call. AccountID: "
+                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
             }
         }
-
     }
 
     private void handleHangUpCall(Intent intent) {
@@ -682,7 +688,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         final IncomingCall incomingCall = (IncomingCall) getActiveSipAccount(accountID).getActiveIncomingCall();
 
-        if(incomingCall == null) {
+        if (incomingCall == null) {
             mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
             return;
         }

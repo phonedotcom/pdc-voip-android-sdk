@@ -272,7 +272,7 @@ public class SipCall extends Call implements ICall{
         }
     }
 
-    public void declineIncomingCall() {
+    public void declineIncomingCall() throws Exception{
         CallOpParam param = new CallOpParam();
         param.setStatusCode(pjsip_status_code.PJSIP_SC_DECLINE);
 
@@ -280,6 +280,7 @@ public class SipCall extends Call implements ICall{
             answer(param);
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "Failed to decline incoming call", exc);
+            throw exc;
         }
     }
 

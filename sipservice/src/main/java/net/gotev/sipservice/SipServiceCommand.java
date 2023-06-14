@@ -358,16 +358,15 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
      * @param context application context
-     * @param accountID account ID
-     * @param callID call ID to hang up
      */
-    public static void declineIncomingCall(Context context, String accountID, int callID) {
+    public static void declineIncomingCall(Context context) {
+        String accountID = SharedPreferencesHelper.getInstance(context)
+                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID);
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_DECLINE_INCOMING_CALL);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
         context.startService(intent);
     }
 
