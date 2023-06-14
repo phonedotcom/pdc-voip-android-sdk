@@ -287,6 +287,18 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         sendExplicitBroadcast(intent);
     }
 
+    /**
+     * This method is used for sending different type of mediaEvents to client.
+     *
+     * @param mediaEventType Type of mediaEvent  {@link org.pjsip.pjsua2.pjmedia_event_type}
+     */
+    public void sendCallMediaEvent(int mediaEventType) {
+        final Intent intent = new Intent();
+        intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, mediaEventType);
+        intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));
+        sendExplicitBroadcast(intent);
+    }
+
     public Intent getExplicitIntent(Intent intent) {
         PackageManager pm = mContext.getPackageManager();
         List<ResolveInfo> matches = pm.queryBroadcastReceivers(intent, 0);
