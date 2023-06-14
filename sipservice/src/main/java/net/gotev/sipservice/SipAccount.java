@@ -159,6 +159,7 @@ public class SipAccount extends Account {
             //Put Number in SipCall for further use
             call.setCallerNumber(numberToDial);
 
+            Logger.debug(LOG_TAG, "CallerName: "+callerName);
             numberToDial = SipUtility.getSipUserUri(callerName, service.getApplicationContext());
             Logger.debug(LOG_TAG, "Number To Dial: "+numberToDial);
 
