@@ -232,11 +232,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             mBroadcastEmitter.callState(accountID, incomingCallObject.getId(), 0, callStatus, incomingCallObject.getTime());
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             audioManager.setSpeakerphoneOn(false);
-            NotificationCreator.createForegroundServiceNotification(this, "PhoneSip Service", false);
 
-            startForeground(NotificationCreator.createForegroundServiceNotification(this, "PhoneSip Service", false));
-
-            stopCallForegroundService(sipAccount);
             sipAccount.setActiveIncomingCall(null);
             MediaPlayerController.getInstance(this).resumeMusicPlayer();
         }
