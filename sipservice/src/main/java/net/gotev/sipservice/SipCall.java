@@ -492,9 +492,9 @@ public class SipCall extends Call implements ICall{
             videoWindowHandle.getHandle().setWindow(surface);
             try {
                 mVideoWindow.setWindow(videoWindowHandle);
-                account.getService().getBroadcastEmitter().videoSize(
+                /*account.getService().getBroadcastEmitter().videoSize(
                         (int) mVideoWindow.getInfo().getSize().getW(),
-                        (int) mVideoWindow.getInfo().getSize().getH());
+                        (int) mVideoWindow.getInfo().getSize().getH());*/
 
                 // start video again if not mute
                 setVideoMute(localVideoMute);
