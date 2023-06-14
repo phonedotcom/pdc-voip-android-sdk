@@ -500,10 +500,24 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetIncomingVideoFeed(Intent intent) {
-        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
-        int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
+        Logger.debug(TAG, "handleSetIncomingVideoFeed()ß");
+        final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
-        SipCall sipCall = getCall(accountID, callID);
+        final Set<Integer> activeCallIDs = getActiveSipAccount(accountID).getCallIDs();
+
+        if (activeCallIDs == null || activeCallIDs.isEmpty()) return;
+
+        SipCall sipCall = null;
+
+        for (int callID : activeCallIDs) {
+            try {
+                sipCall = getCall(accountID, callID);
+            } catch (Exception exc) {
+                Logger.error(TAG, "Error while hanging up call", exc);
+                notifyCallDisconnected(accountID, callID);
+            }
+        }
+
         if (sipCall != null) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
@@ -617,6 +631,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleMakeCallForIncomingCall(Intent intent) {
+        Logger.debug(TAG, "handleMakeCallForIncomingCall()");
 
         final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 

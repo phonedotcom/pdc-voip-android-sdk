@@ -284,5 +284,9 @@ public class SharedPreferencesHelper {
         return getBooleanPreference(context, PROTOCOL, false);
     }
 
+    public String getAccountID(Context context) {
+        return SharedPreferencesHelper.getInstance(context)
+                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID);
+    }
 }
 

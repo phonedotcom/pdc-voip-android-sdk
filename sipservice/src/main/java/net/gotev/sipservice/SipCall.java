@@ -209,12 +209,13 @@ public class SipCall extends Call implements ICall{
 
     @Override
     public void onCallMediaEvent(OnCallMediaEventParam prm) {
+        Logger.debug(LOG_TAG, "onCallMediaEvent()");
         //if (prm.getEv().getType() == pjmedia_event_type.PJMEDIA_EVENT_FMT_CHANGED) {
             // Sending new video size
             try {
-                account.getService().getBroadcastEmitter().videoSize(
+                /*account.getService().getBroadcastEmitter().videoSize(
                         (int) mVideoWindow.getInfo().getSize().getW(),
-                        (int) mVideoWindow.getInfo().getSize().getH());
+                        (int) mVideoWindow.getInfo().getSize().getH());*/
                 account.getService().getBroadcastEmitter().sendCallMediaEvent(prm.getEv().getType());
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Unable to get video dimensions", ex);
@@ -414,6 +415,7 @@ public class SipCall extends Call implements ICall{
     // disable video programmatically
     @Override
     public void makeCall(String dst_uri, CallOpParam prm) throws java.lang.Exception {
+        Logger.debug(LOG_TAG, "makeCall()");
         setMediaParams(prm);
         if (!videoCall) {
             CallSetting callSetting = prm.getOpt();
@@ -482,6 +484,7 @@ public class SipCall extends Call implements ICall{
     }
 
     public void setIncomingVideoFeed(Surface surface) {
+        Logger.debug(LOG_TAG, "setIncomingVideoFeed()");
         if (mVideoWindow != null) {
             VideoWindowHandle videoWindowHandle = new VideoWindowHandle();
             videoWindowHandle.getHandle().setWindow(surface);
