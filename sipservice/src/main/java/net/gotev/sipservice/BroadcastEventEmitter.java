@@ -308,6 +308,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_PHONE_NUMBER, number);
         intent.putExtra(PARAM_INCOMING_LINKED_UUID, linkedUUid);
         intent.putExtra(PARAM_CALLER_NAME, callerName);
+        intent.putExtra(PARAM_DISPLAY_NAME, callerName);
         intent.putExtra(PARAM_TIME, time);
         intent.putExtra(PARAM_SECONDS, seconds);
         intent.putExtra(PARAM_CALL_TYPE, callType);
