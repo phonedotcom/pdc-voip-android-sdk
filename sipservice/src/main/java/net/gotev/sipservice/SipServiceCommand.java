@@ -330,6 +330,25 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         context.startService(intent);
     }
 
+    /**
+     * Accept an incoming call. If the call does not exist or has been terminated, a disconnected
+     * state will be sent to
+     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * @param context application context
+     * //@param accountID account ID
+     * @param isVideo video call or not
+     */
+    public static void acceptIncomingCall(Context context, boolean isVideo) {
+        //checkAccount(accountID);
+
+        final Intent intent = new Intent(context, SipService.class);
+        intent.setAction(ACTION_ACCEPT_INCOMING_CALL);
+        intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context)
+                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
+        intent.putExtra(PARAM_IS_VIDEO, isVideo);
+        executeSipServiceAction(context, intent);
+    }
+
     public static void acceptIncomingCall(Context context, String accountID, int callID) {
         acceptIncomingCall(context, accountID, callID, false);
     }
@@ -717,7 +736,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      *
      * @param fileName  file path for saving the voip logs
      * @param context Activity context
-     * @see org.pjsip.pjsua2.app.MyApp#init(MyAppObserver, String, boolean, boolean, Context)
+     * //@see org.pjsip.pjsua2.app.MyApp#init(MyAppObserver, String, boolean, boolean, Context)
      */
     public static void saveInformationForLogFiles(String fileName, Context context) {
         SipApplication.setLogFilesPathInformation(fileName, context);

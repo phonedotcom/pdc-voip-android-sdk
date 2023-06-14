@@ -9,7 +9,7 @@ import android.util.Log;
  */
 public class DefaultLoggerDelegate implements Logger.LoggerDelegate {
 
-    public static final String PREFIX = "Phone.com | ";
+    public static final String PREFIX = "Phone.com|";
 
     @Override
     public void error(String tag, String message) {

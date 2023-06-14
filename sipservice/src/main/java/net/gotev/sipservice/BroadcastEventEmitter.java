@@ -42,7 +42,10 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         CALLBACK_REMOVE_ACCOUNT,
         INCOMING_CALL_NOTIFICATION_CLICK,
         CALLBACK_GENERIC_ERROR,
-        DECLINE_INCOMING_CALL
+        DECLINE_INCOMING_CALL,
+        ACCEPT_INCOMING_CALL_ACTION,
+        END_SERVICE_ACTION,
+        CALL_MEDIA_EVENT
     }
 
     public BroadcastEventEmitter(Context context) {
@@ -146,6 +149,19 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_CALL_STATUS, callStateStatus);
         intent.putExtra(PARAM_CONNECT_TIMESTAMP, connectTimestamp);
 
+        sendExplicitBroadcast(intent);
+    }
+
+    /**
+     * This method is used for sending different calling events to update calling screen to client.
+     * See @{@link CallScreenState}
+     *
+     * @param screenUpdate CallEvents.ScreenUpdate
+     */
+    public synchronized void callState(CallEvents.ScreenUpdate screenUpdate) {
+        final Intent intent = new Intent();
+        intent.putExtra(PARAM_CALL_STATE, screenUpdate);
+        intent.setAction(getAction(BroadcastAction.CALL_STATE));
         sendExplicitBroadcast(intent);
     }
 

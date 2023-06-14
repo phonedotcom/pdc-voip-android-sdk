@@ -125,7 +125,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     handleSendDTMF(intent);
                     break;
                 case ACTION_ACCEPT_INCOMING_CALL:
-                    handleAcceptIncomingCall(intent);
+                    handleMakeCallForIncomingCall(intent);
+                    //handleAcceptIncomingCall(intent);
                     break;
                 case ACTION_DECLINE_INCOMING_CALL:
                     handleDeclineIncomingCall(intent);
@@ -278,7 +279,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final IncomingCall incomingCall = (IncomingCall) iCall;
         //incomingCall.setVideoCall(isVideo);
         startForeground(NotificationCreator.createForegroundServiceNotification(this, incomingCall.getCallerName(), true));
-        final String callerName = incomingCall.getCallerName();
+
+        getActiveSipAccount(this).setActiveIncomingCall(incomingCall);
+
         final String accountId = intent.getStringExtra(PARAM_ACCOUNT_ID);
         getBroadcastEmitter().incomingCall
                 (
@@ -286,8 +289,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                         incomingCall.getNumber(),
                         incomingCall.getServer(),
                         incomingCall.getSlot(),
-                        incomingCall.getSlot(),
-                        callerName,
+                        incomingCall.getLinkedUUID(),
+                        incomingCall.getCallerName(),
                         getActiveSipAccount(accountId).isActiveCallPresent(),
                         false
                 );
@@ -301,6 +304,16 @@ public class SipService extends BackgroundService implements SipServiceConstants
             stopStack();
         });
         super.onDestroy();
+    }
+
+    @Override
+    void checkThread(Thread thread) {
+        try {
+            if (mEndpoint != null && !mEndpoint.libIsThreadRegistered())
+                mEndpoint.libRegisterThread(thread.getName());
+        } catch (Exception e) {
+            Logger.error(TAG, "CheckThread -> Threading: libRegisterThread failed: " + e.getMessage());
+        }
     }
 
     /***   Sip Calls Management    ***/
@@ -663,6 +676,49 @@ public class SipService extends BackgroundService implements SipServiceConstants
         }
     }
 
+    private void handleMakeCallForIncomingCall(Intent intent) {
+
+        final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+
+        final IncomingCall incomingCall = (IncomingCall) getActiveSipAccount(accountID).getActiveIncomingCall();
+
+        if(incomingCall == null) {
+            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
+            return;
+        }
+
+        final String incomingFrom = incomingCall.getNumber();
+        final String incomingSlot = incomingCall.getSlot();
+        final String incomingServer = incomingCall.getServer();
+        final String incomingLinkedUuid = incomingCall.getLinkedUUID();
+
+        /*final String incomingFrom = intent.getStringExtra(PARAM_INCOMING_FROM);
+        final String incomingSlot = intent.getStringExtra(PARAM_INCOMING_SLOT);
+        final String incomingServer = intent.getStringExtra(PARAM_INCOMING_SERVER);
+        final String incomingLinkedUuid = intent.getStringExtra(PARAM_INCOMING_LINKED_UUID);*/
+
+        boolean isVideo = intent.getBooleanExtra(PARAM_IS_VIDEO, false);
+        boolean isVideoConference = false;
+
+        Logger.debug(TAG, "Making call to " + getValue(getApplicationContext(), incomingFrom));
+
+        try {
+//            SipCall call = mActiveSipAccounts.get(accountID).addOutgoingCall(number, isVideo, isVideoConference, isTransfer);
+            final SipCall call = getActiveSipAccount(accountID).addOutgoingForIncomingCall(
+                    incomingFrom,
+                    incomingSlot,
+                    incomingServer,
+                    incomingLinkedUuid,
+                    isVideo
+            );
+            //call.setVideoParams(isVideo, isVideoConference);
+            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.ONGOING_CALL, true));
+        } catch (Exception exc) {
+            Logger.error(TAG, "Error while making outgoing call", exc);
+            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
+        }
+    }
+
     private void handleMakeCall(Intent intent) {
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         String number = intent.getStringExtra(PARAM_NUMBER);
@@ -858,6 +914,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetAccount(Intent intent) {
+        startForeground(121, createForegroundServiceNotification(this, getString(R.string.app_name)));
         SipAccountData data = intent.getParcelableExtra(PARAM_ACCOUNT_DATA);
 
         int index = mConfiguredAccounts.indexOf(data);
@@ -873,6 +930,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mBroadcastEmitter.setAccount(data);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                enqueueDelayedJob(() -> stopForeground(false), 200);
+                return;
             }
         } else {
             Logger.debug(TAG, "Reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
@@ -886,9 +945,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mBroadcastEmitter.setAccount(data);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                enqueueDelayedJob(() -> stopForeground(false), 200);
+                return;
             }
         }
-        startForeground(121, createForegroundServiceNotification(this, "Phone service"));
+
         enqueueDelayedJob(() -> stopForeground(false), 200);
     }
 
@@ -1227,6 +1288,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
         return mActiveSipAccounts.get(accountID);
     }
 
+    public static SipAccount getActiveSipAccount(Context context) {
+        return mActiveSipAccounts.get(SharedPreferencesHelper.getInstance(context)
+                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
+    }
+
     public void removeGuestAccount() {
         removeAccount(mConfiguredGuestAccount.getIdUri(getApplicationContext()));
         mConfiguredGuestAccount = null;
@@ -1242,7 +1308,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 resultIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
-        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? "SipServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID" : "";
+        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID : "";
 //        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL : "";
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
                 .setContentText(callName);

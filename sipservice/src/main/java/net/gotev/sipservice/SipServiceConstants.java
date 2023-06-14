@@ -165,4 +165,8 @@ public interface SipServiceConstants {
     String PARAM_CALL_TYPE = "call_type";
     String PARAM_IS_INCOMING_CALL = "isIncomingCall";
     String PARAM_PHONE_NUMBER = "phone_number";
+
+    int MISSED_NOTIFICATION_ID = 1674;
+    int HANGUP_BROADCAST_ACTION_ID = 2;
+    int ACCEPT_CALL_BROADCAST_ACTION_ID = 1;
 }
