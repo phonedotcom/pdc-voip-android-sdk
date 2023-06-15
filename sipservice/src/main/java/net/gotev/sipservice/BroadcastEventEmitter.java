@@ -166,20 +166,6 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     }
 
     /**
-     * This method is used for sending different calling events to update calling screen to client.
-     * See @{@link CallScreenState}
-     *
-     * @param screenUpdate CallEvents.ScreenUpdate
-     */
-    public synchronized void callState(CallEvents.ScreenUpdate screenUpdate) {
-        Logger.debug(TAG, "callState() -> ScreenUpdate -> "+screenUpdate);
-        final Intent intent = new Intent();
-        intent.putExtra(PARAM_CALL_STATE, screenUpdate);
-        intent.setAction(getAction(BroadcastAction.CALL_STATE));
-        sendExplicitBroadcast(intent);
-    }
-
-    /**
      * Emit a call state broadcast intent.
      *
      * @param accountID call's account IdUri
