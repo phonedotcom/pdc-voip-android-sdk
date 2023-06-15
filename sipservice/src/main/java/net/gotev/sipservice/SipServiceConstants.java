@@ -171,4 +171,9 @@ public interface SipServiceConstants {
     String PARAM_IS_INCOMING_CALL = "isIncomingCall";
     String PARAM_PHONE_NUMBER = "phone_number";
     String PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL = "errorCodeWhileRejectingIncomingCall";
+
+    /*
+    * Generic error messages
+     */
+    public static final String ERR_SIP_ACCOUNT_NULL = "Sip account in not found.";
 }
