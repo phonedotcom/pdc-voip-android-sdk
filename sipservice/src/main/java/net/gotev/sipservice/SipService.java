@@ -469,7 +469,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingLinkedUuid,
                     isVideo
             );
-            sipCall.declineIncomingCall();
+//            sipCall.declineIncomingCall();
         } catch (Exception exc) {
             Logger.error(TAG, "Error while declining incoming call. AccountID: "
                     + getValue(getApplicationContext(), accountID));
@@ -710,7 +710,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         final IncomingCall incomingCall = (IncomingCall) getActiveSipAccount(accountID).getActiveIncomingCall();
 
-        if(incomingCall == null) {
+        if (incomingCall == null) {
             mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
             return;
         }

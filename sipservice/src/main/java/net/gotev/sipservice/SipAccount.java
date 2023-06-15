@@ -214,9 +214,14 @@ public class SipAccount extends Account {
         hServer.setHName("X-Server");
         hServer.setHValue(server);
 
+        SipHeader hDisconnect = new SipHeader();
+        hDisconnect.setHName("X-Disconnect");
+        hDisconnect.setHValue("true");
+
         final SipHeaderVector headerVector = new SipHeaderVector();
         headerVector.add(hSlot);
         headerVector.add(hServer);
+        headerVector.add(hDisconnect);
         callOpParam.getTxOption().setHeaders(headerVector);
 
         try {
@@ -237,7 +242,7 @@ public class SipAccount extends Account {
             }
 
             call.setLinkedUUID(linkedUuid);
-            call.setState(CallState.CONNECTED);
+            call.setState(CallState.DISCONNECTED);
             call.setCallType(CallType.INCOMING);
 
             return call;
