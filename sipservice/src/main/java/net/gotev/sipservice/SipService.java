@@ -272,6 +272,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
         }
     }
 
+    private void notifyCallDisconnected() {
+        mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
+    }
+
     private void notifyCallDisconnected(String accountID, int callID) {
         mBroadcastEmitter.callState(accountID, callID,
                 pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED,
@@ -296,17 +300,31 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSendDTMF(Intent intent) {
-        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
-        int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
-        String dtmf = intent.getStringExtra(PARAM_DTMF);
+        final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+        final String dtmf = intent.getStringExtra(PARAM_DTMF);
 
-        SipCall sipCall = getCall(accountID, callID);
+        final Set<Integer> activeCallIDs = getActiveSipAccount(accountID).getCallIDs();
+
+        if (activeCallIDs == null || activeCallIDs.isEmpty()) return;
+
+        SipCall sipCall = null;
+
+        for (int callID : activeCallIDs) {
+            try {
+                sipCall = getCall(accountID, callID);
+            } catch (Exception exc) {
+                Logger.error(TAG, "Error while hanging up call", exc);
+                notifyCallDisconnected();
+            }
+        }
+
         if (sipCall != null) {
             try {
+                SipUtility.playSound(dtmf + ".wav", this.getApplicationContext());
                 sipCall.dialDtmf(dtmf);
             } catch (Exception exc) {
-                Logger.error(TAG, "Error while dialing dtmf: " + dtmf + ". AccountID: "
-                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                Logger.error(TAG, "Error while dialing DTMF: " + dtmf + ". AccountID: "
+                        + getValue(getApplicationContext(), accountID));
             }
         }
     }
