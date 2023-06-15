@@ -136,8 +136,8 @@ public class SipCall extends Call implements ICall{
                 checkAndStopLocalRingBackTone();
                 connectTimestamp = System.currentTimeMillis();
                 if (videoCall) {
-                    //setVideoMute(false);
-                    //startSendingKeyFrame();
+                    setVideoMute(false);
+                    startSendingKeyFrame();
                     account.getService().getBroadcastEmitter().callState(new CallEvents.
                             ScreenUpdate(CallScreenState.VIDEO_INITIATED, true));
                 }
@@ -570,8 +570,10 @@ public class SipCall extends Call implements ICall{
                     : pjsua_call_vid_strm_op.PJSUA_CALL_VID_STRM_START_TRANSMIT,
                 new CallVidSetStreamParam());
             localVideoMute = videoMute;
+/*
             account.getService().getBroadcastEmitter().callMediaState(
                     account.getData().getIdUri(account.getService().getApplicationContext()), getId(), MediaState.LOCAL_VIDEO_MUTE, localVideoMute);
+*/
         } catch(Exception ex) {
             Logger.error(LOG_TAG, "Error while toggling video transmission", ex);
         }
