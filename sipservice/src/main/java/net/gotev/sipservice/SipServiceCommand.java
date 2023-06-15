@@ -368,7 +368,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_DECLINE_INCOMING_CALL);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     /**
