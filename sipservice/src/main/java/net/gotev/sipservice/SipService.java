@@ -252,7 +252,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         if (call instanceof SipCall) {
             seconds = ((SipCall) call).getConnectTimestamp();
         }
-        mBroadcastEmitter.handleMissedCall(!(call instanceof SipCall),
+        mBroadcastEmitter.sendMissedCall(!(call instanceof SipCall),
                 number, call.getLinkedUUID(), call.getCallName(), call.getTime(),
                 seconds, call.getCallType());
     }
