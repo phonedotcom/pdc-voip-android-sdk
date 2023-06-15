@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: "maven-publish"
 
 android {
     compileSdkVersion 31
@@ -13,6 +14,29 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+publishing {
+    publications {
+        debug(MavenPublication) {
+            groupId = 'com.pdc.voip'
+            artifactId = 'voiplib'
+            version = '1.0.0'
+
+            afterEvaluate {
+                from components.debug
+            }
+        }
+        release(MavenPublication) {
+            groupId = 'com.pdc.voip'
+            artifactId = 'voiplib'
+            version = '1.0.0'
+
+            afterEvaluate {
+                from components.release
+            }
         }
     }
 }

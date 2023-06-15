@@ -258,21 +258,23 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.setAction(ACTION_HANG_UP_CALL);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     /**
      * Hangs up active calls.
      * @param context application context
-     * @param accountID account ID
+     *
      */
-    public static void hangUpActiveCalls(Context context, String accountID) {
+    public static void hangUpActiveCalls(Context context) {
+
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_HANG_UP_CALLS);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     /**
@@ -379,17 +381,16 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
      * @param context application context
-     * @param accountID account ID
-     * @param callID call ID to hang up
      */
-    public static void declineIncomingCall(Context context, String accountID, int callID) {
+    public static void declineIncomingCall(Context context) {
+        String accountID = SharedPreferencesHelper.getInstance(context)
+                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID);
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_DECLINE_INCOMING_CALL);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     /**
@@ -858,7 +859,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context)
                 .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
         if ("canceled".equalsIgnoreCase(status) || "answered".equalsIgnoreCase(status)) {
-            intent.setAction(INCOMING_CALL_DISCONNECTED);
+            intent.setAction(ACTION_INCOMING_CALL_DISCONNECTED);
         } else {
             intent.setAction(ACTION_INCOMING_CALL_NOTIFICATION);
         }

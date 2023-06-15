@@ -14,6 +14,7 @@ import java.util.Set;
 
 /**
  * Wrapper around PJSUA2 Account object.
+ *
  * @author gotev (Aleksandar Gotev)
  */
 public class SipAccount extends Account {
@@ -86,7 +87,7 @@ public class SipAccount extends Account {
 
         // check if there's already an ongoing call
         int totalCalls = 0;
-        for (SipAccount _sipAccount: SipService.getActiveSipAccounts().values()) {
+        for (SipAccount _sipAccount : SipService.getActiveSipAccounts().values()) {
             totalCalls += _sipAccount.getCallIDs().size();
         }
 
@@ -193,6 +194,62 @@ public class SipAccount extends Account {
         }
     }
 
+    public void declineIncomingCall(String numberToDial,
+                                    final String slot,
+                                    final String server,
+                                    final String linkedUuid,
+                                    boolean isVideo) throws Exception {
+
+        // allow calls only if there are no other ongoing calls
+        SipCall call = new SipCall(this);
+        call.setVideoParam(isVideo);
+
+        CallOpParam callOpParam = new CallOpParam(true);
+
+        final SipHeader hSlot = new SipHeader();
+        hSlot.setHName("X-Slot");
+        hSlot.setHValue(slot);
+
+        final SipHeader hServer = new SipHeader();
+        hServer.setHName("X-Server");
+        hServer.setHValue(server);
+
+        SipHeader hDisconnect = new SipHeader();
+        hDisconnect.setHName("X-Disconnect");
+        hDisconnect.setHValue("true");
+
+        final SipHeaderVector headerVector = new SipHeaderVector();
+        headerVector.add(hSlot);
+        headerVector.add(hServer);
+        headerVector.add(hDisconnect);
+        callOpParam.getTxOption().setHeaders(headerVector);
+
+        try {
+            //Put Number in SipCall for further use
+            call.setCallerNumber(numberToDial);
+
+            numberToDial = SipUtility.getSipUserUri(numberToDial, service.getApplicationContext());
+            Logger.debug(LOG_TAG, "Number To Dial: " + numberToDial);
+
+            if (numberToDial.startsWith("sip:")) {
+                call.makeCall(numberToDial, callOpParam);
+            } else {
+                if ("*".equals(data.getRealm())) {
+                    call.makeCall("sip:" + numberToDial, callOpParam);
+                } else {
+                    call.makeCall("sip:" + numberToDial + "@" + data.getRealm(), callOpParam);
+                }
+            }
+
+            call.setLinkedUUID(linkedUuid);
+            call.setState(CallState.DISCONNECTED);
+            call.setCallType(CallType.INCOMING);
+
+        } catch (Exception exc) {
+            Logger.error(LOG_TAG, "Error while making sip call", exc);
+            throw exc;
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

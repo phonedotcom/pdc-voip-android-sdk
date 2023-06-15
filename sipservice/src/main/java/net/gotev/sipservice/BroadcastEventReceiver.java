@@ -146,6 +146,12 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
                 BroadcastEventEmitter.BroadcastAction.NOTIFY_TLS_VERIFY_STATUS_FAILED));
         intentFilter.addAction(BroadcastEventEmitter.getAction(
                 BroadcastEventEmitter.BroadcastAction.CALLBACK_SET_ACCOUNT));
+        intentFilter.addAction(BroadcastEventEmitter.getAction(
+                BroadcastEventEmitter.BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
+        intentFilter.addAction(BroadcastEventEmitter.getAction(
+                BroadcastEventEmitter.BroadcastAction.CALLBACK_GENERIC_ERROR));
+        intentFilter.addAction(BroadcastEventEmitter.getAction(
+                BroadcastEventEmitter.BroadcastAction.END_SERVICE_ACTION));
         context.registerReceiver(this, intentFilter);
     }
 
