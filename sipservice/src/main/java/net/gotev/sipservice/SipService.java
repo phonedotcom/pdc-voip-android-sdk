@@ -198,6 +198,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 case ACTION_INCOMING_CALL_DISCONNECTED:
                     handleIncomingCallDisconnected(intent);
                     break;
+                case ACTION_REJECT_CALL_USER_BUSY:
+                    handleRejectIncomingCallUserBusy(intent);
+                    break;
                 default:
                     break;
             }
@@ -486,6 +489,38 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingServer,
                     incomingLinkedUuid,
                     isVideo);
+            sipAccount.setActiveIncomingCall(null);
+        } catch (Exception exc) {
+            Logger.error(TAG, "Error while declining incoming call. AccountID: "
+                    + getValue(getApplicationContext(), accountID));
+            mBroadcastEmitter.errorCallback("Error while declining incoming call. AccountID: "
+                    + getValue(getApplicationContext(), accountID));
+        }
+    }
+
+    private void handleRejectIncomingCallUserBusy(Intent intent) {
+        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+        SipAccount sipAccount = mActiveSipAccounts.get(accountID);
+        if (sipAccount == null) {
+            mBroadcastEmitter.errorCallback(CallbackMessageConst.ERR_SIP_ACCOUNT_NULL);
+            return;
+        }
+
+        try {
+            final IncomingCall incomingCall = (IncomingCall) sipAccount.getActiveIncomingCall();
+
+            final String incomingFrom = incomingCall.getNumber();
+            final String incomingSlot = incomingCall.getSlot();
+            final String incomingServer = incomingCall.getServer();
+            final String incomingLinkedUuid = incomingCall.getLinkedUUID();
+            boolean isVideo = intent.getBooleanExtra(PARAM_IS_VIDEO, false);
+            final String errorCode = intent.getStringExtra(PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL);
+
+            sipAccount.rejectIncomingCallUserBusy(incomingFrom,
+                    incomingSlot,
+                    incomingServer,
+                    incomingLinkedUuid,
+                    isVideo, errorCode);
             sipAccount.setActiveIncomingCall(null);
         } catch (Exception exc) {
             Logger.error(TAG, "Error while declining incoming call. AccountID: "

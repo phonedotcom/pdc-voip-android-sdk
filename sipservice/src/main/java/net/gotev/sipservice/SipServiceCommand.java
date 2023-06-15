@@ -871,5 +871,21 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
         executeSipServiceAction(context, intent);
     }
+
+    /**
+     * Method to reject the call while user is busy on another call
+     *
+     * @param context Android context needed for talking to SDK service
+     */
+    public static void rejectCallUserBusy(Context context) {
+        final Intent intent = new Intent(context, SipService.class);
+
+        intent.setAction(ACTION_REJECT_CALL_USER_BUSY);
+
+        intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context)
+                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
+        intent.putExtra(PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL, ErrorCodes.USER_BUSY.toString());
+        executeSipServiceAction(context, intent);
+    }
 }
 

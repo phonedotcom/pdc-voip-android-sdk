@@ -36,7 +36,7 @@ public interface SipServiceConstants {
     String ACTION_MAKE_DIRECT_CALL = "makeDirectCall";
     String ACTION_RECONNECT_CALL = "reconnectCall";
     String ACTION_MAKE_SILENT_CALL = "makeSilentCall";
-
+    String ACTION_REJECT_CALL_USER_BUSY = "rejectCallUserBusy";
     /*
      * Generic Parameters
      */
@@ -170,4 +170,5 @@ public interface SipServiceConstants {
     String PARAM_CALL_TYPE = "call_type";
     String PARAM_IS_INCOMING_CALL = "isIncomingCall";
     String PARAM_PHONE_NUMBER = "phone_number";
+    String PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL = "errorCodeWhileRejectingIncomingCall";
 }
