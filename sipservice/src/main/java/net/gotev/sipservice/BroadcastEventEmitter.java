@@ -44,7 +44,8 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         INCOMING_CALL_NOTIFICATION_CLICK,
         ACCEPT_INCOMING_CALL_ACTION,
         END_SERVICE_ACTION,
-        CALL_MEDIA_EVENT
+        CALL_MEDIA_EVENT,
+        CALLBACK_GENERIC_ERROR
     }
 
     public BroadcastEventEmitter(Context context) {
@@ -148,7 +149,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_CALL_STATUS, callStateStatus);
         intent.putExtra(PARAM_CONNECT_TIMESTAMP, connectTimestamp);
 
-        mContext.sendBroadcast(intent);
+        sendExplicitBroadcast(intent);
     }
 
     /**
@@ -158,7 +159,6 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      * @param screenUpdate CallEvents.ScreenUpdate
      */
     public synchronized void callState(CallEvents.ScreenUpdate screenUpdate) {
-        Logger.debug(TAG, "callState() -> ScreenUpdate -> "+screenUpdate);
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_STATE, screenUpdate);
         intent.setAction(getAction(BroadcastAction.CALL_STATE));
@@ -299,6 +299,28 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, mediaEventType);
         intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));
+        sendExplicitBroadcast(intent);
+    }
+
+    public void errorCallback(String message) {
+        final Intent intent = new Intent();
+        intent.setAction(getAction(BroadcastAction.CALLBACK_GENERIC_ERROR));
+        intent.putExtra(PARAM_ERROR_MESSAGE, message);
+        sendExplicitBroadcast(intent);
+    }
+
+    public void handleMissedCall(boolean isIncomingCall, String number, String linkedUUid,
+                                 String callerName, long time, long seconds, CallType callType) {
+        Intent intent = new Intent();
+        intent.putExtra(PARAM_IS_INCOMING_CALL, isIncomingCall);
+        intent.putExtra(PARAM_PHONE_NUMBER, number);
+        intent.putExtra(PARAM_INCOMING_LINKED_UUID, linkedUUid);
+        intent.putExtra(PARAM_CALLER_NAME, callerName);
+        intent.putExtra(PARAM_DISPLAY_NAME, callerName);
+        intent.putExtra(PARAM_TIME, time);
+        intent.putExtra(PARAM_SECONDS, seconds);
+        intent.putExtra(PARAM_CALL_TYPE, callType);
+        intent.setAction(getAction(BroadcastAction.MISSED_CALL));
         sendExplicitBroadcast(intent);
     }
 
