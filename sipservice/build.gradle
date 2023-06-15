@@ -21,8 +21,8 @@ android {
 publishing {
     publications {
         debug(MavenPublication) {
-            groupId = 'com.pdc.voip'
-            artifactId = 'voiplib'
+            groupId = 'com.phonedotcom'
+            artifactId = 'pdc-voip-android-sdk'
             version = '1.0.0'
 
             afterEvaluate {
@@ -30,8 +30,8 @@ publishing {
             }
         }
         release(MavenPublication) {
-            groupId = 'com.pdc.voip'
-            artifactId = 'voiplib'
+            groupId = 'com.phonedotcom'
+            artifactId = 'pdc-voip-android-sdk'
             version = '1.0.0'
 
             afterEvaluate {
