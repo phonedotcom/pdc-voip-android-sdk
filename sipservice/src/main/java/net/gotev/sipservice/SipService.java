@@ -94,18 +94,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
             String action = intent.getAction();
 
-            String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
-            if(accountID != null){
-                SipAccount account = mActiveSipAccounts.get(accountID);
-                if (account != null && !SipServiceConstants.ACTION_INCOMING_CALL_NOTIFICATION.equalsIgnoreCase(intent.getAction())) {
-                    if (!account.isActiveCallPresent() || SipServiceConstants.ACTION_HANG_UP_CALL.equals(intent.getAction()) ||
-                            SipServiceConstants.ACTION_DECLINE_INCOMING_CALL.equals(intent.getAction())) {
-                        startForeground(createForegroundServiceNotification(this, intent.getStringExtra(SipServiceConstants.PARAM_CALLER_NAME)));
-                        stopCallForegroundService(account);
-                    }
-                }
-            }
-
             if (action == null) return;
 
             switch (action) {
@@ -480,6 +468,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingServer,
                     incomingLinkedUuid,
                     isVideo);
+            sipAccount.setActiveIncomingCall(null);
         } catch (Exception exc) {
             Logger.error(TAG, "Error while declining incoming call. AccountID: "
                     + getValue(getApplicationContext(), accountID));
