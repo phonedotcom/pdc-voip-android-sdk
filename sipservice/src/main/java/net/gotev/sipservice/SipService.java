@@ -574,10 +574,24 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetIncomingVideoFeed(Intent intent) {
-        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
-        int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
+        Logger.debug(TAG, "handleSetIncomingVideoFeed()ß");
+        final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
-        SipCall sipCall = getCall(accountID, callID);
+        final Set<Integer> activeCallIDs = getActiveSipAccount(accountID).getCallIDs();
+
+        if (activeCallIDs == null || activeCallIDs.isEmpty()) return;
+
+        SipCall sipCall = null;
+
+        for (int callID : activeCallIDs) {
+            try {
+                sipCall = getCall(accountID, callID);
+            } catch (Exception exc) {
+                Logger.error(TAG, "Error while hanging up call", exc);
+                notifyCallDisconnected(accountID, callID);
+            }
+        }
+
         if (sipCall != null) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
@@ -691,12 +705,13 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleMakeCallForIncomingCall(Intent intent) {
+        Logger.debug(TAG, "handleMakeCallForIncomingCall()");
 
         final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
         final IncomingCall incomingCall = (IncomingCall) getActiveSipAccount(accountID).getActiveIncomingCall();
 
-        if (incomingCall == null) {
+        if(incomingCall == null) {
             mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
             return;
         }
@@ -705,6 +720,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final String incomingSlot = incomingCall.getSlot();
         final String incomingServer = incomingCall.getServer();
         final String incomingLinkedUuid = incomingCall.getLinkedUUID();
+        final String callerName = incomingCall.getCallerName();
 
         /*final String incomingFrom = intent.getStringExtra(PARAM_INCOMING_FROM);
         final String incomingSlot = intent.getStringExtra(PARAM_INCOMING_SLOT);
@@ -723,6 +739,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingSlot,
                     incomingServer,
                     incomingLinkedUuid,
+                    callerName,
                     isVideo
             );
             //call.setVideoParams(isVideo, isVideoConference);

@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class BroadcastEventEmitter implements SipServiceConstants {
 
+    public static final String TAG = BroadcastEventEmitter.class.getSimpleName();
     public static String NAMESPACE = "com.phone";
 
     private final Context mContext;
@@ -41,10 +42,10 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         CALLBACK_SET_ACCOUNT,
         CALLBACK_REMOVE_ACCOUNT,
         INCOMING_CALL_NOTIFICATION_CLICK,
-        CALLBACK_GENERIC_ERROR,
         ACCEPT_INCOMING_CALL_ACTION,
         END_SERVICE_ACTION,
-        CALL_MEDIA_EVENT
+        CALL_MEDIA_EVENT,
+        CALLBACK_GENERIC_ERROR
     }
 
     public BroadcastEventEmitter(Context context) {
@@ -165,6 +166,20 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     }
 
     /**
+     * This method is used for sending different calling events to update calling screen to client.
+     * See @{@link CallScreenState}
+     *
+     * @param screenUpdate CallEvents.ScreenUpdate
+     */
+    public synchronized void callState(CallEvents.ScreenUpdate screenUpdate) {
+        Logger.debug(TAG, "callState() -> ScreenUpdate -> "+screenUpdate);
+        final Intent intent = new Intent();
+        intent.putExtra(PARAM_CALL_STATE, screenUpdate);
+        intent.setAction(getAction(BroadcastAction.CALL_STATE));
+        sendExplicitBroadcast(intent);
+    }
+
+    /**
      * Emit a call state broadcast intent.
      *
      * @param accountID call's account IdUri
@@ -244,7 +259,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_INCOMING_VIDEO_WIDTH, width);
         intent.putExtra(PARAM_INCOMING_VIDEO_HEIGHT, height);
 
-        mContext.sendBroadcast(intent);
+        sendExplicitBroadcast(intent);
     }
 
     void callStats(int callID, int duration, String audioCodec, int callStateStatus, RtpStreamStats rx, RtpStreamStats tx) {
@@ -291,6 +306,19 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
         intent.putExtra(PARAM_ACCOUNT_ID, accountIDtoRemove);
+        sendExplicitBroadcast(intent);
+    }
+
+    /**
+     * This method is used for sending different type of mediaEvents to client.
+     *
+     * @param mediaEventType Type of mediaEvent  {@link org.pjsip.pjsua2.pjmedia_event_type}
+     */
+    public void sendCallMediaEvent(int mediaEventType) {
+        Logger.debug(TAG, "sendCallMediaEvent() : "+mediaEventType);
+        final Intent intent = new Intent();
+        intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, mediaEventType);
+        intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));
         sendExplicitBroadcast(intent);
     }
 

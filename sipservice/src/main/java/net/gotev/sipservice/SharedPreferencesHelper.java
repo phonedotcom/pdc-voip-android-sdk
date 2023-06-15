@@ -53,6 +53,7 @@ public class SharedPreferencesHelper {
         sharedPreferences = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
         encryptedSharedPreferences = initializeEncryptedSharedPreferences(context);
         migrateFrom(sharedPreferences, context);
+        setObfuscation(false);
     }
 
     List<SipAccountData> retrieveConfiguredAccounts() {
@@ -284,5 +285,9 @@ public class SharedPreferencesHelper {
         return getBooleanPreference(context, PROTOCOL, false);
     }
 
+    public String getAccountID(Context context) {
+        return SharedPreferencesHelper.getInstance(context)
+                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID);
+    }
 }
 

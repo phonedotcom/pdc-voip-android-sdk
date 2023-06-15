@@ -180,7 +180,7 @@ public class SipCall extends Call implements ICall{
 
     @Override
     public void onCallMediaState(OnCallMediaStateParam prm) {
-
+        Logger.debug(LOG_TAG, "onCallMediaState()");
         CallInfo info;
         try {
             info = getInfo();
@@ -210,12 +210,14 @@ public class SipCall extends Call implements ICall{
 
     @Override
     public void onCallMediaEvent(OnCallMediaEventParam prm) {
+        Logger.debug(LOG_TAG, "onCallMediaEvent()");
         if (prm.getEv().getType() == pjmedia_event_type.PJMEDIA_EVENT_FMT_CHANGED) {
             // Sending new video size
             try {
                 account.getService().getBroadcastEmitter().videoSize(
                         (int) mVideoWindow.getInfo().getSize().getW(),
                         (int) mVideoWindow.getInfo().getSize().getH());
+                account.getService().getBroadcastEmitter().sendCallMediaEvent(prm.getEv().getType());
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Unable to get video dimensions", ex);
             }
@@ -415,6 +417,7 @@ public class SipCall extends Call implements ICall{
     // disable video programmatically
     @Override
     public void makeCall(String dst_uri, CallOpParam prm) throws java.lang.Exception {
+        Logger.debug(LOG_TAG, "makeCall()");
         setMediaParams(prm);
         if (!videoCall) {
             CallSetting callSetting = prm.getOpt();
@@ -424,6 +427,7 @@ public class SipCall extends Call implements ICall{
     }
 
     private void handleAudioMedia(Media media) {
+        Logger.debug(LOG_TAG, "handleAudioMedia()");
         AudioMedia audioMedia = AudioMedia.typecastFromMedia(media);
 
         // connect the call audio media to sound device
@@ -483,14 +487,15 @@ public class SipCall extends Call implements ICall{
     }
 
     public void setIncomingVideoFeed(Surface surface) {
+        Logger.debug(LOG_TAG, "setIncomingVideoFeed()");
         if (mVideoWindow != null) {
             VideoWindowHandle videoWindowHandle = new VideoWindowHandle();
             videoWindowHandle.getHandle().setWindow(surface);
             try {
                 mVideoWindow.setWindow(videoWindowHandle);
-                account.getService().getBroadcastEmitter().videoSize(
+                /*account.getService().getBroadcastEmitter().videoSize(
                         (int) mVideoWindow.getInfo().getSize().getW(),
-                        (int) mVideoWindow.getInfo().getSize().getH());
+                        (int) mVideoWindow.getInfo().getSize().getH());*/
 
                 // start video again if not mute
                 setVideoMute(localVideoMute);
@@ -586,6 +591,7 @@ public class SipCall extends Call implements ICall{
     }
 
     private final Runnable sendKeyFrameRunnable = () -> {
+        Logger.debug(LOG_TAG, "sendKeyFrameRunnable - Runnable");
         try {
             vidSetStream(pjsua_call_vid_strm_op.PJSUA_CALL_VID_STRM_SEND_KEYFRAME, new CallVidSetStreamParam());
         } catch (Exception ex) {

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 @SuppressWarnings("unused")
 public final class SipServiceCommand extends ServiceExecutor implements SipServiceConstants {
 
-
+    public static final String TAG = SipServiceCommand.class.getSimpleName();
 
     //Private Constructor
     private SipServiceCommand(){
@@ -339,12 +339,13 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @param isVideo video call or not
      */
     public static void acceptIncomingCall(Context context, boolean isVideo) {
-        //checkAccount(accountID);
 
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+
+        Logger.debug(TAG, "acceptIncomingCall()");
         final Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_ACCEPT_INCOMING_CALL);
-        intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
+        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_IS_VIDEO, isVideo);
         executeSipServiceAction(context, intent);
     }
@@ -566,6 +567,26 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_SURFACE, surface);
         context.startService(intent);
+    }
+
+    /**
+     * Sets up the incoming video feed. If the call does not exist or has been terminated, a disconnected
+     * state will be sent to
+     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * @param context application context
+     * @param surface surface on which to render the incoming video
+     */
+    public static void setupIncomingVideoFeed(Context context, Surface surface) {
+        Logger.debug(TAG, "setupIncomingVideoFeed()");
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+
+        checkAccount(accountID);
+
+        final Intent intent = new Intent(context, SipService.class);
+        intent.setAction(ACTION_SET_INCOMING_VIDEO);
+        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(PARAM_SURFACE, surface);
+        executeSipServiceAction(context, intent);
     }
 
     /**

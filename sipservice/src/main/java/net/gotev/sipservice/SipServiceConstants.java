@@ -89,6 +89,7 @@ public interface SipServiceConstants {
     String PARAM_INCOMING_STATUS = "incomingStatus";
     String PARAM_NO_ACTIVE_CALL = "isActiveCallPresent";
     String PARAM_IS_CALL = "isCall";
+    String PARAM_CALL_MEDIA_EVENT_TYPE = "callMediaEventType";
 
 
     /**
@@ -158,6 +159,10 @@ public interface SipServiceConstants {
 
     String MISS_CALL_NOTIFICATION_CHANNEL = "missCallNotificationChannelId";
     String INCOMING_CALL_NOTIFICATION_CHANNEL_ID = "incomingCallNotificationChannelId";
+
+    int MISSED_NOTIFICATION_ID = 1674;
+    int HANGUP_BROADCAST_ACTION_ID = 2;
+    int ACCEPT_CALL_BROADCAST_ACTION_ID = 1;
     String PARAM_ERROR_MESSAGE = "errorMessage";
     String PARAM_CALLER_NAME = "caller_name";
     String PARAM_TIME = "time";
@@ -165,8 +170,4 @@ public interface SipServiceConstants {
     String PARAM_CALL_TYPE = "call_type";
     String PARAM_IS_INCOMING_CALL = "isIncomingCall";
     String PARAM_PHONE_NUMBER = "phone_number";
-
-    int MISSED_NOTIFICATION_ID = 1674;
-    int HANGUP_BROADCAST_ACTION_ID = 2;
-    int ACCEPT_CALL_BROADCAST_ACTION_ID = 1;
 }
