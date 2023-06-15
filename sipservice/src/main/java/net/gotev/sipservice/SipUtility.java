@@ -161,8 +161,6 @@ public class SipUtility {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 
