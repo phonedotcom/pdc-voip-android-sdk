@@ -258,21 +258,23 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.setAction(ACTION_HANG_UP_CALL);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     /**
      * Hangs up active calls.
      * @param context application context
-     * @param accountID account ID
+     *
      */
-    public static void hangUpActiveCalls(Context context, String accountID) {
+    public static void hangUpActiveCalls(Context context) {
+
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_HANG_UP_CALLS);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     /**
