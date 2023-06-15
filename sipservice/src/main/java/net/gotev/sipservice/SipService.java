@@ -25,6 +25,7 @@ import org.pjsip.pjsua2.EpConfig;
 import org.pjsip.pjsua2.IpChangeParam;
 import org.pjsip.pjsua2.TransportConfig;
 import org.pjsip.pjsua2.VidDevManager;
+import org.pjsip.pjsua2.extras.CallbackMessageConst;
 import org.pjsip.pjsua2.pj_qos_type;
 import org.pjsip.pjsua2.pjmedia_orient;
 import org.pjsip.pjsua2.pjsip_inv_state;
@@ -193,6 +194,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 case ACTION_INCOMING_CALL_NOTIFICATION:
                     //TODO: Handle Incoming Call Notification
                     handleIncomingCallNotification(intent);
+                    break;
+                case ACTION_INCOMING_CALL_DISCONNECTED:
+                    handleIncomingCallDisconnected(intent);
                     break;
                 case ACTION_INCOMING_CALL_DISCONNECTED:
                     handleIncomingCallDisconnected(intent);
