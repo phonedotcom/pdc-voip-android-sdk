@@ -153,7 +153,7 @@ public class SipUtility {
     public static void playSound(String fileName, Context ctx) {
         MediaPlayer p = new MediaPlayer();
         try {
-            AssetFileDescriptor afd = ctx.getAssets().openFd(fileName);
+            final AssetFileDescriptor afd = ctx.getAssets().openFd(fileName);
             p.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
             afd.close();
             p.prepare();
@@ -161,8 +161,6 @@ public class SipUtility {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 

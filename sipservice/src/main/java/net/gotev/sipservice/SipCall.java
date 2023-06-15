@@ -118,8 +118,8 @@ public class SipCall extends Call implements ICall{
 
             if (callState == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
                 checkAndStopLocalRingBackTone();
-                stopVideoFeeds();
-                stopSendingKeyFrame();
+                //stopVideoFeeds();
+                //stopSendingKeyFrame();
                 account.removeCall(callID);
 
                 callScreenState = CallScreenState.DISCONNECTED;
