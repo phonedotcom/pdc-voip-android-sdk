@@ -311,6 +311,26 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     }
 
     /**
+     * Send DTMF. If the call does not exist or has been terminated, a disconnected
+     * state will be sent to
+     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * @param context application context
+     * @param dtmfTone DTMF tone to send (e.g. number from 0 to 9 or # or *).
+     *                 You can send only one DTMF at a time.
+     */
+    public static void sendDTMF(Context context, String dtmfTone) {
+
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+        checkAccount(accountID);
+
+        final Intent intent = new Intent(context, SipService.class);
+        intent.setAction(ACTION_SEND_DTMF);
+        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(PARAM_DTMF, dtmfTone);
+        executeSipServiceAction(context, intent);
+    }
+
+    /**
      * Accept an incoming call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
