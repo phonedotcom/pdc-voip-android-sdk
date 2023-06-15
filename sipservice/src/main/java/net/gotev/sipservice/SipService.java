@@ -94,6 +94,18 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
             String action = intent.getAction();
 
+            String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+            if(accountID != null){
+                SipAccount account = mActiveSipAccounts.get(accountID);
+                if (account != null && !SipServiceConstants.ACTION_INCOMING_CALL_NOTIFICATION.equalsIgnoreCase(intent.getAction())) {
+                    if (!account.isActiveCallPresent() || SipServiceConstants.ACTION_HANG_UP_CALL.equals(intent.getAction()) ||
+                            SipServiceConstants.ACTION_DECLINE_INCOMING_CALL.equals(intent.getAction())) {
+                        startForeground(createForegroundServiceNotification(this, intent.getStringExtra(SipServiceConstants.PARAM_CALLER_NAME)));
+                        stopCallForegroundService(account);
+                    }
+                }
+            }
+
             if (action == null) return;
 
             switch (action) {
@@ -229,7 +241,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
             incomingCallObject.setCallType(CallType.MISSED);
             handleMissedCall(incomingCallObject, number);
 
-            mBroadcastEmitter.callState(accountID, incomingCallObject.getId(), 0, callStatus, incomingCallObject.getTime());
+
+            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             audioManager.setSpeakerphoneOn(false);
 
@@ -462,14 +475,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
             final String incomingLinkedUuid = incomingCall.getLinkedUUID();
             boolean isVideo = intent.getBooleanExtra(PARAM_IS_VIDEO, false);
 
-            final SipCall sipCall = sipAccount.createSipCallFromICall(
-                    incomingFrom,
+            sipAccount.declineIncomingCall(incomingFrom,
                     incomingSlot,
                     incomingServer,
                     incomingLinkedUuid,
-                    isVideo
-            );
-//            sipCall.declineIncomingCall();
+                    isVideo);
         } catch (Exception exc) {
             Logger.error(TAG, "Error while declining incoming call. AccountID: "
                     + getValue(getApplicationContext(), accountID));

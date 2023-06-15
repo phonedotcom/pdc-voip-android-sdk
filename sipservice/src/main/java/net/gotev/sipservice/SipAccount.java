@@ -194,11 +194,11 @@ public class SipAccount extends Account {
         }
     }
 
-    public SipCall createSipCallFromICall(String numberToDial,
-                                          final String slot,
-                                          final String server,
-                                          final String linkedUuid,
-                                          boolean isVideo) {
+    public void declineIncomingCall(String numberToDial,
+                                    final String slot,
+                                    final String server,
+                                    final String linkedUuid,
+                                    boolean isVideo) throws Exception {
 
         // allow calls only if there are no other ongoing calls
         SipCall call = new SipCall(this);
@@ -245,11 +245,9 @@ public class SipAccount extends Account {
             call.setState(CallState.DISCONNECTED);
             call.setCallType(CallType.INCOMING);
 
-            return call;
-
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "Error while making sip call", exc);
-            return null;
+            throw exc;
         }
     }
 
