@@ -590,6 +590,7 @@ public class SipCall extends Call implements ICall{
     }
 
     private final Runnable sendKeyFrameRunnable = () -> {
+        Logger.debug(LOG_TAG, "sendKeyFrameRunnable - Runnable");
         try {
             vidSetStream(pjsua_call_vid_strm_op.PJSUA_CALL_VID_STRM_SEND_KEYFRAME, new CallVidSetStreamParam());
         } catch (Exception ex) {
