@@ -289,5 +289,12 @@ public class SharedPreferencesHelper {
         return SharedPreferencesHelper.getInstance(context)
                 .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID);
     }
+
+    /**
+     * This method is used to clear all shared prefs data.
+     */
+    public void clearAllSharedPreferences() {
+        sharedPreferences.edit().clear().apply();
+    }
 }
 

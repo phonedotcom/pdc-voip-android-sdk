@@ -631,6 +631,17 @@ public class SipApplication {
         return headerVector;
     }
 
+    public static SipHeaderVector getHeadersForUnregisterPush() {
+        SipHeader hLogoutHeader = new SipHeader();
+        hLogoutHeader.setHName("X-Action");
+        hLogoutHeader.setHValue("Logout");
+        //sipHeaderVector.add(hLogoutHeader);
+        final SipHeaderVector vector = new SipHeaderVector();
+        vector.add(hLogoutHeader);
+
+        return vector;
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     void createChannelId(
             Context context,
