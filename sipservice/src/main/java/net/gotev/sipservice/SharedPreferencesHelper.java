@@ -212,82 +212,68 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to save string value in shared prefrences.
      *
-     * @param context Android context needed
      * @param key     Shared pref key
      *
      */
-    public void putInSharedPreference(Context context, String key, String value) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+    public void putInSharedPreference(String key, String value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
         editor.apply();
     }
 
-
     /**
-     * This method is used to get shared pref string values on the basis of key.
+     * This method is used to save integer value in shared preferences.
      *
-     * @param context Android context needed
-     *
-     * @param key     Shared pref key
-     * @return string value from shared pref
-     */
-    public String getStringSharedPreference(Context context, String key) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
-        return prefs.getString(key, "");
-    }
-
-    /**
-     * This method is used to get shared pref integer values on the basis of key.
-     *
-     * @param context Android context needed
-     * @param key     Shared pref key
-     * @return integer value from shared pref
-     */
-    public int getIntSharedPreference(Context context, String key) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
-        return prefs.getInt(key, 0);
-    }
-
-    /**
-     * This method is used to save integer value in shared prefrences.
-     *
-     * @param context Android context needed
      * @param key     Shared pref key
      *
      */
-    public void putInSharedPreference(Context context, String key, int value) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+    public void putInSharedPreference(String key, int value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(key, value);
         editor.apply();
     }
 
     /**
+     * This method is used to get shared pref string values on the basis of key.
+     *
+     * @param key     Shared pref key
+     * @return string value from shared pref
+     */
+    public String getStringSharedPreference(String key) {
+        return sharedPreferences.getString(key, "");
+    }
+
+    /**
+     * This method is used to get shared pref integer values on the basis of key.
+     *
+     * @param key     Shared pref key
+     * @return integer value from shared pref
+     */
+    public int getIntSharedPreference(String key) {
+        return sharedPreferences.getInt(key, 0);
+    }
+
+    /**
      * This method is used to get shared pref boolean on the basis of key.
      *
-     * @param context      Android context needed
      * @param key          Shared pref key
      * @param defaultValue default value if value doesn't exist
      * @return boolean value from shared pref
      */
-    public boolean getBooleanPreference(Context context, String key, boolean defaultValue) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
-        return prefs.getBoolean(key, defaultValue);
+    public boolean getBooleanPreference(String key, boolean defaultValue) {
+        return sharedPreferences.getBoolean(key, defaultValue);
     }
 
     /**
      * This method is used to get secure protocol from shared prefs.
      *
-     * @param context Android context needed
      */
-    public boolean isSecureProtocol(Context context) {
-        return getBooleanPreference(context, PROTOCOL, false);
+    public boolean isSecureProtocol() {
+        return getBooleanPreference(PROTOCOL, false);
     }
 
-    public String getAccountID(Context context) {
-        return SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID);
+    public String getAccountID() {
+        return getStringSharedPreference(SharedPreferenceConstant.SIP_ACCOUNT_ID);
     }
 
     /**

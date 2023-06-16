@@ -215,8 +215,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void handleUnregisterPushAndLogout(Intent intent) {
 
-        Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Initiated-----"
-                +this.getApplicationInfo().loadLabel(getPackageManager()).toString());
+        Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Initiated for "
+                + getApplicationInfo().loadLabel(getPackageManager()).toString());
         startForeground(SipServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID,
                 createForegroundServiceNotification(this, this.getApplicationInfo().loadLabel(getPackageManager()).toString()));
 
@@ -1394,8 +1394,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     public static SipAccount getActiveSipAccount(Context context) {
-        return mActiveSipAccounts.get(SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
+        return mActiveSipAccounts.get(SharedPreferencesHelper.getInstance(context).getAccountID());
     }
 
     public void removeGuestAccount() {
