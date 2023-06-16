@@ -8,6 +8,7 @@ import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
 import org.pjsip.pjsua2.SipHeader;
 import org.pjsip.pjsua2.SipHeaderVector;
+import org.pjsip.pjsua2.pjsip_status_code;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -85,39 +86,29 @@ public class SipAccount extends Account {
 
     public SipCall addOutgoingCall(final String numberToDial, boolean isVideo, boolean isVideoConference, boolean isTransfer) {
 
-        // check if there's already an ongoing call
-        int totalCalls = 0;
-        for (SipAccount _sipAccount : SipService.getActiveSipAccounts().values()) {
-            totalCalls += _sipAccount.getCallIDs().size();
-        }
+        SipCall call = new SipCall(this);
+        call.setVideoParams(isVideo, isVideoConference);
 
-        // allow calls only if there are no other ongoing calls
-        if (totalCalls <= (isTransfer ? 1 : 0)) {
-            SipCall call = new SipCall(this);
-            call.setVideoParams(isVideo, isVideoConference);
-
-            CallOpParam callOpParam = new CallOpParam();
-            try {
-                if (numberToDial.startsWith("sip:")) {
-                    call.makeCall(numberToDial, callOpParam);
+        CallOpParam callOpParam = new CallOpParam();
+        try {
+            if (numberToDial.startsWith("sip:")) {
+                call.makeCall(numberToDial, callOpParam);
+            } else {
+                if ("*".equals(data.getRealm())) {
+                    call.makeCall("sip:" + numberToDial, callOpParam);
                 } else {
-                    if ("*".equals(data.getRealm())) {
-                        call.makeCall("sip:" + numberToDial, callOpParam);
-                    } else {
-                        call.makeCall("sip:" + numberToDial + "@" + data.getRealm(), callOpParam);
-                    }
+                    call.makeCall("sip:" + numberToDial + "@" + data.getRealm(), callOpParam);
                 }
-                activeCalls.put(call.getId(), call);
-                Logger.debug(LOG_TAG, "New outgoing call with ID: " + call.getId());
-
-                return call;
-
-            } catch (Exception exc) {
-                Logger.error(LOG_TAG, "Error while making outgoing call", exc);
-                return null;
             }
+            activeCalls.put(call.getId(), call);
+            Logger.debug(LOG_TAG, "New outgoing call with ID: " + call.getId());
+
+            return call;
+
+        } catch (Exception exc) {
+            Logger.error(LOG_TAG, "Error while making outgoing call", exc);
+            return null;
         }
-        return null;
     }
 
     public SipCall addOutgoingCall(final String numberToDial) {
@@ -160,9 +151,9 @@ public class SipAccount extends Account {
             //Put Number in SipCall for further use
             call.setCallerNumber(numberToDial);
 
-            Logger.debug(LOG_TAG, "CallerName: "+callerName);
+            Logger.debug(LOG_TAG, "CallerName: " + callerName);
             numberToDial = SipUtility.getSipUserUri(callerName, service.getApplicationContext());
-            Logger.debug(LOG_TAG, "Number To Dial: "+numberToDial);
+            Logger.debug(LOG_TAG, "Number To Dial: " + numberToDial);
 
             if (numberToDial.startsWith("sip:")) {
                 call.makeCall(numberToDial, callOpParam);
@@ -245,6 +236,103 @@ public class SipAccount extends Account {
             call.setState(CallState.DISCONNECTED);
             call.setCallType(CallType.INCOMING);
 
+        } catch (Exception exc) {
+            Logger.error(LOG_TAG, "Error while making sip call", exc);
+            throw exc;
+        }
+    }
+
+    public void rejectIncomingCallUserBusy(String numberToDial,
+                                           final String slot,
+                                           final String server,
+                                           final String linkedUuid,
+                                           boolean isVideo,
+                                           final String errorCode) throws Exception {
+
+        // allow calls only if there are no other ongoing calls
+        SipCall call = new SipCall(this);
+        call.setVideoParam(isVideo);
+
+        CallOpParam callOpParam = new CallOpParam(true);
+
+        final SipHeader hSlot = new SipHeader();
+        hSlot.setHName("X-Slot");
+        hSlot.setHValue(slot);
+
+        final SipHeader hServer = new SipHeader();
+        hServer.setHName("X-Server");
+        hServer.setHValue(server);
+
+        SipHeader hDisconnect = new SipHeader();
+        hDisconnect.setHName("X-Disconnect");
+        hDisconnect.setHValue(errorCode);
+
+        final SipHeaderVector headerVector = new SipHeaderVector();
+        headerVector.add(hSlot);
+        headerVector.add(hServer);
+        headerVector.add(hDisconnect);
+        callOpParam.getTxOption().setHeaders(headerVector);
+
+        // TODO - in case any issue with this code will have to look into the commented code block below
+        /*pjsip_status_code code = currentStatusCode;
+        if (account != null) {
+            try {
+                if (account.isValid()) {
+                    //code = account.getInfo().getRegStatus();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                handleInactiveAccount();
+                isPendingCallToHandleWithErrorCodes = true;
+                errorCodes = errorCode;
+                activeIncomingCall = incomingcallObj;
+                return;
+            }
+        }
+        if (code != null && code.equals(pjsip_status_code.PJSIP_SC_TRYING)) {
+            Log.d("navya", "navya PJSIP_SC_TRYING");
+            handleInactiveAccount();
+            isPendingCallToHandleWithErrorCodes = true;
+            errorCodes = errorCode;
+            activeIncomingCall = incomingcallObj;
+            return;
+        }
+
+        if (account == null) {
+            handleLogoutAndLogin(false);
+            isPendingCallToHandleWithErrorCodes = true;
+            errorCodes = errorCode;
+            activeIncomingCall = incomingcallObj;
+            return;
+        }
+
+        if (!account.isValid() || value) {
+            handleInactiveAccount();
+            isPendingCallToHandleWithErrorCodes = true;
+            errorCodes = errorCode;
+            activeIncomingCall = incomingcallObj;
+            return;
+        } else {
+            isPendingCallToHandleWithErrorCodes = false;
+        }*/
+        try {
+            numberToDial = SipUtility.getSipUserUri(numberToDial, service.getApplicationContext());
+            Logger.debug(LOG_TAG, "Number To Dial: " + numberToDial);
+
+            if (numberToDial.startsWith("sip:")) {
+                call.makeCall(numberToDial, callOpParam);
+            } else {
+                if ("*".equals(data.getRealm())) {
+                    call.makeCall("sip:" + numberToDial, callOpParam);
+                } else {
+                    call.makeCall("sip:" + numberToDial + "@" + data.getRealm(), callOpParam);
+                }
+            }
+
+            call.setVideoParam(true);
+            call.setLinkedUUID(linkedUuid);
+            call.setState(CallState.DISCONNECTED);
+            call.setCallType(CallType.INCOMING);
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "Error while making sip call", exc);
             throw exc;

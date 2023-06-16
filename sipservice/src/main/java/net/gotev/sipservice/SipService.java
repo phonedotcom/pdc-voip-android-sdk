@@ -25,7 +25,6 @@ import org.pjsip.pjsua2.EpConfig;
 import org.pjsip.pjsua2.IpChangeParam;
 import org.pjsip.pjsua2.TransportConfig;
 import org.pjsip.pjsua2.VidDevManager;
-import org.pjsip.pjsua2.extras.CallbackMessageConst;
 import org.pjsip.pjsua2.pj_qos_type;
 import org.pjsip.pjsua2.pjmedia_orient;
 import org.pjsip.pjsua2.pjsip_inv_state;
@@ -198,6 +197,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 case ACTION_INCOMING_CALL_DISCONNECTED:
                     handleIncomingCallDisconnected(intent);
                     break;
+                case ACTION_REJECT_CALL_USER_BUSY:
+                    handleRejectIncomingCallUserBusy(intent);
+                    break;
                 default:
                     break;
             }
@@ -216,7 +218,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
         if (sipAccount == null) {
-            mBroadcastEmitter.errorCallback(CallbackMessageConst.ERR_SIP_ACCOUNT_NULL);
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
             return;
         }
         ICall activeIncomingCall = sipAccount.getActiveIncomingCall();
@@ -250,7 +252,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         if (call instanceof SipCall) {
             seconds = ((SipCall) call).getConnectTimestamp();
         }
-        mBroadcastEmitter.handleMissedCall(!(call instanceof SipCall),
+        mBroadcastEmitter.sendMissedCall(!(call instanceof SipCall),
                 number, call.getLinkedUUID(), call.getCallName(), call.getTime(),
                 seconds, call.getCallType());
     }
@@ -263,7 +265,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final ICall iCall = createIncomingCallObject(intent);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
         if (sipAccount == null) {
-            mBroadcastEmitter.errorCallback(CallbackMessageConst.ERR_SIP_ACCOUNT_NULL);
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
             return;
         }
         sipAccount.setActiveIncomingCall(iCall);
@@ -468,7 +470,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
         if (sipAccount == null) {
-            mBroadcastEmitter.errorCallback(CallbackMessageConst.ERR_SIP_ACCOUNT_NULL);
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
             return;
         }
 
@@ -486,6 +488,38 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingServer,
                     incomingLinkedUuid,
                     isVideo);
+            sipAccount.setActiveIncomingCall(null);
+        } catch (Exception exc) {
+            Logger.error(TAG, "Error while declining incoming call. AccountID: "
+                    + getValue(getApplicationContext(), accountID));
+            mBroadcastEmitter.errorCallback("Error while declining incoming call. AccountID: "
+                    + getValue(getApplicationContext(), accountID));
+        }
+    }
+
+    private void handleRejectIncomingCallUserBusy(Intent intent) {
+        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+        SipAccount sipAccount = mActiveSipAccounts.get(accountID);
+        if (sipAccount == null) {
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
+            return;
+        }
+
+        try {
+            final IncomingCall incomingCall = (IncomingCall) sipAccount.getActiveIncomingCall();
+
+            final String incomingFrom = incomingCall.getNumber();
+            final String incomingSlot = incomingCall.getSlot();
+            final String incomingServer = incomingCall.getServer();
+            final String incomingLinkedUuid = incomingCall.getLinkedUUID();
+            boolean isVideo = intent.getBooleanExtra(PARAM_IS_VIDEO, false);
+            final String errorCode = intent.getStringExtra(PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL);
+
+            sipAccount.rejectIncomingCallUserBusy(incomingFrom,
+                    incomingSlot,
+                    incomingServer,
+                    incomingLinkedUuid,
+                    isVideo, errorCode);
             sipAccount.setActiveIncomingCall(null);
         } catch (Exception exc) {
             Logger.error(TAG, "Error while declining incoming call. AccountID: "

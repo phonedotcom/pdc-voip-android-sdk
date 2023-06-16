@@ -309,13 +309,12 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         sendExplicitBroadcast(intent);
     }
 
-    public void handleMissedCall(boolean isIncomingCall, String number, String linkedUUid,
-                                 String callerName, long time, long seconds, CallType callType) {
+    public void sendMissedCall(boolean isIncomingCall, String number, String linkedUUid,
+                               String callerName, long time, long seconds, CallType callType) {
         Intent intent = new Intent();
         intent.putExtra(PARAM_IS_INCOMING_CALL, isIncomingCall);
         intent.putExtra(PARAM_PHONE_NUMBER, number);
         intent.putExtra(PARAM_INCOMING_LINKED_UUID, linkedUUid);
-        intent.putExtra(PARAM_CALLER_NAME, callerName);
         intent.putExtra(PARAM_DISPLAY_NAME, callerName);
         intent.putExtra(PARAM_TIME, time);
         intent.putExtra(PARAM_SECONDS, seconds);
