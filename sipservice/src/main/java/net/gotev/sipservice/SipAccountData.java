@@ -11,6 +11,7 @@ import android.os.Parcelable;
 
 import org.pjsip.pjsua2.AccountConfig;
 import org.pjsip.pjsua2.AuthCredInfo;
+import org.pjsip.pjsua2.SipHeaderVector;
 import org.pjsip.pjsua2.pj_constants_;
 import org.pjsip.pjsua2.pj_qos_type;
 import org.pjsip.pjsua2.pjmedia_srtp_use;
@@ -351,9 +352,13 @@ public class SipAccountData implements Parcelable {
         return accountConfig;
     }
 
-    AccountConfig getAccountConfigForUnregister() {
-        final AccountConfig accountConfig = new AccountConfig();
-        accountConfig.getRegConfig().setHeaders(getHeadersForUnregisterPush());
+    AccountConfig getAccountConfigForUnregister(Context context) {
+        final AccountConfig accountConfig = getAccountConfig(context);
+
+        final SipHeaderVector sipHeaderVector = accountConfig.getRegConfig().getHeaders();
+        sipHeaderVector.add(getHeadersForUnregisterPush());
+
+        accountConfig.getRegConfig().setHeaders(sipHeaderVector);
         return accountConfig;
     }
 
