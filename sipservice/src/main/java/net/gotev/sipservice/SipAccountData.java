@@ -1,6 +1,7 @@
 package net.gotev.sipservice;
 
 import static net.gotev.sipservice.SipApplication.getHeadersForPush;
+import static net.gotev.sipservice.SipApplication.getHeadersForUnregisterPush;
 import static net.gotev.sipservice.SipApplication.isToAddHeadersForPushNotification;
 import static net.gotev.sipservice.SipServiceConstants.DEFAULT_SIP_PORT;
 
@@ -347,6 +348,12 @@ public class SipAccountData implements Parcelable {
         accountConfig.getSipConfig().getProxies().add(getProxyUri());
         accountConfig.getRegConfig().setRegisterOnAdd(false);
         setVideoConfig(accountConfig);
+        return accountConfig;
+    }
+
+    AccountConfig getAccountConfigForUnregister() {
+        final AccountConfig accountConfig = new AccountConfig();
+        accountConfig.getRegConfig().setHeaders(getHeadersForUnregisterPush());
         return accountConfig;
     }
 

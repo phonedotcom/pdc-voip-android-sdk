@@ -887,5 +887,20 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.putExtra(PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL, ErrorCodes.USER_BUSY.toString());
         executeSipServiceAction(context, intent);
     }
+
+    /**
+     * This method
+     * first unregisters the user from push service and
+     * after that logs them out VoIP services.
+     * Once above two operations are successful send an event to client
+     * to indicate that they can now logout from the application
+     *
+     * @param context Android context needed for talking to SDK service
+     */
+    public static void unregisterPushAndLogout(Context context) {
+        Intent intent = new Intent(context, SipService.class);
+        intent.setAction(SipServiceConstants.ACTION_UNREGISTER_PUSH_LOGOUT);
+        executeSipServiceAction(context, intent);
+    }
 }
 

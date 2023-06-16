@@ -8,7 +8,6 @@ import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
 import org.pjsip.pjsua2.SipHeader;
 import org.pjsip.pjsua2.SipHeaderVector;
-import org.pjsip.pjsua2.pjsip_status_code;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -428,7 +427,7 @@ public class SipAccount extends Account {
     }
 
     public boolean isActiveCallPresent() {
-        return !isCallInitiated && activeCalls.isEmpty() && activeIncomingCall == null;
+        return !(!isCallInitiated && activeCalls.isEmpty() && activeIncomingCall == null);
     }
 
     /**

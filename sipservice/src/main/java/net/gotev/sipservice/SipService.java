@@ -200,6 +200,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 case ACTION_REJECT_CALL_USER_BUSY:
                     handleRejectIncomingCallUserBusy(intent);
                     break;
+                case ACTION_UNREGISTER_PUSH_LOGOUT:
+                    handleUnregisterPushAndLogout(intent);
+                    break;
                 default:
                     break;
             }
@@ -211,6 +214,27 @@ public class SipService extends BackgroundService implements SipServiceConstants
         });
 
         return START_NOT_STICKY;
+    }
+
+    private void handleUnregisterPushAndLogout(Intent intent) {
+
+        Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Initiated-----");
+
+        final SipAccount sipAccount = getActiveSipAccount(this);
+        if(sipAccount != null) {
+            try {
+                sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister());
+                sipAccount.setRegistration(false);
+
+                stopCallForegroundService(sipAccount);
+
+                SharedPreferencesHelper.getInstance(this).clearAllSharedPreferences();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Completed-----");
     }
 
     private void handleIncomingCallDisconnected(Intent intent) {
@@ -242,7 +266,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     public synchronized void stopCallForegroundService(SipAccount sipAccount) {
-        if (!sipAccount.isActiveCallPresent())
+        if (sipAccount.isActiveCallPresent())
             return;
         stopForeground(true);
     }
