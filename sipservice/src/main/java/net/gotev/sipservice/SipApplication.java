@@ -633,15 +633,11 @@ public final class SipApplication {
         return headerVector;
     }
 
-    public static SipHeaderVector getHeadersForUnregisterPush() {
-        SipHeader hLogoutHeader = new SipHeader();
+    public static SipHeader getHeadersForUnregisterPush() {
+        final SipHeader hLogoutHeader = new SipHeader();
         hLogoutHeader.setHName("X-Action");
         hLogoutHeader.setHValue("Logout");
-        //sipHeaderVector.add(hLogoutHeader);
-        final SipHeaderVector vector = new SipHeaderVector();
-        vector.add(hLogoutHeader);
-
-        return vector;
+        return hLogoutHeader;
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
