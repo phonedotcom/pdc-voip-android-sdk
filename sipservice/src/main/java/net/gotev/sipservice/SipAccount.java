@@ -2,15 +2,18 @@ package net.gotev.sipservice;
 
 import static net.gotev.sipservice.ObfuscationHelper.getValue;
 
+import android.os.Build;
+
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.CallOpParam;
 import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
 import org.pjsip.pjsua2.SipHeader;
 import org.pjsip.pjsua2.SipHeaderVector;
-import org.pjsip.pjsua2.pjsip_status_code;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -26,7 +29,6 @@ public class SipAccount extends Account {
     private final SipAccountData data;
     private final SipService service;
     private boolean isGuest = false;
-    private boolean isCallInitiated;
     private ICall activeIncomingCall;
 
     protected SipAccount(SipService service, SipAccountData data) {
@@ -123,8 +125,6 @@ public class SipAccount extends Account {
                                               boolean isVideo) {
         Logger.debug(LOG_TAG, "addOutgoingForIncomingCall()");
 
-        isCallInitiated = true;
-
         // allow calls only if there are no other ongoing calls
         SipCall call = new SipCall(this);
         call.setVideoParam(isVideo);
@@ -174,8 +174,6 @@ public class SipAccount extends Account {
 
             activeCalls.put(call.getId(), call);
             Logger.debug(LOG_TAG, "New outgoing call with ID: " + call.getId());
-
-            isCallInitiated = false;
 
             return call;
 
@@ -428,7 +426,7 @@ public class SipAccount extends Account {
     }
 
     public boolean isActiveCallPresent() {
-        return !isCallInitiated && activeCalls.isEmpty() && activeIncomingCall == null;
+        return !activeCalls.isEmpty() || activeIncomingCall != null;
     }
 
     /**
@@ -443,5 +441,15 @@ public class SipAccount extends Account {
 
     public void setActiveIncomingCall(ICall activeIncomingCall) {
         this.activeIncomingCall = activeIncomingCall;
+    }
+
+    public SipCall getActiveCall() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Optional<Integer> peekCall = activeCalls.keySet().stream().findFirst();
+            return peekCall.map(activeCalls::get).orElse(null);
+        } else {
+            Map.Entry<Integer, SipCall> firstEntry = activeCalls.entrySet().iterator().next();
+            return firstEntry.getValue();
+        }
     }
 }
