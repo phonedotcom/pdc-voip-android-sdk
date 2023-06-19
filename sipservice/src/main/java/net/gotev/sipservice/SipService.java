@@ -259,18 +259,18 @@ public class SipService extends BackgroundService implements SipServiceConstants
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             audioManager.setSpeakerphoneOn(false);
 
-            sipAccount.setActiveIncomingCall(null);
             MediaPlayerController.getInstance(this).resumeMusicPlayer();
         }
     }
 
     public synchronized void stopCallForegroundService(SipAccount sipAccount) {
         if (sipAccount.isActiveCallPresent())
-            return;
-        stopForeground(true);
+            stopForeground(true);
+        sipAccount.setActiveIncomingCall(null);
     }
 
     private void handleMissedCall(ICall call, String number) {
+
         long seconds = 0;
         if (call instanceof SipCall) {
             seconds = ((SipCall) call).getConnectTimestamp();
@@ -313,7 +313,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
                         incomingCall.getSlot(),
                         incomingCall.getLinkedUUID(),
                         incomingCall.getCallerName(),
-                        getActiveSipAccount(accountId).isActiveCallPresent(),
                         false
                 );
 
@@ -347,6 +346,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
         SipCall sipCall = account.getCall(callID);
         if (sipCall != null) {
             return sipCall;
+        } else if (account.isActiveCallPresent()) {
+            return account.getActiveCall();
         } else {
             notifyCallDisconnected(accountID, callID);
             return null;
@@ -403,6 +404,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
             try {
                 SipUtility.playSound(dtmf + ".wav", this.getApplicationContext());
                 sipCall.dialDtmf(dtmf);
+                if (dtmf.equals("9")) {
+                    SipAccount sipAccount = mActiveSipAccounts.get(accountID);
+                    stopCallForegroundService(sipAccount);
+                }
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while dialing DTMF: " + dtmf + ". AccountID: "
                         + getValue(getApplicationContext(), accountID));
@@ -462,6 +467,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
 
+        // TODO for lift master - as there is no multi call support we can fetch the peek call from active calls, in other case we will need call id from application
+
         SipCall sipCall = getCall(accountID, callID);
         if (sipCall != null) {
             boolean mute = intent.getBooleanExtra(PARAM_MUTE, false);
@@ -470,7 +477,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while setting mute. AccountID: "
                         + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                mBroadcastEmitter.errorCallback("Error while setting mute. AccountID: "
+                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
             }
+        } else {
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_CALL_NULL);
         }
     }
 
@@ -485,7 +496,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while toggling mute. AccountID: "
                         + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                mBroadcastEmitter.errorCallback("Error while toggling mute. AccountID: "
+                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
             }
+        } else {
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_CALL_NULL);
         }
     }
 
@@ -511,7 +526,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingServer,
                     incomingLinkedUuid,
                     isVideo);
-            sipAccount.setActiveIncomingCall(null);
+            stopCallForegroundService(sipAccount);
         } catch (Exception exc) {
             Logger.error(TAG, "Error while declining incoming call. AccountID: "
                     + getValue(getApplicationContext(), accountID));
@@ -543,7 +558,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingServer,
                     incomingLinkedUuid,
                     isVideo, errorCode);
-            sipAccount.setActiveIncomingCall(null);
+            stopCallForegroundService(sipAccount);
         } catch (Exception exc) {
             Logger.error(TAG, "Error while declining incoming call. AccountID: "
                     + getValue(getApplicationContext(), accountID));
@@ -554,9 +569,15 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void handleHangUpCall(Intent intent) {
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+
+        SipAccount account = mActiveSipAccounts.get(accountID);
+        if (account == null) return;
+
         int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
 
         try {
+            // stopCallForegroundService() has to call before hangupCall() here, because from the hangup we receives the broadcast and remove the call from that event hence, putting the stopCallForegroundService() after will falsify the condition.
+            stopCallForegroundService(account);
             hangupCall(accountID, callID);
         } catch (Exception exc) {
             Logger.error(TAG, "Error while hanging up call", exc);
@@ -576,6 +597,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         for (int callID : activeCallIDs) {
             try {
+                // stopCallForegroundService() has to call before hangupCall() here, because from the hangup we receives the broadcast and remove the call from that event hence, putting the stopCallForegroundService() after will falsify the condition.
+                stopCallForegroundService(account);
                 hangupCall(accountID, callID);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while hanging up call", exc);
@@ -584,7 +607,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         }
     }
 
-    private void hangupCall(String accountID, int callID) {
+    private void hangupCall(String accountID, int callID) throws Exception {
         SipCall sipCall = getCall(accountID, callID);
         if (sipCall != null) {
             sipCall.hangUp();
@@ -729,7 +752,14 @@ public class SipService extends BackgroundService implements SipServiceConstants
         SipCall sipCall = getCall(accountID, callID);
         if (sipCall != null) {
             boolean mute = intent.getBooleanExtra(PARAM_VIDEO_MUTE, false);
-            sipCall.setVideoMute(mute);
+            try {
+                sipCall.setVideoMute(mute);
+            } catch (Exception e) {
+                mBroadcastEmitter.errorCallback("Error while setting mute. AccountID: "
+                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+            }
+        } else {
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_CALL_NULL);
         }
     }
 

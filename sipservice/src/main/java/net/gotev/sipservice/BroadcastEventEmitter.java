@@ -65,14 +65,13 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      * @param slot Slot provided
      * @param linkedUUID Linked UUID for call
      * @param callName Caller Name
-     * @param isActiveCallPresent true on any active call, else false
      * @param isVideo Call supports Video or no
      */
     public void incomingCall
     (
             String accountID, String number, String server,
             String slot, String linkedUUID, String callName,
-            boolean isActiveCallPresent, boolean isVideo
+            boolean isVideo
     ) {
         final Intent intent = new Intent();
 
@@ -83,7 +82,6 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_INCOMING_SLOT, slot);
         intent.putExtra(PARAM_INCOMING_LINKED_UUID, linkedUUID);
         intent.putExtra(PARAM_DISPLAY_NAME, callName);
-        intent.putExtra(PARAM_NO_ACTIVE_CALL, isActiveCallPresent);
         intent.putExtra(PARAM_IS_VIDEO, isVideo);
 
         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);

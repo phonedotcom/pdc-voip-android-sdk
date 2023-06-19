@@ -475,19 +475,18 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
      * @param context application context
-     * @param accountID account ID
-     * @param callID call ID
      * @param mute true to mute the call, false to un-mute it
      */
-    public static void setCallMute(Context context, String accountID, int callID, boolean mute) {
+    public static void setCallMute(Context context, boolean mute) {
+
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_MUTE);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_MUTE, mute);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     /**
@@ -615,19 +614,18 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
      * @param context application context
-     * @param accountID account ID
-     * @param callID call ID
      * @param mute whether to mute or un-mute the video
      */
-    public static void setVideoMute(Context context, String accountID, int callID, boolean mute) {
+    public static void setVideoMute(Context context, boolean mute) {
+
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_VIDEO_MUTE);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_VIDEO_MUTE, mute);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     /**
