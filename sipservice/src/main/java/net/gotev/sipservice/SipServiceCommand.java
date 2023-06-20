@@ -586,7 +586,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_SURFACE, surface);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     /**
