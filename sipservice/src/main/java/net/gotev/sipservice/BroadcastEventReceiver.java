@@ -1,5 +1,7 @@
 package net.gotev.sipservice;
 
+import static net.gotev.sipservice.ObfuscationHelper.getValue;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,10 +9,9 @@ import android.content.IntentFilter;
 
 import java.util.ArrayList;
 
-import static net.gotev.sipservice.ObfuscationHelper.getValue;
-
 /**
  * Reference implementation to receive events emitted by the sip service.
+ *
  * @author gotev (Aleksandar Gotev)
  */
 public class BroadcastEventReceiver extends BroadcastReceiver implements SipServiceConstants{
@@ -29,7 +30,9 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
 
         String action = intent.getAction();
 
-        if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.REGISTRATION).equals(action)) {
+        if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALLBACK_SET_ACCOUNT).equals(action)) {
+            onSetAccount(intent.getStringExtra(PARAM_ACCOUNT_ID));
+        } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.REGISTRATION).equals(action)) {
             int stateCode = intent.getIntExtra(PARAM_REGISTRATION_CODE, -1);
             onRegistration(intent.getStringExtra(PARAM_ACCOUNT_ID), stateCode);
 
@@ -44,9 +47,9 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
             int callState = intent.getIntExtra(PARAM_CALL_STATE, -1);
             int callStatus = intent.getIntExtra(PARAM_CALL_STATUS, -1);
             onCallState(intent.getStringExtra(PARAM_ACCOUNT_ID),
-                        intent.getIntExtra(PARAM_CALL_ID, -1),
-                        callState, callStatus,
-                        intent.getLongExtra(PARAM_CONNECT_TIMESTAMP, -1));
+                    intent.getIntExtra(PARAM_CALL_ID, -1),
+                    callState, callStatus,
+                    intent.getLongExtra(PARAM_CONNECT_TIMESTAMP, -1));
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALL_MEDIA_STATE).equals(action)) {
             onCallMediaState(intent.getStringExtra(PARAM_ACCOUNT_ID),
@@ -83,11 +86,11 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALL_STATS).equals(action)) {
             int callStatus = intent.getIntExtra(PARAM_CALL_STATUS, -1);
             onCallStats(
-                intent.getIntExtra(PARAM_CALL_ID, -1),
-                intent.getIntExtra(PARAM_CALL_STATS_DURATION, 0),
-                intent.getStringExtra(PARAM_CALL_STATS_AUDIO_CODEC), callStatus,
-                intent.getParcelableExtra(PARAM_CALL_STATS_RX_STREAM),
-                intent.getParcelableExtra(PARAM_CALL_STATS_TX_STREAM));
+                    intent.getIntExtra(PARAM_CALL_ID, -1),
+                    intent.getIntExtra(PARAM_CALL_STATS_DURATION, 0),
+                    intent.getStringExtra(PARAM_CALL_STATS_AUDIO_CODEC), callStatus,
+                    intent.getParcelableExtra(PARAM_CALL_STATS_RX_STREAM),
+                    intent.getParcelableExtra(PARAM_CALL_STATS_TX_STREAM));
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALL_RECONNECTION_STATE).equals(action)) {
             onCallReconnectionState((CallReconnectionState) intent.getSerializableExtra(PARAM_CALL_RECONNECTION_STATE));
@@ -218,11 +221,11 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
     }
 
     protected void onVideoSize(int width, int height) {
-        Logger.debug(LOG_TAG, "Video resolution " + width+"x"+height);
+        Logger.debug(LOG_TAG, "Video resolution " + width + "x" + height);
     }
 
     protected void onCallStats(int callID, int duration, String audioCodec, int callStatusCode, RtpStreamStats rx, RtpStreamStats tx) {
-        Logger.debug(LOG_TAG, "Call Stats sent "+duration+" "+audioCodec);
+        Logger.debug(LOG_TAG, "Call Stats sent " + duration + " " + audioCodec);
     }
 
     protected void onCallReconnectionState(CallReconnectionState state) {
@@ -230,10 +233,15 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
     }
 
     protected void onSilentCallStatus(boolean success, String number) {
-        Logger.debug(LOG_TAG, "Success: " +success+ " for silent call: " +number);
+        Logger.debug(LOG_TAG, "Success: " + success + " for silent call: " + number);
     }
 
     protected void onTlsVerifyStatusFailed() {
         Logger.debug(LOG_TAG, "TlsVerifyStatusFailed");
+    }
+
+    private void onSetAccount(String accountID) {
+        Logger.debug(LOG_TAG, "onSetAccount - accountID: " + getValue(getReceiverContext(), accountID));
+
     }
 }
