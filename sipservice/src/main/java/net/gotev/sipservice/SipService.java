@@ -670,6 +670,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetIncomingVideoFeed(Intent intent) {
+        startForeground(121, createForegroundServiceNotification(this, getString(R.string.app_name)));
         Logger.debug(TAG, "handleSetIncomingVideoFeed()ß");
         final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
@@ -695,6 +696,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 sipCall.setIncomingVideoFeed(surface);
             }
         }
+        enqueueDelayedJob(() -> stopForeground(false), 200);
     }
 
     private void handleSetSelfVideoOrientation(Intent intent) {
