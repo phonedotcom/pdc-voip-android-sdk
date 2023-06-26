@@ -128,6 +128,8 @@ public interface SipServiceConstants {
      */
     int DELAYED_JOB_DEFAULT_DELAY = 5000;
 
+    int DELAY_STOP_SERVICE = 200;
+
     /**
      * SIP DEFAULT PORTS
      */
