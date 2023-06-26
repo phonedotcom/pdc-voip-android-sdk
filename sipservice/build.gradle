@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-//apply plugin: "maven-publish"
+apply plugin: "maven-publish"
 
 android {
     compileSdkVersion 31
@@ -18,7 +18,7 @@ android {
     }
 }
 
-/*publishing {
+publishing {
     publications {
         debug(MavenPublication) {
             groupId = 'com.phonedotcom'
@@ -39,7 +39,7 @@ android {
             }
         }
     }
-}*/
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
