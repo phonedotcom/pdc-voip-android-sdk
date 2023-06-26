@@ -30,9 +30,7 @@ class BroadcastEventReceiver extends BroadcastReceiver implements SipServiceCons
 
         String action = intent.getAction();
 
-        if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALLBACK_SET_ACCOUNT).equals(action)) {
-            onSetAccount(intent.getStringExtra(PARAM_ACCOUNT_ID));
-        } else if (SipServiceUtils.getPrivateAction(BroadcastAction.CALLBACK_SET_ACCOUNT).equals(action)) {
+        if (SipServiceUtils.getPrivateAction(BroadcastAction.CALLBACK_SET_ACCOUNT).equals(action)) {
             onSetAccount(intent.getStringExtra(PARAM_ACCOUNT_ID));
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.REGISTRATION).equals(action)) {
             int stateCode = intent.getIntExtra(PARAM_REGISTRATION_CODE, -1);
