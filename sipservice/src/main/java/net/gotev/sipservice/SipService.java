@@ -1,20 +1,17 @@
 package net.gotev.sipservice;
 
+import static net.gotev.sipservice.NotificationCreator.createForegroundServiceNotification;
 import static net.gotev.sipservice.ObfuscationHelper.getValue;
 import static net.gotev.sipservice.SipUtility.createIncomingCallObject;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Surface;
-
-import androidx.core.app.NotificationCompat;
 
 import org.pjsip.pjsua2.AudDevManager;
 import org.pjsip.pjsua2.CallOpParam;
@@ -200,6 +197,9 @@ public final class SipService extends BackgroundService implements SipServiceCon
                 case ACTION_REJECT_CALL_USER_BUSY:
                     handleRejectIncomingCallUserBusy(intent);
                     break;
+                case ACTION_UNREGISTER_PUSH_LOGOUT:
+                    handleUnregisterPushAndLogout(intent);
+                    break;
                 default:
                     break;
             }
@@ -211,6 +211,29 @@ public final class SipService extends BackgroundService implements SipServiceCon
         });
 
         return START_NOT_STICKY;
+    }
+
+    private void handleUnregisterPushAndLogout(Intent intent) {
+
+        Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Initiated for "
+                + getApplicationInfo().loadLabel(getPackageManager()).toString());
+        startForeground(SipServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID,
+                createForegroundServiceNotification(this, this.getApplicationInfo().loadLabel(getPackageManager()).toString()));
+
+        final SipAccount sipAccount = getActiveSipAccount(this);
+        if(sipAccount != null) {
+            try {
+                sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
+                sipAccount.setRegistration(false);
+
+                SharedPreferencesHelper.getInstance(this).clearAllSharedPreferences();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        stopForegroundService();
+        Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Completed-----");
     }
 
     private void handleIncomingCallDisconnected(Intent intent) {
@@ -278,7 +301,7 @@ public final class SipService extends BackgroundService implements SipServiceCon
     private void notifyIncomingCallNotification(Intent intent, ICall iCall) {
         final IncomingCall incomingCall = (IncomingCall) iCall;
         //incomingCall.setVideoCall(isVideo);
-        startForeground(NotificationCreator.createForegroundServiceNotification(this, incomingCall.getCallerName(), true));
+        startForeground(createForegroundServiceNotification(this, incomingCall.getCallerName(), true));
 
         getActiveSipAccount(this).setActiveIncomingCall(incomingCall);
 
@@ -1403,8 +1426,7 @@ public final class SipService extends BackgroundService implements SipServiceCon
     }
 
     public static SipAccount getActiveSipAccount(Context context) {
-        return mActiveSipAccounts.get(SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
+        return mActiveSipAccounts.get(SharedPreferencesHelper.getInstance(context).getAccountID());
     }
 
     public void removeGuestAccount() {
@@ -1412,26 +1434,13 @@ public final class SipService extends BackgroundService implements SipServiceCon
         mConfiguredGuestAccount = null;
     }
 
-    Notification createForegroundServiceNotification(
-            Context context, String callName
-    ) {
-        Intent resultIntent = new Intent();
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(
-                context,
-                0,
-                resultIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
-        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID : "";
-//        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL : "";
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
-                .setContentText(callName);
-        mBuilder.setContentIntent(resultPendingIntent);
-        return mBuilder.build();
-    }
-
     private void startForeground(Notification notification) {
         startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, notification);
     }
 
+    public synchronized void stopForegroundService() {
+        if (getActiveSipAccount(this).isActiveCallPresent())
+            return;
+        stopForeground(true);
+    }
 }

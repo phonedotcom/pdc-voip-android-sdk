@@ -38,6 +38,7 @@ public interface SipServiceConstants {
     String ACTION_RECONNECT_CALL = "reconnectCall";
     String ACTION_MAKE_SILENT_CALL = "makeSilentCall";
     String ACTION_REJECT_CALL_USER_BUSY = "rejectCallUserBusy";
+    String ACTION_UNREGISTER_PUSH_LOGOUT = "unregisterPushLogout";
     /*
      * Generic Parameters
      */

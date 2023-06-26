@@ -59,7 +59,7 @@ public class SipUtility {
     private static String getProtocolName(Context context) {
         String secureProtocolName = SipApplication.getSecureProtocolName(context);
         String protocolName = SipApplication.getProtocolName(context);
-        return SharedPreferencesHelper.getInstance(context).isSecureProtocol(context) ? secureProtocolName : protocolName;
+        return SharedPreferencesHelper.getInstance(context).isSecureProtocol() ? secureProtocolName : protocolName;
     }
 
 
@@ -72,7 +72,7 @@ public class SipUtility {
     private static int getPortNumber(Context context) {
         int port = SipApplication.getPort(context);
         int securedPort = SipApplication.getSecurePort(context);
-        return SharedPreferencesHelper.getInstance(context).isSecureProtocol(context) ? securedPort : port;
+        return SharedPreferencesHelper.getInstance(context).isSecureProtocol() ? securedPort : port;
     }
 
 

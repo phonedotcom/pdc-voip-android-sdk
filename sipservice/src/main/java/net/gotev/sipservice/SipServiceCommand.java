@@ -58,7 +58,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.putExtra(PARAM_ACCOUNT_DATA, sipAccountData);
         executeSipServiceAction(context, intent);
         //context.startService(intent);
-        SharedPreferencesHelper.getInstance(context).putInSharedPreference(context,
+        SharedPreferencesHelper.getInstance(context).putInSharedPreference(
                 SharedPreferenceConstant.SIP_ACCOUNT_ID,
                 accountID
         );
@@ -280,7 +280,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void hangUpActiveCalls(Context context) {
 
-        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
@@ -337,7 +337,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void sendDTMF(Context context, String dtmfTone) {
 
-        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
         final Intent intent = new Intent(context, SipService.class);
@@ -379,7 +379,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void acceptIncomingCall(Context context, boolean isVideo) {
 
-        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
 
         Logger.debug(TAG, "acceptIncomingCall()");
         final Intent intent = new Intent(context, SipService.class);
@@ -401,7 +401,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @param context application context
      */
     public static void declineIncomingCall(Context context) {
-        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+        String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
@@ -559,7 +559,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     private static void checkAccount(String accountID) {
         if (accountID == null || !accountID.startsWith("sip:")) {
-            throw new IllegalArgumentException("Invalid accountID! Example: sip:user@domain");
+            throw new IllegalArgumentException("Invalid or Null/Empty accountID! Example: sip:user@domain");
         }
     }
 
@@ -627,7 +627,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void setupIncomingVideoFeed(Context context, Surface surface) {
         Logger.debug(TAG, "setupIncomingVideoFeed()");
-        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
 
         checkAccount(accountID);
 
@@ -887,9 +887,11 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
                                                           String linkedUUID,
                                                           String callerName) {
 
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
+        checkAccount(accountID);
+
         final Intent intent = new Intent(context, SipService.class);
-        intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
+        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         if ("canceled".equalsIgnoreCase(status) || "answered".equalsIgnoreCase(status)) {
             intent.setAction(ACTION_INCOMING_CALL_DISCONNECTED);
         } else {
@@ -911,12 +913,24 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void rejectCallUserBusy(Context context) {
         final Intent intent = new Intent(context, SipService.class);
-
         intent.setAction(ACTION_REJECT_CALL_USER_BUSY);
-
-        intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context)
-                .getStringSharedPreference(context, SharedPreferenceConstant.SIP_ACCOUNT_ID));
+        intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context).getAccountID());
         intent.putExtra(PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL, ErrorCodes.USER_BUSY.toString());
+        executeSipServiceAction(context, intent);
+    }
+
+    /**
+     * This method
+     * first unregisters the user from push service and
+     * after that logs them out VoIP services.
+     * Once above two operations are successful send an event to client
+     * to indicate that they can now logout from the application
+     *
+     * @param context Android context needed for talking to SDK service
+     */
+    public static void unregisterPushAndLogout(Context context) {
+        Intent intent = new Intent(context, SipService.class);
+        intent.setAction(SipServiceConstants.ACTION_UNREGISTER_PUSH_LOGOUT);
         executeSipServiceAction(context, intent);
     }
 }

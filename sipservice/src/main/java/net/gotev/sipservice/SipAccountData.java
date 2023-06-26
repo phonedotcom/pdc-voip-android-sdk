@@ -1,6 +1,7 @@
 package net.gotev.sipservice;
 
 import static net.gotev.sipservice.SipApplication.getHeadersForPush;
+import static net.gotev.sipservice.SipApplication.getHeadersForUnregisterPush;
 import static net.gotev.sipservice.SipApplication.isToAddHeadersForPushNotification;
 import static net.gotev.sipservice.SipServiceConstants.DEFAULT_SIP_PORT;
 
@@ -10,6 +11,7 @@ import android.os.Parcelable;
 
 import org.pjsip.pjsua2.AccountConfig;
 import org.pjsip.pjsua2.AuthCredInfo;
+import org.pjsip.pjsua2.SipHeaderVector;
 import org.pjsip.pjsua2.pj_constants_;
 import org.pjsip.pjsua2.pj_qos_type;
 import org.pjsip.pjsua2.pjmedia_srtp_use;
@@ -347,6 +349,16 @@ public class SipAccountData implements Parcelable {
         accountConfig.getSipConfig().getProxies().add(getProxyUri());
         accountConfig.getRegConfig().setRegisterOnAdd(false);
         setVideoConfig(accountConfig);
+        return accountConfig;
+    }
+
+    AccountConfig getAccountConfigForUnregister(Context context) {
+        final AccountConfig accountConfig = getAccountConfig(context);
+
+        final SipHeaderVector sipHeaderVector = accountConfig.getRegConfig().getHeaders();
+        sipHeaderVector.add(getHeadersForUnregisterPush());
+
+        accountConfig.getRegConfig().setHeaders(sipHeaderVector);
         return accountConfig;
     }
 
