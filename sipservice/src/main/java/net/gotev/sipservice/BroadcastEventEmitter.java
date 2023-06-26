@@ -16,56 +16,24 @@ import java.util.List;
  */
 public class BroadcastEventEmitter implements SipServiceConstants {
 
-    public static final String TAG = BroadcastEventEmitter.class.getSimpleName();
-    public static String NAMESPACE = "com.phone";
+    static final String TAG = BroadcastEventEmitter.class.getSimpleName();
 
     private final Context mContext;
-
-    /**
-     * Enumeration of the broadcast actions
-     */
-    public enum BroadcastAction {
-        REGISTRATION,
-        INCOMING_CALL,
-        CALL_STATE,
-        CALL_MEDIA_STATE,
-        OUTGOING_CALL,
-        STACK_STATUS,
-        CODEC_PRIORITIES,
-        CODEC_PRIORITIES_SET_STATUS,
-        MISSED_CALL,
-        VIDEO_SIZE,
-        CALL_STATS,
-        CALL_RECONNECTION_STATE,
-        SILENT_CALL_STATUS,
-        NOTIFY_TLS_VERIFY_STATUS_FAILED,
-        CALLBACK_SET_ACCOUNT,
-        CALLBACK_REMOVE_ACCOUNT,
-        INCOMING_CALL_NOTIFICATION_CLICK,
-        ACCEPT_INCOMING_CALL_ACTION,
-        END_SERVICE_ACTION,
-        CALL_MEDIA_EVENT,
-        CALLBACK_GENERIC_ERROR
-    }
 
     public BroadcastEventEmitter(Context context) {
         mContext = context;
     }
 
-    public static String getAction(BroadcastAction action) {
-        return NAMESPACE + "." + action;
-    }
-
     /**
      * Emit an incoming call broadcast intent.
      *
-     * @param accountID Sip Account Id
-     * @param number Caller Number
-     * @param server Server details
-     * @param slot Slot provided
+     * @param accountID  Sip Account Id
+     * @param number     Caller Number
+     * @param server     Server details
+     * @param slot       Slot provided
      * @param linkedUUID Linked UUID for call
-     * @param callName Caller Name
-     * @param isVideo Call supports Video or no
+     * @param callName   Caller Name
+     * @param isVideo    Call supports Video or no
      */
     public void incomingCall
     (
@@ -75,7 +43,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     ) {
         final Intent intent = new Intent();
 
-        intent.setAction(getAction(BroadcastAction.INCOMING_CALL));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.INCOMING_CALL));
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_INCOMING_FROM, number);
         intent.putExtra(PARAM_INCOMING_SERVER, server);
@@ -101,7 +69,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public void incomingCall(String accountID, int callID, String displayName, String remoteUri, boolean isVideo) {
         final Intent intent = new Intent();
 
-        intent.setAction(getAction(BroadcastAction.INCOMING_CALL));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.INCOMING_CALL));
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_DISPLAY_NAME, displayName);
@@ -121,7 +89,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public void registrationState(String accountID, int registrationStateCode) {
         final Intent intent = new Intent();
 
-        intent.setAction(getAction(BroadcastAction.REGISTRATION));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.REGISTRATION));
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_REGISTRATION_CODE, registrationStateCode);
 
@@ -140,7 +108,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public synchronized void callState(String accountID, int callID, int callStateCode, int callStateStatus, long connectTimestamp) {
         final Intent intent = new Intent();
 
-        intent.setAction(getAction(BroadcastAction.CALL_STATE));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CALL_STATE));
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_CALL_STATE, callStateCode);
@@ -159,7 +127,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public synchronized void callState(CallEvents.ScreenUpdate screenUpdate) {
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_STATE, screenUpdate);
-        intent.setAction(getAction(BroadcastAction.CALL_STATE));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CALL_STATE));
         sendExplicitBroadcast(intent);
     }
 
@@ -173,7 +141,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      */
     public synchronized void callMediaState(String accountID, int callID, MediaState state, boolean value) {
         final Intent intent = new Intent()
-                .setAction(getAction(BroadcastAction.CALL_MEDIA_STATE))
+                .setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CALL_MEDIA_STATE))
                 .putExtra(PARAM_ACCOUNT_ID, accountID)
                 .putExtra(PARAM_CALL_ID, callID)
                 .putExtra(PARAM_MEDIA_STATE_KEY, state)
@@ -183,7 +151,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
 
     public void outgoingCall(String accountID, int callID, String number, boolean isVideo, boolean isVideoConference, boolean isTransfer) {
         final Intent intent = new Intent()
-                .setAction(getAction(BroadcastAction.OUTGOING_CALL))
+                .setAction(SipServiceUtils.getPrivateAction(BroadcastAction.OUTGOING_CALL))
                 .putExtra(PARAM_ACCOUNT_ID, accountID)
                 .putExtra(PARAM_CALL_ID, callID)
                 .putExtra(PARAM_NUMBER, number)
@@ -196,7 +164,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public void stackStatus(boolean started) {
         final Intent intent = new Intent();
 
-        intent.setAction(getAction(BroadcastAction.STACK_STATUS));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.STACK_STATUS));
         intent.putExtra(PARAM_STACK_STARTED, started);
 
         mContext.sendBroadcast(intent);
@@ -205,7 +173,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public void codecPriorities(ArrayList<CodecPriority> codecPriorities) {
         final Intent intent = new Intent();
 
-        intent.setAction(getAction(BroadcastAction.CODEC_PRIORITIES));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CODEC_PRIORITIES));
         intent.putParcelableArrayListExtra(PARAM_CODEC_PRIORITIES_LIST, codecPriorities);
 
         mContext.sendBroadcast(intent);
@@ -214,7 +182,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public void codecPrioritiesSetStatus(boolean success) {
         final Intent intent = new Intent();
 
-        intent.setAction(getAction(BroadcastAction.CODEC_PRIORITIES_SET_STATUS));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CODEC_PRIORITIES_SET_STATUS));
         intent.putExtra(PARAM_SUCCESS, success);
 
         mContext.sendBroadcast(intent);
@@ -223,7 +191,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     void missedCall(String displayName, String uri) {
         final Intent intent = new Intent();
 
-        intent.setAction(getAction(BroadcastAction.MISSED_CALL));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.MISSED_CALL));
         intent.putExtra(PARAM_DISPLAY_NAME, displayName);
         intent.putExtra(PARAM_REMOTE_URI, uri);
 
@@ -233,7 +201,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     void videoSize(int width, int height) {
         final Intent intent = new Intent();
 
-        intent.setAction(getAction(BroadcastAction.VIDEO_SIZE));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.VIDEO_SIZE));
         intent.putExtra(PARAM_INCOMING_VIDEO_WIDTH, width);
         intent.putExtra(PARAM_INCOMING_VIDEO_HEIGHT, height);
 
@@ -242,7 +210,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
 
     void callStats(int callID, int duration, String audioCodec, int callStateStatus, RtpStreamStats rx, RtpStreamStats tx) {
         final Intent intent = new Intent()
-                .setAction(getAction(BroadcastAction.CALL_STATS))
+                .setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CALL_STATS))
                 .putExtra(PARAM_CALL_ID, callID)
                 .putExtra(PARAM_CALL_STATS_DURATION, duration)
                 .putExtra(PARAM_CALL_STATS_AUDIO_CODEC, audioCodec)
@@ -254,14 +222,14 @@ public class BroadcastEventEmitter implements SipServiceConstants {
 
     void callReconnectionState(CallReconnectionState state) {
         final Intent intent = new Intent();
-        intent.setAction(getAction(BroadcastAction.CALL_RECONNECTION_STATE));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CALL_RECONNECTION_STATE));
         intent.putExtra(PARAM_CALL_RECONNECTION_STATE, state);
         mContext.sendBroadcast(intent);
     }
 
     void silentCallStatus(boolean status, String number) {
         final Intent intent = new Intent();
-        intent.setAction(getAction(BroadcastAction.SILENT_CALL_STATUS));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.SILENT_CALL_STATUS));
         intent.putExtra(PARAM_SILENT_CALL_STATUS, status);
         intent.putExtra(PARAM_NUMBER, number);
         sendExplicitBroadcast(intent);
@@ -269,20 +237,20 @@ public class BroadcastEventEmitter implements SipServiceConstants {
 
     void notifyTlsVerifyStatusFailed() {
         final Intent intent = new Intent();
-        intent.setAction(getAction(BroadcastAction.NOTIFY_TLS_VERIFY_STATUS_FAILED));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.NOTIFY_TLS_VERIFY_STATUS_FAILED));
         sendExplicitBroadcast(intent);
     }
 
     void setAccount(SipAccountData data) {
         final Intent intent = new Intent();
-        intent.setAction(getAction(BroadcastAction.CALLBACK_SET_ACCOUNT));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CALLBACK_SET_ACCOUNT));
         intent.putExtra(PARAM_USERNAME, data.getUsername());
         sendExplicitBroadcast(intent);
     }
 
     public void removeAccount(String accountIDtoRemove) {
         final Intent intent = new Intent();
-        intent.setAction(getAction(BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
         intent.putExtra(PARAM_ACCOUNT_ID, accountIDtoRemove);
         sendExplicitBroadcast(intent);
     }
@@ -293,17 +261,17 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      * @param mediaEventType Type of mediaEvent  {@link org.pjsip.pjsua2.pjmedia_event_type}
      */
     public void sendCallMediaEvent(int mediaEventType) {
-        Logger.debug(TAG, "sendCallMediaEvent() : "+mediaEventType);
+        Logger.debug(TAG, "sendCallMediaEvent() : " + mediaEventType);
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, mediaEventType);
-        intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CALL_MEDIA_EVENT));
         sendExplicitBroadcast(intent);
     }
 
     public void errorCallback(String message) {
         final Intent intent = new Intent();
-        intent.setAction(getAction(BroadcastAction.CALLBACK_GENERIC_ERROR));
-        intent.putExtra(PARAM_ERROR_MESSAGE, message);
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.CALLBACK_GENERIC_ERROR));
+        intent.putExtra(PARAM_ERROR_MESSAGE, DefaultLoggerDelegate.PREFIX + message);
         sendExplicitBroadcast(intent);
     }
 
@@ -317,7 +285,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_TIME, time);
         intent.putExtra(PARAM_SECONDS, seconds);
         intent.putExtra(PARAM_CALL_TYPE, callType);
-        intent.setAction(getAction(BroadcastAction.MISSED_CALL));
+        intent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.MISSED_CALL));
         sendExplicitBroadcast(intent);
     }
 

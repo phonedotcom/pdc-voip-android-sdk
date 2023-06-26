@@ -33,7 +33,7 @@ public final class NotificationCreator {
 
         Intent resultIntent = new Intent();
         final BroadcastEventEmitter mBroadcastEmitter = new BroadcastEventEmitter(context);
-        resultIntent.setAction(BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.INCOMING_CALL_NOTIFICATION_CLICK));
+        resultIntent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.INCOMING_CALL_NOTIFICATION_CLICK));
         resultIntent.putExtra(SipServiceConstants.INTENT_HANDLED, true);
         resultIntent.putExtra(SipServiceConstants.PARAM_IS_CALL, isCall);
         resultIntent = mBroadcastEmitter.getExplicitIntent(resultIntent);

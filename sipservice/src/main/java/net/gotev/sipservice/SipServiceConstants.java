@@ -2,6 +2,7 @@ package net.gotev.sipservice;
 
 public interface SipServiceConstants {
 
+    String NAMESPACE = "com.phone";
     /*
      * Intent Actions for Sip Service
      */

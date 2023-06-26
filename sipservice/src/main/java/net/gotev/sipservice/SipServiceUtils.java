@@ -1,5 +1,6 @@
 package net.gotev.sipservice;
 
+import static net.gotev.sipservice.SipServiceConstants.NAMESPACE;
 import static net.gotev.sipservice.SipServiceConstants.OPENH264_CODEC_ID;
 import static net.gotev.sipservice.SipServiceConstants.H264_DEF_HEIGHT;
 import static net.gotev.sipservice.SipServiceConstants.H264_DEF_WIDTH;
@@ -106,5 +107,13 @@ public class SipServiceUtils {
         }
         vidCodecParam.setDecFmtp(codecFmtpVector);
         sipEndpoint.setVideoCodecParam(OPENH264_CODEC_ID, vidCodecParam);
+    }
+
+    static String getPrivateAction(BroadcastAction action) {
+        return NAMESPACE + "." + action;
+    }
+    
+    public static String getAction(SipServiceCallbacks action) {
+        return NAMESPACE + "." + action;
     }
 }

@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author gotev (Aleksandar Gotev)
  */
-public class SipService extends BackgroundService implements SipServiceConstants {
+public final class SipService extends BackgroundService implements SipServiceConstants {
 
     private static final String TAG = SipService.class.getSimpleName();
 
@@ -214,6 +214,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleIncomingCallDisconnected(Intent intent) {
+        startForeground(NotificationCreator.createForegroundServiceNotification(this, "", true));
         String linkedUUID = intent.getStringExtra(SipServiceConstants.PARAM_INCOMING_LINKED_UUID);
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
@@ -224,8 +225,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
         ICall activeIncomingCall = sipAccount.getActiveIncomingCall();
         if (activeIncomingCall != null && activeIncomingCall.getLinkedUUID().equalsIgnoreCase(linkedUUID) &&
                 activeIncomingCall.getState().equals(CallState.INCOMING_CALL)) {
-            // disconnect call if active
-            stopCallForegroundService(sipAccount);
             String number = intent.getStringExtra(SipServiceConstants.PARAM_INCOMING_FROM);
             IncomingCall incomingCallObject = createIncomingCallObject(intent);
             incomingCallObject.setCallType(CallType.MISSED);
@@ -238,6 +237,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
             MediaPlayerController.getInstance(this).resumeMusicPlayer();
         }
+        // disconnect call if active
+        stopCallForegroundService(sipAccount);
     }
 
     public synchronized void stopCallForegroundService(SipAccount sipAccount) {
