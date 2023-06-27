@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
-public final class SipServiceCommand extends ServiceExecutor implements SipServiceConstants {
+public final class SipServiceCommand extends ServiceExecutor {
 
     public static final String TAG = SipServiceCommand.class.getSimpleName();
 
@@ -54,8 +54,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         final Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_ACCOUNT);
-        intent.putExtra(PARAM_ACCOUNT_DATA, sipAccountData);
+        intent.setAction(SipServiceConstants.ACTION_SET_ACCOUNT);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_DATA, sipAccountData);
         executeSipServiceAction(context, intent);
         //context.startService(intent);
         SharedPreferencesHelper.getInstance(context).putInSharedPreference(
@@ -86,9 +86,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_ACCOUNT);
-        intent.putExtra(PARAM_ACCOUNT_DATA, sipAccount);
-        intent.putParcelableArrayListExtra(PARAM_CODEC_PRIORITIES, codecPriorities);
+        intent.setAction(SipServiceConstants.ACTION_SET_ACCOUNT);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_DATA, sipAccount);
+        intent.putParcelableArrayListExtra(SipServiceConstants.PARAM_CODEC_PRIORITIES, codecPriorities);
         context.startService(intent);
 
         return accountID;
@@ -104,8 +104,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_REMOVE_ACCOUNT);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        intent.setAction(SipServiceConstants.ACTION_REMOVE_ACCOUNT);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
         context.startService(intent);
     }
 
@@ -134,7 +134,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void restartSipStack(Context context) {
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_RESTART_SIP_STACK);
+        intent.setAction(SipServiceConstants.ACTION_RESTART_SIP_STACK);
         context.startService(intent);
     }
 
@@ -159,12 +159,12 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_MAKE_CALL);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_NUMBER, numberToCall);
-        intent.putExtra(PARAM_IS_VIDEO, isVideo);
-        intent.putExtra(PARAM_IS_VIDEO_CONF, isVideoConference);
-        intent.putExtra(PARAM_IS_TRANSFER, isTransfer);
+        intent.setAction(SipServiceConstants.ACTION_MAKE_CALL);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_NUMBER, numberToCall);
+        intent.putExtra(SipServiceConstants.PARAM_IS_VIDEO, isVideo);
+        intent.putExtra(SipServiceConstants.PARAM_IS_VIDEO_CONF, isVideoConference);
+        intent.putExtra(SipServiceConstants.PARAM_IS_TRANSFER, isTransfer);
         context.startService(intent);
     }
 
@@ -195,9 +195,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_MAKE_SILENT_CALL);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_NUMBER, numberToCall);
+        intent.setAction(SipServiceConstants.ACTION_MAKE_SILENT_CALL);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_NUMBER, numberToCall);
         context.startService(intent);
     }
 
@@ -222,13 +222,13 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
             SipAccountTransport transport
     ) {
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_MAKE_DIRECT_CALL);
-        intent.putExtra(PARAM_GUEST_NAME, guestName);
-        intent.putExtra(PARAM_DIRECT_CALL_URI, sipUri);
-        intent.putExtra(PARAM_DIRECT_CALL_SIP_SERVER, host);
-        intent.putExtra(PARAM_IS_VIDEO, isVideo);
-        intent.putExtra(PARAM_IS_VIDEO_CONF, isVideoConference);
-        intent.putExtra(PARAM_DIRECT_CALL_TRANSPORT, transport.ordinal());
+        intent.setAction(SipServiceConstants.ACTION_MAKE_DIRECT_CALL);
+        intent.putExtra(SipServiceConstants.PARAM_GUEST_NAME, guestName);
+        intent.putExtra(SipServiceConstants.PARAM_DIRECT_CALL_URI, sipUri);
+        intent.putExtra(SipServiceConstants.PARAM_DIRECT_CALL_SIP_SERVER, host);
+        intent.putExtra(SipServiceConstants.PARAM_IS_VIDEO, isVideo);
+        intent.putExtra(SipServiceConstants.PARAM_IS_VIDEO_CONF, isVideoConference);
+        intent.putExtra(SipServiceConstants.PARAM_DIRECT_CALL_TRANSPORT, transport.ordinal());
         context.startService(intent);
     }
 
@@ -248,9 +248,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_GET_CALL_STATUS);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
+        intent.setAction(SipServiceConstants.ACTION_GET_CALL_STATUS);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
         context.startService(intent);
     }
 
@@ -267,9 +267,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_HANG_UP_CALL);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
+        intent.setAction(SipServiceConstants.ACTION_HANG_UP_CALL);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
         executeSipServiceAction(context, intent);
     }
 
@@ -284,8 +284,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_HANG_UP_CALLS);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        intent.setAction(SipServiceConstants.ACTION_HANG_UP_CALLS);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
         executeSipServiceAction(context, intent);
     }
 
@@ -299,8 +299,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_HOLD_CALLS);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        intent.setAction(SipServiceConstants.ACTION_HOLD_CALLS);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
         context.startService(intent);
     }
 
@@ -319,10 +319,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SEND_DTMF);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
-        intent.putExtra(PARAM_DTMF, dtmfTone);
+        intent.setAction(SipServiceConstants.ACTION_SEND_DTMF);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
+        intent.putExtra(SipServiceConstants.PARAM_DTMF, dtmfTone);
         context.startService(intent);
     }
 
@@ -341,9 +341,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         final Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SEND_DTMF);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_DTMF, dtmfTone);
+        intent.setAction(SipServiceConstants.ACTION_SEND_DTMF);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_DTMF, dtmfTone);
         executeSipServiceAction(context, intent);
     }
 
@@ -361,10 +361,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_ACCEPT_INCOMING_CALL);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
-        intent.putExtra(PARAM_IS_VIDEO, isVideo);
+        intent.setAction(SipServiceConstants.ACTION_ACCEPT_INCOMING_CALL);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
+        intent.putExtra(SipServiceConstants.PARAM_IS_VIDEO, isVideo);
         context.startService(intent);
     }
 
@@ -383,9 +383,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
         Logger.debug(TAG, "acceptIncomingCall()");
         final Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_ACCEPT_INCOMING_CALL);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_IS_VIDEO, isVideo);
+        intent.setAction(SipServiceConstants.ACTION_ACCEPT_INCOMING_CALL);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_IS_VIDEO, isVideo);
         executeSipServiceAction(context, intent);
     }
 
@@ -405,8 +405,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_DECLINE_INCOMING_CALL);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        intent.setAction(SipServiceConstants.ACTION_DECLINE_INCOMING_CALL);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
         executeSipServiceAction(context, intent);
     }
 
@@ -424,10 +424,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_TRANSFER_CALL);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
-        intent.putExtra(PARAM_NUMBER, number);
+        intent.setAction(SipServiceConstants.ACTION_TRANSFER_CALL);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
+        intent.putExtra(SipServiceConstants.PARAM_NUMBER, number);
         context.startService(intent);
     }
 
@@ -445,10 +445,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_ATTENDED_TRANSFER_CALL);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callIdOrig);
-        intent.putExtra(PARAM_CALL_ID_DEST, callIdDest);
+        intent.setAction(SipServiceConstants.ACTION_ATTENDED_TRANSFER_CALL);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callIdOrig);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID_DEST, callIdDest);
         context.startService(intent);
     }
 
@@ -466,10 +466,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_HOLD);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
-        intent.putExtra(PARAM_HOLD, hold);
+        intent.setAction(SipServiceConstants.ACTION_SET_HOLD);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
+        intent.putExtra(SipServiceConstants.PARAM_HOLD, hold);
         context.startService(intent);
     }
 
@@ -486,9 +486,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_TOGGLE_HOLD);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
+        intent.setAction(SipServiceConstants.ACTION_TOGGLE_HOLD);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
         context.startService(intent);
     }
 
@@ -506,9 +506,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_MUTE);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_MUTE, mute);
+        intent.setAction(SipServiceConstants.ACTION_SET_MUTE);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_MUTE, mute);
         executeSipServiceAction(context, intent);
     }
 
@@ -525,9 +525,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_TOGGLE_MUTE);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
+        intent.setAction(SipServiceConstants.ACTION_TOGGLE_MUTE);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
         context.startService(intent);
     }
 
@@ -539,7 +539,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void getCodecPriorities(Context context) {
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_GET_CODEC_PRIORITIES);
+        intent.setAction(SipServiceConstants.ACTION_GET_CODEC_PRIORITIES);
         context.startService(intent);
     }
 
@@ -552,8 +552,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void setCodecPriorities(Context context, ArrayList<CodecPriority> codecPriorities) {
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_CODEC_PRIORITIES);
-        intent.putParcelableArrayListExtra(PARAM_CODEC_PRIORITIES, codecPriorities);
+        intent.setAction(SipServiceConstants.ACTION_SET_CODEC_PRIORITIES);
+        intent.putParcelableArrayListExtra(SipServiceConstants.PARAM_CODEC_PRIORITIES, codecPriorities);
         context.startService(intent);
     }
 
@@ -573,8 +573,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_GET_REGISTRATION_STATUS);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        intent.setAction(SipServiceConstants.ACTION_GET_REGISTRATION_STATUS);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
         context.startService(intent);
     }
 
@@ -582,17 +582,17 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_REFRESH_REGISTRATION);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_REG_EXP_TIMEOUT, regExpTimeout);
-        intent.putExtra(PARAM_REG_CONTACT_PARAMS, regContactParams);
+        intent.setAction(SipServiceConstants.ACTION_REFRESH_REGISTRATION);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_REG_EXP_TIMEOUT, regExpTimeout);
+        intent.putExtra(SipServiceConstants.PARAM_REG_CONTACT_PARAMS, regContactParams);
         context.startService(intent);
     }
 
     public static void setDND(Context context, boolean dnd) {
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_DND);
-        intent.putExtra(PARAM_DND, dnd);
+        intent.setAction(SipServiceConstants.ACTION_SET_DND);
+        intent.putExtra(SipServiceConstants.PARAM_DND, dnd);
         context.startService(intent);
     }
 
@@ -610,10 +610,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_INCOMING_VIDEO);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
-        intent.putExtra(PARAM_SURFACE, surface);
+        intent.setAction(SipServiceConstants.ACTION_SET_INCOMING_VIDEO);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
+        intent.putExtra(SipServiceConstants.PARAM_SURFACE, surface);
         executeSipServiceAction(context, intent);
     }
 
@@ -632,9 +632,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         final Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_INCOMING_VIDEO);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_SURFACE, surface);
+        intent.setAction(SipServiceConstants.ACTION_SET_INCOMING_VIDEO);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_SURFACE, surface);
         executeSipServiceAction(context, intent);
     }
 
@@ -652,9 +652,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_VIDEO_MUTE);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_VIDEO_MUTE, mute);
+        intent.setAction(SipServiceConstants.ACTION_SET_VIDEO_MUTE);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_VIDEO_MUTE, mute);
         executeSipServiceAction(context, intent);
     }
 
@@ -672,10 +672,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_START_VIDEO_PREVIEW);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
-        intent.putExtra(PARAM_SURFACE, surface);
+        intent.setAction(SipServiceConstants.ACTION_START_VIDEO_PREVIEW);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
+        intent.putExtra(SipServiceConstants.PARAM_SURFACE, surface);
         context.startService(intent);
     }
 
@@ -693,10 +693,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SET_SELF_VIDEO_ORIENTATION);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
-        intent.putExtra(PARAM_ORIENTATION, orientation);
+        intent.setAction(SipServiceConstants.ACTION_SET_SELF_VIDEO_ORIENTATION);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
+        intent.putExtra(SipServiceConstants.PARAM_ORIENTATION, orientation);
         context.startService(intent);
     }
 
@@ -713,9 +713,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_STOP_VIDEO_PREVIEW);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
+        intent.setAction(SipServiceConstants.ACTION_STOP_VIDEO_PREVIEW);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
         context.startService(intent);
     }
 
@@ -732,9 +732,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_SWITCH_VIDEO_CAPTURE_DEVICE);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        intent.putExtra(PARAM_CALL_ID, callID);
+        intent.setAction(SipServiceConstants.ACTION_SWITCH_VIDEO_CAPTURE_DEVICE);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_CALL_ID, callID);
         context.startService(intent);
     }
 
@@ -753,7 +753,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void reconnectCall(Context context) {
         Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_RECONNECT_CALL);
+        intent.setAction(SipServiceConstants.ACTION_RECONNECT_CALL);
         context.startService(intent);
     }
 
@@ -828,7 +828,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @param secureProtocolName optional needed in case of encrypted communication
      * @param protocolName       transport protocol to be used
      * @param context            Android Context needed for shared preferences operations
-     * @see SipService#ACTION_SET_ACCOUNT
+     * @see SipService#SipServiceConstants.ACTION_SET_ACCOUNT
      */
     public static void saveInformationForSipLibraryInitialization
     (
@@ -891,17 +891,17 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         checkAccount(accountID);
 
         final Intent intent = new Intent(context, SipService.class);
-        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, accountID);
         if ("canceled".equalsIgnoreCase(status) || "answered".equalsIgnoreCase(status)) {
-            intent.setAction(ACTION_INCOMING_CALL_DISCONNECTED);
+            intent.setAction(SipServiceConstants.ACTION_INCOMING_CALL_DISCONNECTED);
         } else {
-            intent.setAction(ACTION_INCOMING_CALL_NOTIFICATION);
+            intent.setAction(SipServiceConstants.ACTION_INCOMING_CALL_NOTIFICATION);
         }
-        intent.putExtra(PARAM_INCOMING_FROM, from);
-        intent.putExtra(PARAM_INCOMING_SERVER, server);
-        intent.putExtra(PARAM_INCOMING_SLOT, slot);
-        intent.putExtra(PARAM_DISPLAY_NAME, callerName);
-        intent.putExtra(PARAM_INCOMING_LINKED_UUID, linkedUUID);
+        intent.putExtra(SipServiceConstants.PARAM_INCOMING_FROM, from);
+        intent.putExtra(SipServiceConstants.PARAM_INCOMING_SERVER, server);
+        intent.putExtra(SipServiceConstants.PARAM_INCOMING_SLOT, slot);
+        intent.putExtra(SipServiceConstants.PARAM_DISPLAY_NAME, callerName);
+        intent.putExtra(SipServiceConstants.PARAM_INCOMING_LINKED_UUID, linkedUUID);
 
         executeSipServiceAction(context, intent);
     }
@@ -913,9 +913,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void rejectCallUserBusy(Context context) {
         final Intent intent = new Intent(context, SipService.class);
-        intent.setAction(ACTION_REJECT_CALL_USER_BUSY);
-        intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context).getAccountID());
-        intent.putExtra(PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL, ErrorCodes.USER_BUSY.toString());
+        intent.setAction(SipServiceConstants.ACTION_REJECT_CALL_USER_BUSY);
+        intent.putExtra(SipServiceConstants.PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context).getAccountID());
+        intent.putExtra(SipServiceConstants.PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL, ErrorCodes.USER_BUSY.toString());
         executeSipServiceAction(context, intent);
     }
 

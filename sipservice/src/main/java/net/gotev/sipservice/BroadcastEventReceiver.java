@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author gotev (Aleksandar Gotev)
  */
-class BroadcastEventReceiver extends BroadcastReceiver implements SipServiceConstants {
+class BroadcastEventReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = "SipServiceBR";
 
@@ -31,74 +31,74 @@ class BroadcastEventReceiver extends BroadcastReceiver implements SipServiceCons
         String action = intent.getAction();
 
         if (SipServiceUtils.getPrivateAction(BroadcastAction.CALLBACK_SET_ACCOUNT).equals(action)) {
-            onSetAccount(intent.getStringExtra(PARAM_ACCOUNT_ID));
+            onSetAccount(intent.getStringExtra(SipServiceConstants.PARAM_ACCOUNT_ID));
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.REGISTRATION).equals(action)) {
-            int stateCode = intent.getIntExtra(PARAM_REGISTRATION_CODE, -1);
-            onRegistration(intent.getStringExtra(PARAM_ACCOUNT_ID), stateCode);
+            int stateCode = intent.getIntExtra(SipServiceConstants.PARAM_REGISTRATION_CODE, -1);
+            onRegistration(intent.getStringExtra(SipServiceConstants.PARAM_ACCOUNT_ID), stateCode);
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.INCOMING_CALL).equals(action)) {
-            onIncomingCall(intent.getStringExtra(PARAM_ACCOUNT_ID),
-                    intent.getIntExtra(PARAM_CALL_ID, -1),
-                    intent.getStringExtra(PARAM_DISPLAY_NAME),
-                    intent.getStringExtra(PARAM_REMOTE_URI),
-                    intent.getBooleanExtra(PARAM_IS_VIDEO, false));
+            onIncomingCall(intent.getStringExtra(SipServiceConstants.PARAM_ACCOUNT_ID),
+                    intent.getIntExtra(SipServiceConstants.PARAM_CALL_ID, -1),
+                    intent.getStringExtra(SipServiceConstants.PARAM_DISPLAY_NAME),
+                    intent.getStringExtra(SipServiceConstants.PARAM_REMOTE_URI),
+                    intent.getBooleanExtra(SipServiceConstants.PARAM_IS_VIDEO, false));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.CALL_STATE).equals(action)) {
-            int callState = intent.getIntExtra(PARAM_CALL_STATE, -1);
-            int callStatus = intent.getIntExtra(PARAM_CALL_STATUS, -1);
-            onCallState(intent.getStringExtra(PARAM_ACCOUNT_ID),
-                    intent.getIntExtra(PARAM_CALL_ID, -1),
+            int callState = intent.getIntExtra(SipServiceConstants.PARAM_CALL_STATE, -1);
+            int callStatus = intent.getIntExtra(SipServiceConstants.PARAM_CALL_STATUS, -1);
+            onCallState(intent.getStringExtra(SipServiceConstants.PARAM_ACCOUNT_ID),
+                    intent.getIntExtra(SipServiceConstants.PARAM_CALL_ID, -1),
                     callState, callStatus,
-                    intent.getLongExtra(PARAM_CONNECT_TIMESTAMP, -1));
+                    intent.getLongExtra(SipServiceConstants.PARAM_CONNECT_TIMESTAMP, -1));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.CALL_MEDIA_STATE).equals(action)) {
-            onCallMediaState(intent.getStringExtra(PARAM_ACCOUNT_ID),
-                    intent.getIntExtra(PARAM_CALL_ID, -1),
-                    (MediaState) intent.getSerializableExtra(PARAM_MEDIA_STATE_KEY),
-                    intent.getBooleanExtra(PARAM_MEDIA_STATE_VALUE, false));
+            onCallMediaState(intent.getStringExtra(SipServiceConstants.PARAM_ACCOUNT_ID),
+                    intent.getIntExtra(SipServiceConstants.PARAM_CALL_ID, -1),
+                    (MediaState) intent.getSerializableExtra(SipServiceConstants.PARAM_MEDIA_STATE_KEY),
+                    intent.getBooleanExtra(SipServiceConstants.PARAM_MEDIA_STATE_VALUE, false));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.OUTGOING_CALL).equals(action)) {
-            onOutgoingCall(intent.getStringExtra(PARAM_ACCOUNT_ID),
-                    intent.getIntExtra(PARAM_CALL_ID, -1),
-                    intent.getStringExtra(PARAM_NUMBER),
-                    intent.getBooleanExtra(PARAM_IS_VIDEO, false),
-                    intent.getBooleanExtra(PARAM_IS_VIDEO_CONF, false),
-                    intent.getBooleanExtra(PARAM_IS_TRANSFER, false));
+            onOutgoingCall(intent.getStringExtra(SipServiceConstants.PARAM_ACCOUNT_ID),
+                    intent.getIntExtra(SipServiceConstants.PARAM_CALL_ID, -1),
+                    intent.getStringExtra(SipServiceConstants.PARAM_NUMBER),
+                    intent.getBooleanExtra(SipServiceConstants.PARAM_IS_VIDEO, false),
+                    intent.getBooleanExtra(SipServiceConstants.PARAM_IS_VIDEO_CONF, false),
+                    intent.getBooleanExtra(SipServiceConstants.PARAM_IS_TRANSFER, false));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.STACK_STATUS).equals(action)) {
-            onStackStatus(intent.getBooleanExtra(PARAM_STACK_STARTED, false));
+            onStackStatus(intent.getBooleanExtra(SipServiceConstants.PARAM_STACK_STARTED, false));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.CODEC_PRIORITIES).equals(action)) {
-            ArrayList<CodecPriority> codecList = intent.getParcelableArrayListExtra(PARAM_CODEC_PRIORITIES_LIST);
+            ArrayList<CodecPriority> codecList = intent.getParcelableArrayListExtra(SipServiceConstants.PARAM_CODEC_PRIORITIES_LIST);
             onReceivedCodecPriorities(codecList);
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.CODEC_PRIORITIES_SET_STATUS).equals(action)) {
-            onCodecPrioritiesSetStatus(intent.getBooleanExtra(PARAM_SUCCESS, false));
+            onCodecPrioritiesSetStatus(intent.getBooleanExtra(SipServiceConstants.PARAM_SUCCESS, false));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.MISSED_CALL).equals(action)) {
-            onMissedCall(intent.getStringExtra(PARAM_DISPLAY_NAME),
-                    intent.getStringExtra(PARAM_REMOTE_URI));
+            onMissedCall(intent.getStringExtra(SipServiceConstants.PARAM_DISPLAY_NAME),
+                    intent.getStringExtra(SipServiceConstants.PARAM_REMOTE_URI));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.VIDEO_SIZE).equals(action)) {
-            onVideoSize(intent.getIntExtra(PARAM_INCOMING_VIDEO_WIDTH, H264_DEF_WIDTH),
-                    intent.getIntExtra(PARAM_INCOMING_VIDEO_HEIGHT, H264_DEF_HEIGHT));
+            onVideoSize(intent.getIntExtra(SipServiceConstants.PARAM_INCOMING_VIDEO_WIDTH, SipServiceConstants.H264_DEF_WIDTH),
+                    intent.getIntExtra(SipServiceConstants.PARAM_INCOMING_VIDEO_HEIGHT, SipServiceConstants.H264_DEF_HEIGHT));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.CALL_STATS).equals(action)) {
-            int callStatus = intent.getIntExtra(PARAM_CALL_STATUS, -1);
+            int callStatus = intent.getIntExtra(SipServiceConstants.PARAM_CALL_STATUS, -1);
             onCallStats(
-                    intent.getIntExtra(PARAM_CALL_ID, -1),
-                    intent.getIntExtra(PARAM_CALL_STATS_DURATION, 0),
-                    intent.getStringExtra(PARAM_CALL_STATS_AUDIO_CODEC), callStatus,
-                    intent.getParcelableExtra(PARAM_CALL_STATS_RX_STREAM),
-                    intent.getParcelableExtra(PARAM_CALL_STATS_TX_STREAM));
+                    intent.getIntExtra(SipServiceConstants.PARAM_CALL_ID, -1),
+                    intent.getIntExtra(SipServiceConstants.PARAM_CALL_STATS_DURATION, 0),
+                    intent.getStringExtra(SipServiceConstants.PARAM_CALL_STATS_AUDIO_CODEC), callStatus,
+                    intent.getParcelableExtra(SipServiceConstants.PARAM_CALL_STATS_RX_STREAM),
+                    intent.getParcelableExtra(SipServiceConstants.PARAM_CALL_STATS_TX_STREAM));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.CALL_RECONNECTION_STATE).equals(action)) {
-            onCallReconnectionState((CallReconnectionState) intent.getSerializableExtra(PARAM_CALL_RECONNECTION_STATE));
+            onCallReconnectionState((CallReconnectionState) intent.getSerializableExtra(SipServiceConstants.PARAM_CALL_RECONNECTION_STATE));
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.SILENT_CALL_STATUS).equals(action)) {
             onSilentCallStatus(
-                    intent.getBooleanExtra(PARAM_SILENT_CALL_STATUS, false),
-                    intent.getStringExtra(PARAM_NUMBER)
+                    intent.getBooleanExtra(SipServiceConstants.PARAM_SILENT_CALL_STATUS, false),
+                    intent.getStringExtra(SipServiceConstants.PARAM_NUMBER)
             );
 
         } else if (SipServiceUtils.getPrivateAction(BroadcastAction.NOTIFY_TLS_VERIFY_STATUS_FAILED).equals(action)) {

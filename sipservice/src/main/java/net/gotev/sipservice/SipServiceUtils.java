@@ -112,7 +112,7 @@ public class SipServiceUtils {
     static String getPrivateAction(BroadcastAction action) {
         return NAMESPACE + "." + action;
     }
-    
+
     public static String getAction(SipServiceCallbacks action) {
         return NAMESPACE + "." + action;
     }
