@@ -404,7 +404,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             try {
                 SipUtility.playSound(dtmf + ".wav", this.getApplicationContext());
                 sipCall.dialDtmf(dtmf);
-                if (dtmf.equals("9")) {
+                if (dtmf.equals(DTMFCodes.NINE.toString())) {
                     SipAccount sipAccount = mActiveSipAccounts.get(accountID);
                     stopCallForegroundService(sipAccount);
                 }
@@ -670,7 +670,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetIncomingVideoFeed(Intent intent) {
-        startForeground(121, createForegroundServiceNotification(this, getString(R.string.app_name)));
+        startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, createForegroundServiceNotification(this, getString(R.string.app_name)));
         Logger.debug(TAG, "handleSetIncomingVideoFeed()ß");
         final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
@@ -696,7 +696,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 sipCall.setIncomingVideoFeed(surface);
             }
         }
-        enqueueDelayedJob(() -> stopForeground(false), 200);
+        enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
     }
 
     private void handleSetSelfVideoOrientation(Intent intent) {
@@ -1067,7 +1067,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mBroadcastEmitter.setAccount(data);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
-                enqueueDelayedJob(() -> stopForeground(false), 200);
+                enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
                 return;
             }
         } else {
@@ -1082,12 +1082,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mBroadcastEmitter.setAccount(data);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
-                enqueueDelayedJob(() -> stopForeground(false), 200);
+                enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
                 return;
             }
         }
 
-        enqueueDelayedJob(() -> stopForeground(false), 200);
+        enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
     }
 
     private void handleGetRegistrationStatus(Intent intent) {
