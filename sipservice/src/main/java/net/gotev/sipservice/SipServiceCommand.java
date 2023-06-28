@@ -479,7 +479,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void setCallMute(Context context, boolean mute) {
 
-        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
@@ -618,7 +618,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      */
     public static void setVideoMute(Context context, boolean mute) {
 
-        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID(context);
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
