@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class BroadcastEventReceiver extends BroadcastReceiver implements SipServiceConstants{
 
-    private static final String LOG_TAG = "SipServiceBR";
+    private static final String LOG_TAG = BroadcastEventReceiver.class.getSimpleName();
 
     private Context receiverContext;
 
@@ -37,24 +37,36 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
             onRegistration(intent.getStringExtra(PARAM_ACCOUNT_ID), stateCode);
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.INCOMING_CALL).equals(action)) {
-            onIncomingCall(intent.getStringExtra(PARAM_ACCOUNT_ID),
+            /*onIncomingCall(intent.getStringExtra(PARAM_ACCOUNT_ID),
                     intent.getIntExtra(PARAM_CALL_ID, -1),
                     intent.getStringExtra(PARAM_DISPLAY_NAME),
                     intent.getStringExtra(PARAM_REMOTE_URI),
-                    intent.getBooleanExtra(PARAM_IS_VIDEO, false));
+                    intent.getBooleanExtra(PARAM_IS_VIDEO, false));*/
+            //onIncomingCall(intent);
+            onIncomingCall(
+                    intent.getStringExtra(PARAM_DISPLAY_NAME),
+                    intent.getStringExtra(PARAM_INCOMING_LINKED_UUID),
+                    intent.getBooleanExtra(PARAM_NO_ACTIVE_CALL, false)
+            );
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALL_STATE).equals(action)) {
-            int callState = intent.getIntExtra(PARAM_CALL_STATE, -1);
+            /*int callState = intent.getIntExtra(PARAM_CALL_STATE, -1);
             int callStatus = intent.getIntExtra(PARAM_CALL_STATUS, -1);
             onCallState(intent.getStringExtra(PARAM_ACCOUNT_ID),
                     intent.getIntExtra(PARAM_CALL_ID, -1),
                     callState, callStatus,
-                    intent.getLongExtra(PARAM_CONNECT_TIMESTAMP, -1));
+                    intent.getLongExtra(PARAM_CONNECT_TIMESTAMP, -1));*/
+
+            final CallEvents.ScreenUpdate screenUpdate = intent.getParcelableExtra(PARAM_CALL_STATE);
+            onCallState(screenUpdate);
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALL_MEDIA_STATE).equals(action)) {
-            onCallMediaState(intent.getStringExtra(PARAM_ACCOUNT_ID),
+            /*onCallMediaState(intent.getStringExtra(PARAM_ACCOUNT_ID),
                     intent.getIntExtra(PARAM_CALL_ID, -1),
                     (MediaState) intent.getSerializableExtra(PARAM_MEDIA_STATE_KEY),
+                    intent.getBooleanExtra(PARAM_MEDIA_STATE_VALUE, false));*/
+
+            onCallMediaState((MediaState) intent.getSerializableExtra(PARAM_MEDIA_STATE_KEY),
                     intent.getBooleanExtra(PARAM_MEDIA_STATE_VALUE, false));
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.OUTGOING_CALL).equals(action)) {
@@ -77,7 +89,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.MISSED_CALL).equals(action)) {
             onMissedCall(intent.getStringExtra(PARAM_DISPLAY_NAME),
-                    intent.getStringExtra(PARAM_REMOTE_URI));
+                    intent.getStringExtra(PARAM_INCOMING_LINKED_UUID));
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.VIDEO_SIZE).equals(action)) {
             onVideoSize(intent.getIntExtra(PARAM_INCOMING_VIDEO_WIDTH, H264_DEF_WIDTH),
@@ -103,6 +115,9 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.NOTIFY_TLS_VERIFY_STATUS_FAILED).equals(action)) {
             onTlsVerifyStatusFailed();
+
+        } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALL_MEDIA_EVENT).equals(action)) {
+            onCallMediaEvent(intent.getIntExtra(PARAM_CALL_MEDIA_EVENT_TYPE, -1));
         }
     }
 
@@ -155,6 +170,8 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
                 BroadcastEventEmitter.BroadcastAction.CALLBACK_GENERIC_ERROR));
         intentFilter.addAction(BroadcastEventEmitter.getAction(
                 BroadcastEventEmitter.BroadcastAction.END_SERVICE_ACTION));
+        intentFilter.addAction(BroadcastEventEmitter.getAction(
+                BroadcastEventEmitter.BroadcastAction.CALL_MEDIA_EVENT));
         context.registerReceiver(this, intentFilter);
     }
 
@@ -180,6 +197,16 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
                 ", remoteUri: " + remoteUri);
     }
 
+    public void onIncomingCall(String displayName, String linkedUUID, boolean activeCall) {
+        Logger.debug(LOG_TAG, "onIncomingCall - displayName: " + getValue(getReceiverContext(), displayName) +
+                ", linkedUUID: " + linkedUUID +
+                ", activeCall: " + activeCall);
+    }
+
+    public void onIncomingCall(final Intent intent) {
+        Logger.debug(LOG_TAG, "onIncomingCall");
+    }
+
     public void onCallState(String accountID, int callID, int callStateCode, int callStatusCode, long connectTimestamp) {
         Logger.debug(LOG_TAG, "onCallState - accountID: " + getValue(getReceiverContext(), accountID) +
                 ", callID: " + callID +
@@ -188,11 +215,24 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
                 ", connectTimestamp: " + connectTimestamp);
     }
 
+    public void onCallState(final CallEvents.ScreenUpdate screenUpdate) {
+        Logger.debug(LOG_TAG, "onCallState - "+screenUpdate.toString());
+    }
+
     public void onCallMediaState(String accountID, int callID, MediaState stateType, boolean stateValue) {
         Logger.debug(LOG_TAG, "onCallMediaState - accountID: " + getValue(getReceiverContext(), accountID) +
                 ", callID: " + callID +
                 ", mediaStateType: " + stateType.name() +
                 ", mediaStateValue: " + stateValue);
+    }
+
+    public void onCallMediaState(MediaState stateType, boolean stateValue) {
+        Logger.debug(LOG_TAG, "onCallMediaState - mediaStateType: " + stateType.name() +
+                ", mediaStateValue: " + stateValue);
+    }
+
+    public void onCallMediaEvent(int mediaEvent) {
+        Logger.debug(LOG_TAG, "onCallMediaEvent - mediaEvent: "+mediaEvent);
     }
 
     public void onOutgoingCall(String accountID, int callID, String number, boolean isVideo, boolean isVideoConference, boolean isTransfer) {
@@ -216,8 +256,9 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
         Logger.debug(LOG_TAG, "Codec priorities " + (success ? "successfully set" : "set error"));
     }
 
-    public void onMissedCall(String displayName, String uri) {
-        Logger.debug(LOG_TAG, "Missed call from " + getValue(getReceiverContext(), displayName));
+    public void onMissedCall(String displayName, String linkedUUID) {
+        Logger.debug(LOG_TAG, "Missed call from " + getValue(getReceiverContext(), displayName)
+                + " with LinkedUUID " + getValue(getReceiverContext(), linkedUUID));
     }
 
     protected void onVideoSize(int width, int height) {

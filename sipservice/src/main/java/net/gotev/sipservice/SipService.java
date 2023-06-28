@@ -247,13 +247,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
         ICall activeIncomingCall = sipAccount.getActiveIncomingCall();
         if (activeIncomingCall != null && activeIncomingCall.getLinkedUUID().equalsIgnoreCase(linkedUUID) &&
                 activeIncomingCall.getState().equals(CallState.INCOMING_CALL)) {
-            // disconnect call if active
-            stopCallForegroundService(sipAccount);
+
             String number = intent.getStringExtra(SipServiceConstants.PARAM_INCOMING_FROM);
             IncomingCall incomingCallObject = createIncomingCallObject(intent);
             incomingCallObject.setCallType(CallType.MISSED);
             handleMissedCall(incomingCallObject, number);
-
 
             mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -261,6 +259,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
             MediaPlayerController.getInstance(this).resumeMusicPlayer();
         }
+
+        // disconnect call if active
+        stopCallForegroundService(sipAccount);
     }
 
     public synchronized void stopCallForegroundService(SipAccount sipAccount) {
@@ -304,17 +305,15 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         getActiveSipAccount(this).setActiveIncomingCall(incomingCall);
 
-        final String accountId = intent.getStringExtra(PARAM_ACCOUNT_ID);
-        getBroadcastEmitter().incomingCall
-                (
-                        accountId,
-                        incomingCall.getNumber(),
-                        incomingCall.getServer(),
-                        incomingCall.getSlot(),
-                        incomingCall.getLinkedUUID(),
-                        incomingCall.getCallerName(),
-                        false
-                );
+        getBroadcastEmitter().incomingCall(
+                incomingCall.getNumber(),
+                incomingCall.getServer(),
+                incomingCall.getSlot(),
+                incomingCall.getLinkedUUID(),
+                incomingCall.getCallerName(),
+                getActiveSipAccount(this).isActiveCallPresent(),
+                false
+        );
 
     }
 
@@ -671,7 +670,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void handleSetIncomingVideoFeed(Intent intent) {
         startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, createForegroundServiceNotification(this, getString(R.string.app_name)));
-        Logger.debug(TAG, "handleSetIncomingVideoFeed()ß");
+        Logger.debug(TAG, "handleSetIncomingVideoFeed()");
         final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
         final Set<Integer> activeCallIDs = getActiveSipAccount(accountID).getCallIDs();
