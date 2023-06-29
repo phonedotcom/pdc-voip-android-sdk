@@ -4,6 +4,8 @@ package net.gotev.sipservice;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 /**
  * Call Event class is container for CallStates like
  * {@link CallScreenState OngoingCallState},
@@ -61,6 +63,15 @@ public class CallEvents {
         @Override
         public void writeToParcel(Parcel parcel, int i) {
             parcel.writeByte((byte) (forceUpdate ? 1 : 0));
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "ScreenUpdate {" +
+                    " forceUpdate = " + forceUpdate +
+                    " CallScreenState = "+ callScreenState+
+                    " }";
         }
     }
 

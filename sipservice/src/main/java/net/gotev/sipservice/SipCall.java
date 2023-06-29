@@ -220,7 +220,7 @@ public class SipCall extends Call implements ICall {
                 account.getService().getBroadcastEmitter().videoSize(
                         (int) mVideoWindow.getInfo().getSize().getW(),
                         (int) mVideoWindow.getInfo().getSize().getH());
-                account.getService().getBroadcastEmitter().sendCallMediaEvent(prm.getEv().getType());
+                account.getService().getBroadcastEmitter().callMediaEvent(prm.getEv().getType());
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Unable to get video dimensions", ex);
             }

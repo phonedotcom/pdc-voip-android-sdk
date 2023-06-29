@@ -31,30 +31,13 @@ public final class NotificationCreator {
             notificationBody = SipApplication.getNotificationBody(context);
         }
 
-        Intent resultIntent = new Intent();
-        final BroadcastEventEmitter mBroadcastEmitter = new BroadcastEventEmitter(context);
-        resultIntent.setAction(SipServiceUtils.getPrivateAction(BroadcastAction.INCOMING_CALL_NOTIFICATION_CLICK));
-        resultIntent.putExtra(SipServiceConstants.INTENT_HANDLED, true);
-        resultIntent.putExtra(SipServiceConstants.PARAM_IS_CALL, isCall);
-        resultIntent = mBroadcastEmitter.getExplicitIntent(resultIntent);
-
-        PendingIntent resultPendingIntent =
-                PendingIntent.getBroadcast(
-                        context,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                );
-
-        NotificationCompat.Builder mBuilder;
-        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SERVICE_NOTIFICATION_CHANNEL_ID : "";
-        mBuilder = new NotificationCompat.Builder(context, channelId)
+        final String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SERVICE_NOTIFICATION_CHANNEL_ID : "";
+        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(SipApplication.getNotificationIcon(context))
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentTitle(SipApplication.getNotificationContentTitle(context))
                 .setContentText(notificationBody);
-        mBuilder.setContentIntent(resultPendingIntent);
 
         return mBuilder.build();
     }
@@ -70,7 +53,6 @@ public final class NotificationCreator {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
         String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID : "";
-//        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SipServiceConstants.GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL : "";
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
                 .setContentText(callName);
         mBuilder.setContentIntent(resultPendingIntent);

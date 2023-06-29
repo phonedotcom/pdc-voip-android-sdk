@@ -253,7 +253,6 @@ public final class SipService extends BackgroundService implements SipServiceCon
             incomingCallObject.setCallType(CallType.MISSED);
             handleMissedCall(incomingCallObject, number);
 
-
             mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             audioManager.setSpeakerphoneOn(false);
@@ -305,17 +304,15 @@ public final class SipService extends BackgroundService implements SipServiceCon
 
         getActiveSipAccount(this).setActiveIncomingCall(incomingCall);
 
-        final String accountId = intent.getStringExtra(PARAM_ACCOUNT_ID);
-        getBroadcastEmitter().incomingCall
-                (
-                        accountId,
-                        incomingCall.getNumber(),
-                        incomingCall.getServer(),
-                        incomingCall.getSlot(),
-                        incomingCall.getLinkedUUID(),
-                        incomingCall.getCallerName(),
-                        false
-                );
+        getBroadcastEmitter().incomingCall(
+                incomingCall.getNumber(),
+                incomingCall.getServer(),
+                incomingCall.getSlot(),
+                incomingCall.getLinkedUUID(),
+                incomingCall.getCallerName(),
+                getActiveSipAccount(this).isActiveCallPresent(),
+                false
+        );
 
     }
 
@@ -672,7 +669,7 @@ public final class SipService extends BackgroundService implements SipServiceCon
 
     private void handleSetIncomingVideoFeed(Intent intent) {
         startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, createForegroundServiceNotification(this, getString(R.string.app_name)));
-        Logger.debug(TAG, "handleSetIncomingVideoFeed()ß");
+        Logger.debug(TAG, "handleSetIncomingVideoFeed()");
         final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
         final Set<Integer> activeCallIDs = getActiveSipAccount(accountID).getCallIDs();
