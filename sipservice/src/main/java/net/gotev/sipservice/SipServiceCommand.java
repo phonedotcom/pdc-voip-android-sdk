@@ -267,7 +267,6 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      *
      */
     public static void hangUpActiveCalls(Context context) {
-
         final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 

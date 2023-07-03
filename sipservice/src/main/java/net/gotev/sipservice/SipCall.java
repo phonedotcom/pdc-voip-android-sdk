@@ -135,7 +135,12 @@ public class SipCall extends Call implements ICall {
                         throw ex;
                     }
                 }
+
+                account.getService().stopForegroundService(account);
+
             } else if (callState == pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED) {
+                Logger.debug(LOG_TAG, "PJSIP_INV_STATE_CONFIRMED");
+
                 checkAndStopLocalRingBackTone();
                 connectTimestamp = System.currentTimeMillis();
                 if (videoCall) {
@@ -163,8 +168,9 @@ public class SipCall extends Call implements ICall {
                 }
             }
 
-            account.getService().getBroadcastEmitter()
-                    .callState(new CallEvents.ScreenUpdate(callScreenState, true));
+            if(callScreenState!= null)
+                account.getService().getBroadcastEmitter()
+                        .callState(new CallEvents.ScreenUpdate(callScreenState, true));
 
             /*account.getService().getBroadcastEmitter()
                     .callState(account.getData().getIdUri(account.getService().getApplicationContext()), callID, callState, callStatus, connectTimestamp);
@@ -213,8 +219,8 @@ public class SipCall extends Call implements ICall {
 
     @Override
     public void onCallMediaEvent(OnCallMediaEventParam prm) {
-        Logger.debug(LOG_TAG, "onCallMediaEvent()");
         if (prm.getEv().getType() == pjmedia_event_type.PJMEDIA_EVENT_FMT_CHANGED) {
+            Logger.debug(LOG_TAG, "onCallMediaEvent()");
             // Sending new video size
             try {
                 account.getService().getBroadcastEmitter().videoSize(
@@ -224,8 +230,8 @@ public class SipCall extends Call implements ICall {
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Unable to get video dimensions", ex);
             }
+            super.onCallMediaEvent(prm);
         }
-        super.onCallMediaEvent(prm);
     }
 
     @Override
