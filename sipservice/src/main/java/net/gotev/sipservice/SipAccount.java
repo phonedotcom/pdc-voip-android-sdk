@@ -429,6 +429,10 @@ public class SipAccount extends Account {
         return !activeCalls.isEmpty() || activeIncomingCall != null;
     }
 
+    public boolean noActiveCallPresent() {
+        return activeCalls.isEmpty() && activeIncomingCall == null;
+    }
+
     /**
      * Get active incoming call {@link ICall}
      *
