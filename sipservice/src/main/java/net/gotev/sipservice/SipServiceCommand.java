@@ -6,6 +6,10 @@ import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.view.Surface;
 
+import net.gotev.sipservice.models.ConfigureFCMPushNotification;
+import net.gotev.sipservice.models.ConfigurePhoneServiceNotification;
+import net.gotev.sipservice.models.ConfigureSip;
+
 import org.pjsip.PjCameraInfo2;
 
 import java.util.ArrayList;
@@ -58,10 +62,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.putExtra(PARAM_ACCOUNT_DATA, sipAccountData);
         executeSipServiceAction(context, intent);
         //context.startService(intent);
-        SharedPreferencesHelper.getInstance(context).putInSharedPreference(
-                SharedPreferenceConstant.SIP_ACCOUNT_ID,
-                accountID
-        );
+        SharedPreferencesHelper.getInstance(context).putInSharedPreference(SharedPreferenceConstant.SIP_ACCOUNT_ID, accountID);
 
         return accountID;
     }
@@ -76,8 +77,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @param codecPriorities list with the codec priorities to set
      * @return sip account ID uri as a string
      */
-    public static String setAccountWithCodecs(Context context, SipAccountData sipAccount,
-                                              ArrayList<CodecPriority> codecPriorities) {
+    public static String setAccountWithCodecs(Context context, SipAccountData sipAccount, ArrayList<CodecPriority> codecPriorities) {
         if (sipAccount == null) {
             throw new IllegalArgumentException("sipAccount MUST not be null!");
         }
@@ -148,14 +148,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @param isVideoConference whether the call is video conference or not
      * @param isTransfer        whether this (second) call will eventually be transferred to the current
      */
-    public static void makeCall(
-            Context context,
-            String accountID,
-            String numberToCall,
-            boolean isVideo,
-            boolean isVideoConference,
-            boolean isTransfer
-    ) {
+    public static void makeCall(Context context, String accountID, String numberToCall, boolean isVideo, boolean isVideoConference, boolean isTransfer) {
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
@@ -212,15 +205,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @param isVideoConference whether the call is video conference or not
      * @param transport         transport to be configured on guest account
      */
-    public static void makeDirectCall(
-            Context context,
-            String guestName,
-            Uri sipUri,
-            String host,
-            boolean isVideo,
-            boolean isVideoConference,
-            SipAccountTransport transport
-    ) {
+    public static void makeDirectCall(Context context, String guestName, Uri sipUri, String host, boolean isVideo, boolean isVideoConference, SipAccountTransport transport) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_MAKE_DIRECT_CALL);
         intent.putExtra(PARAM_GUEST_NAME, guestName);
@@ -778,20 +763,20 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * This method is called after user login but before initializing the sdk library for passing the
      * information needed for push registration.
      *
-     * @param fcmRegistration: FCMRegistration
-     *                         fcmRegistration.pushToken               firebase push token
-     *                         fcmRegistration.versionName             app version name
-     *                         fcmRegistration.bundleID                application id
-     *                         fcmRegistration.deviceInfo              device unique identifier
-     *                         fcmRegistration.applicationID           amazon server push notification id
-     *                         fcmRegistration.deviceType              device type like android or iOS
-     *                         fcmRegistration.voipId                  user's VoIP id
-     *                         fcmRegistration.voipPhoneID             user's VoiP phone ID
-     *                         fcmRegistration.context                 Android Context needed for shared preferences operations
+     * @param configureFCMPushNotification: ConfigureFCMPushNotification
+     *                                      configureFCMPushNotification.pushToken               firebase push token
+     *                                      configureFCMPushNotification.versionName             app version name
+     *                                      configureFCMPushNotification.bundleID                application id
+     *                                      configureFCMPushNotification.deviceInfo              device unique identifier
+     *                                      configureFCMPushNotification.applicationID           amazon server push notification id
+     *                                      configureFCMPushNotification.deviceType              device type like android or iOS
+     *                                      configureFCMPushNotification.voipId                  user's VoIP id
+     *                                      configureFCMPushNotification.voipPhoneID             user's VoiP phone ID
+     * @param context:                      Context                 Android Context needed for shared preferences operations
      * @see SipApplication#getHeadersForPush(Context)
      */
-    public static void saveInformationForPushRegistration(FCMRegistration fcmRegistration) {
-        SipApplication.saveInformationForPush(fcmRegistration);
+    public static void saveInformationForPushRegistration(ConfigureFCMPushNotification configureFCMPushNotification, Context context) {
+        SipApplication.saveInformationForPush(configureFCMPushNotification, context);
     }
 
     /**
@@ -811,38 +796,34 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * This method is called by client for passing information to SDK which is needed for login
      * into SIP server.
      *
-     * @param sipInitialization SipInitialization
-     *                          sipInitialization.sipUsername         sipUsername credentials
-     *                          sipInitialization.sipPassword         sipPassword credentials
-     *                          sipInitialization.domainName          VoIP domain name
-     *                          sipInitialization.port                VoIP port name
-     *                          sipInitialization.securePort          optional needed in case of encrypted communication
-     *                          sipInitialization.secureProtocolName  optional needed in case of encrypted communication
-     *                          sipInitialization.protocolName        transport protocol to be used
-     *                          sipInitialization.context             Android Context needed for shared preferences operations
+     * @param configureSip ConfigureSip
+     *                     configureSip.sipUsername         sipUsername credentials
+     *                     configureSip.sipPassword         sipPassword credentials
+     *                     configureSip.domainName          VoIP domain name
+     *                     configureSip.port                VoIP port name
+     *                     configureSip.securePort          optional needed in case of encrypted communication
+     *                     configureSip.secureProtocolName  optional needed in case of encrypted communication
+     *                     configureSip.protocolName        transport protocol to be used
+     * @param context:     Context                 Android Context needed for shared preferences operations
      * @see SipService#ACTION_SET_ACCOUNT
      */
-    public static void saveInformationForSipLibraryInitialization
-    (
-            SipInitialization sipInitialization
-    ) {
-        SipApplication.saveInformationForSipLibraryInitialization(sipInitialization);
+    public static void saveInformationForSipLibraryInitialization(ConfigureSip configureSip, Context context) {
+        SipApplication.saveInformationForSipLibraryInitialization(configureSip, context);
     }
 
     /**
      * This method is called by client for passing information to SDK which is needed for showing
      * foreground service notification {@link SipService ForegroundServiceClass}.
      *
-     * @param foregroundServiceNotification ForegroundServiceNotification
-     *                                      foregroundServiceNotification.notificationTitle         notification title
-     *                                      foregroundServiceNotification.notificationSubtitle      notification subtitle
-     *                                      foregroundServiceNotification.notificationIcon          notification icon id
-     *                                      foregroundServiceNotification.context                   Android context needed for shared preferences operations
+     * @param configurePhoneServiceNotification ConfigurePhoneServiceNotification
+     *                                          configurePhoneServiceNotification.notificationTitle         notification title
+     *                                          configurePhoneServiceNotification.notificationSubtitle      notification subtitle
+     *                                          configurePhoneServiceNotification.notificationIcon          notification icon id
+     * @param context:                          Context                 Android Context needed for shared preferences operations
      */
 
-    public static void saveInformationForForegroundServiceNotification
-    (ForegroundServiceNotification foregroundServiceNotification) {
-        SipApplication.saveInformationForForegroundServiceNotification(foregroundServiceNotification);
+    public static void saveInformationForForegroundServiceNotification(ConfigurePhoneServiceNotification configurePhoneServiceNotification, Context context) {
+        SipApplication.saveInformationForForegroundServiceNotification(configurePhoneServiceNotification, context);
     }
 
     /**
@@ -858,10 +839,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @param callerName name of caller
      * @param context    Android context needed for talking to SDK service
      */
-    public static void handleIncomingCallPushNotification(Context context, String status,
-                                                          String from, String server, String slot,
-                                                          String linkedUUID,
-                                                          String callerName) {
+    public static void handleIncomingCallPushNotification(Context context, String status, String from, String server, String slot, String linkedUUID, String callerName) {
 
         final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);

@@ -31,6 +31,10 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import net.gotev.sipservice.models.ConfigureFCMPushNotification;
+import net.gotev.sipservice.models.ConfigurePhoneServiceNotification;
+import net.gotev.sipservice.models.ConfigureSip;
+
 import org.pjsip.pjsua2.SipHeader;
 import org.pjsip.pjsua2.SipHeaderVector;
 
@@ -50,8 +54,7 @@ public final class SipApplication {
      *
      * @param fcmRegistration FCMRegistration
      */
-    public static void saveInformationForPush(FCMRegistration fcmRegistration) {
-        Context context = fcmRegistration.getContext();
+    public static void saveInformationForPush(ConfigureFCMPushNotification fcmRegistration, Context context) {
         setPushToken(fcmRegistration.getPushToken(), context);
         setVersionName(fcmRegistration.getVersionName(), context);
         setBundleID(fcmRegistration.getBundleID(), context);
@@ -68,8 +71,7 @@ public final class SipApplication {
      *
      * @param sipInitialization SipInitialization
      */
-    public static void saveInformationForSipLibraryInitialization(SipInitialization sipInitialization) {
-        Context context = sipInitialization.getContext();
+    public static void saveInformationForSipLibraryInitialization(ConfigureSip sipInitialization, Context context) {
         setSipUsername(sipInitialization.getSipUsername(), context);
         setSipPassword(sipInitialization.getSipPassword(), context);
         setDomainName(sipInitialization.getDomainName(), context);
@@ -85,10 +87,10 @@ public final class SipApplication {
      *
      * @param foregroundServiceNotification ForegroundServiceNotification
      */
-    public static void saveInformationForForegroundServiceNotification(ForegroundServiceNotification foregroundServiceNotification) {
-        setNotificationBody(foregroundServiceNotification.getAppName(), foregroundServiceNotification.getContext());
-        setNotificationContentTitle(foregroundServiceNotification.getNotificationMessage(), foregroundServiceNotification.getContext());
-        setNotificationIcon(foregroundServiceNotification.getNotificationIcon(), foregroundServiceNotification.getContext());
+    public static void saveInformationForForegroundServiceNotification(ConfigurePhoneServiceNotification foregroundServiceNotification, Context context) {
+        setNotificationBody(foregroundServiceNotification.getAppName(), context);
+        setNotificationContentTitle(foregroundServiceNotification.getNotificationMessage(), context);
+        setNotificationIcon(foregroundServiceNotification.getNotificationIcon(), context);
     }
 
 

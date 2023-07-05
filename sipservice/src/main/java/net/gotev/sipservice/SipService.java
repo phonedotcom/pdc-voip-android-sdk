@@ -223,10 +223,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final SipAccount sipAccount = getActiveSipAccount(this);
         if(sipAccount != null) {
             try {
+                SharedPreferencesHelper.getInstance(this).clearAllSharedPreferences();
                 sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
                 sipAccount.setRegistration(false);
-
-                SharedPreferencesHelper.getInstance(this).clearAllSharedPreferences();
             } catch (Exception e) {
                 e.printStackTrace();
             }
