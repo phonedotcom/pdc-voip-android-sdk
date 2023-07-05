@@ -228,7 +228,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Checks the status of a call. You will receive the result in
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID used to make the call
      * @param callID call ID
@@ -246,7 +246,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Hangs up an active call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID to hang up
@@ -293,7 +293,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Send DTMF. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID to hang up
@@ -314,7 +314,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Send DTMF. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param dtmfTone DTMF tone to send (e.g. number from 0 to 9 or # or *).
      *                 You can send only one DTMF at a time.
@@ -334,7 +334,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Accept an incoming call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID to hang up
@@ -354,7 +354,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Accept an incoming call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * //@param accountID account ID
      * @param isVideo video call or not
@@ -378,7 +378,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Decline an incoming call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      */
     public static void declineIncomingCall(Context context) {
@@ -394,7 +394,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Blind call transfer. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID
@@ -414,7 +414,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Attended call transfer. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callIdOrig call ID of the original call
@@ -434,7 +434,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Sets hold status for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID
@@ -454,7 +454,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Toggle hold status for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID
@@ -472,7 +472,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Sets mute status for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param mute true to mute the call, false to un-mute it
      */
@@ -491,7 +491,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Toggle mute status for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID
@@ -571,7 +571,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Sets up the incoming video feed. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID
@@ -591,7 +591,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Sets up the incoming video feed. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param surface surface on which to render the incoming video
      */
@@ -611,7 +611,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Mutes and Un-Mutes video for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param mute whether to mute or un-mute the video
      */
@@ -630,7 +630,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Starts the preview for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID
@@ -650,7 +650,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Rotates the transmitting video (heads up always), according to the device orientation.
      * If the call does not exist or has been terminated, a disconnected state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID
@@ -670,7 +670,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Stops the preview for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID
@@ -688,7 +688,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Switches between front and back camera. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
-     * {@link BroadcastEventReceiver#onCallState(String, int, int, int, long)}
+     * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
      * @param callID call ID

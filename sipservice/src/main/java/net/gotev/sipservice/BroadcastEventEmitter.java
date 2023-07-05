@@ -5,6 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Parcelable;
+
+import net.gotev.sipservice.constants.CallEvent;
+import net.gotev.sipservice.model.IncomingCallData;
+import net.gotev.sipservice.model.MissedCallData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +22,7 @@ import java.util.List;
 public class BroadcastEventEmitter implements SipServiceConstants {
 
     public static final String TAG = BroadcastEventEmitter.class.getSimpleName();
-    public static String NAMESPACE = "com.phone";
+    public static String NAMESPACE = "com.phone.voip";
 
     private final Context mContext;
 
@@ -27,7 +32,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public enum BroadcastAction {
         REGISTRATION,
         INCOMING_CALL,
-        CALL_STATE,
+        CALL_EVENT,
         CALL_MEDIA_STATE,
         OUTGOING_CALL,
         STACK_STATUS,
@@ -66,7 +71,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      * @param callName Caller Name
      * @param isVideo Call supports Video or no
      */
-    public void incomingCall
+   /* public void incomingCall
     (
             String number, String server,
             String slot, String linkedUUID, String callName,
@@ -82,8 +87,26 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_INCOMING_SLOT, slot);
         intent.putExtra(PARAM_INCOMING_LINKED_UUID, linkedUUID);
         intent.putExtra(PARAM_DISPLAY_NAME, callName);
-        intent.putExtra(PARAM_NO_ACTIVE_CALL, isActiveCallPresent);
+        intent.putExtra(PARAM_ANY_ACTIVE_CALL, isActiveCallPresent);
         intent.putExtra(PARAM_IS_VIDEO, isVideo);
+
+        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+        mContext.sendBroadcast(intent);
+    }*/
+
+    /**
+     * Emit an incoming call broadcast intent.
+     *
+     * @param incomingCallData {@link IncomingCallData}
+     * @param isAnyActiveCall Any active call present (true/false)
+     */
+    public void incomingCall(final IncomingCallData incomingCallData, boolean isAnyActiveCall) {
+        final Intent intent = new Intent();
+
+        intent.setAction(getAction(BroadcastAction.INCOMING_CALL));
+        intent.putExtra(PARAM_INCOMING_CALL_DATA, incomingCallData);
+        intent.putExtra(PARAM_ANY_ACTIVE_CALL, isAnyActiveCall);
 
         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
 
@@ -153,14 +176,14 @@ public class BroadcastEventEmitter implements SipServiceConstants {
 
     /**
      * This method is used for sending different calling events to update calling screen to client.
-     * See @{@link CallScreenState}
+     * See {@link CallEvent}
      *
-     * @param screenUpdate CallEvents.ScreenUpdate
+     * @param event {@link CallEvent}
      */
-    public synchronized void callState(CallEvents.ScreenUpdate screenUpdate) {
+    public synchronized void callState(CallEvent event) {
         final Intent intent = new Intent();
-        intent.putExtra(PARAM_CALL_STATE, screenUpdate);
-        intent.setAction(getAction(BroadcastAction.CALL_STATE));
+        intent.putExtra(PARAM_CALL_EVENT, (Parcelable) event);
+        intent.setAction(getAction(BroadcastAction.CALL_EVENT));
         mContext.sendBroadcast(intent);
     }
 
@@ -308,7 +331,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         sendExplicitBroadcast(intent);
     }
 
-    public void sendMissedCall(boolean isIncomingCall, String number, String linkedUUid,
+    /*public void sendMissedCall(boolean isIncomingCall, String number, String linkedUUid,
                                String callerName, long time, long seconds, CallType callType) {
         Intent intent = new Intent();
         intent.putExtra(PARAM_IS_INCOMING_CALL, isIncomingCall);
@@ -318,6 +341,13 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_TIME, time);
         intent.putExtra(PARAM_SECONDS, seconds);
         intent.putExtra(PARAM_CALL_TYPE, callType);
+        intent.setAction(getAction(BroadcastAction.MISSED_CALL));
+        mContext.sendBroadcast(intent);
+    }*/
+
+    public void missedCall(final MissedCallData missedCallData) {
+        Intent intent = new Intent();
+        intent.putExtra(PARAM_MISSED_CALL_DATA, missedCallData);
         intent.setAction(getAction(BroadcastAction.MISSED_CALL));
         mContext.sendBroadcast(intent);
     }

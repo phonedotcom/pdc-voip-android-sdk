@@ -9,26 +9,26 @@ import java.io.Serializable;
 public interface ICall extends Serializable{
 
     /**
-     * Method for returning the CallerName, uses {@link #getCallerNumber()}, it performs operation on
-     * {@link #getCallerNumber()} to return name based on formatting and custom logic in implementatio
+     * Method for returning the CallerName, uses {@link #getNumber()}, it performs operation on
+     * {@link #getNumber()} to return name based on formatting and custom logic in implementation
      * class.
      *
      * @return the callerName
      */
-    String getCallName();
+    String getCallerName();
 
     /**
      * Method for returning the CallerName
-     * @see #getCallName()
+     * @see #getCallerName()
      * @return the caller name
      */
-    String getCallerNumber();
+    String getNumber();
 
     /**
      * Method for setting the caller name
-     * @param callerCname
+     * @param {@link String} callerNumber
      */
-    void setCallerNumber(String callerCname);
+    void setNumber(String callerNumber);
 
     /**
      * Method for checking the hold unhold status of current call
@@ -80,8 +80,7 @@ public interface ICall extends Serializable{
     String getImageUrl();
 
     /**
-     *
-     * @return
+     * @return {@link String} LinkedUUID of Call
      */
     String getLinkedUUID();
 
