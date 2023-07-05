@@ -270,6 +270,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     public synchronized void stopCallForegroundService(SipAccount sipAccount) {
+        if(sipAccount == null){
+            stopForeground(true);
+            return;
+        }
         Logger.debug(TAG, "stopCallForegroundService");
         if (sipAccount.isActiveCallPresent()) {
             Logger.debug(TAG, "stopCallForegroundService -> Active Call Present");
