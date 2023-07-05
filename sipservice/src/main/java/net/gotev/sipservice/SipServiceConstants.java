@@ -69,7 +69,7 @@ public interface SipServiceConstants {
     String PARAM_REGISTRATION_CODE = "registrationCode";
     String PARAM_REMOTE_URI = "remoteUri";
     String PARAM_DISPLAY_NAME = "displayName";
-    String PARAM_CALL_STATE = "callState";
+    String PARAM_CALL_EVENT = "callEvent";
     String PARAM_CALL_STATUS = "callStatus";
     String PARAM_CONNECT_TIMESTAMP = "connectTimestamp";
     String PARAM_STACK_STARTED = "stackStarted";
@@ -88,9 +88,11 @@ public interface SipServiceConstants {
     String PARAM_INCOMING_SLOT = "incomingSlot";
     String PARAM_INCOMING_LINKED_UUID = "incomingLinkedUuid";
     String PARAM_INCOMING_STATUS = "incomingStatus";
-    String PARAM_NO_ACTIVE_CALL = "isActiveCallPresent";
+    String PARAM_ANY_ACTIVE_CALL = "isAnyActiveCall";
     String PARAM_IS_CALL = "isCall";
     String PARAM_CALL_MEDIA_EVENT_TYPE = "callMediaEventType";
+    String PARAM_INCOMING_CALL_DATA = "incomingCallData";
+    String PARAM_MISSED_CALL_DATA = "missedCallData";
 
 
     /**

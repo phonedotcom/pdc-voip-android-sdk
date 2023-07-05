@@ -8,7 +8,7 @@ package net.gotev.sipservice;
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
-public class Logger {
+class Logger {
 
     public enum LogLevel {
         DEBUG,

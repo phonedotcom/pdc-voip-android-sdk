@@ -149,7 +149,7 @@ public class SipAccount extends Account {
 
         try {
             //Put Number in SipCall for further use
-            call.setCallerNumber(numberToDial);
+            call.setNumber(numberToDial);
 
             Logger.debug(LOG_TAG, "CallerName: " + callerName);
             numberToDial = SipUtility.getSipUserUri(callerName, service.getApplicationContext());
@@ -215,7 +215,7 @@ public class SipAccount extends Account {
 
         try {
             //Put Number in SipCall for further use
-            call.setCallerNumber(numberToDial);
+            call.setNumber(numberToDial);
 
             numberToDial = SipUtility.getSipUserUri(numberToDial, service.getApplicationContext());
             Logger.debug(LOG_TAG, "Number To Dial: " + numberToDial);
