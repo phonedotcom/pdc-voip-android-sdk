@@ -1,17 +1,9 @@
 package net.gotev.sipservice
 
 import android.content.Context
+import net.gotev.sipservice.model.SipInitializationDetails
 
-class SipInitializationBuilder(
-    context: Context,
-    sipUsername: String,
-    sipPassword: String,
-    domainName: String,
-    port: Int,
-    securePort: Int,
-    secureProtocolName: String,
-    protocolName: String
-) {
+class SipInitializationBuilder {
 
     private var context: Context? = null
     private var sipUsername: String = ""
@@ -22,8 +14,8 @@ class SipInitializationBuilder(
     private var secureProtocolName: String = ""
     private var protocolName: String = ""
 
-    fun build(): SipInitializationBuilder {
-        return SipInitializationBuilder(
+    fun build(): SipInitializationDetails {
+        return SipInitializationDetails(
             context!!,
             sipUsername,
             sipPassword,
