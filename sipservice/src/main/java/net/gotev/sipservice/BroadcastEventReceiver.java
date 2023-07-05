@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author gotev (Aleksandar Gotev)
  */
-public class BroadcastEventReceiver extends BroadcastReceiver implements SipServiceConstants{
+public class BroadcastEventReceiver extends BroadcastReceiver implements SipServiceConstants {
 
     private static final String LOG_TAG = BroadcastEventReceiver.class.getSimpleName();
 
@@ -31,7 +31,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
         String action = intent.getAction();
 
         if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALLBACK_SET_ACCOUNT).equals(action)) {
-            onSetAccount(intent.getStringExtra(PARAM_ACCOUNT_ID));
+            onSetAccount(intent.getStringExtra(PARAM_USERNAME));
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.REGISTRATION).equals(action)) {
             int stateCode = intent.getIntExtra(PARAM_REGISTRATION_CODE, -1);
             onRegistration(intent.getStringExtra(PARAM_ACCOUNT_ID), stateCode);
@@ -216,7 +216,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
     }
 
     public void onCallState(final CallEvents.ScreenUpdate screenUpdate) {
-        Logger.debug(LOG_TAG, "onCallState - "+screenUpdate.toString());
+        Logger.debug(LOG_TAG, "onCallState - " + screenUpdate.toString());
     }
 
     public void onCallMediaState(String accountID, int callID, MediaState stateType, boolean stateValue) {
@@ -232,7 +232,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
     }
 
     public void onCallMediaEvent(int mediaEvent) {
-        Logger.debug(LOG_TAG, "onCallMediaEvent - mediaEvent: "+mediaEvent);
+        Logger.debug(LOG_TAG, "onCallMediaEvent - mediaEvent: " + mediaEvent);
     }
 
     public void onOutgoingCall(String accountID, int callID, String number, boolean isVideo, boolean isVideoConference, boolean isTransfer) {
@@ -281,8 +281,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
         Logger.debug(LOG_TAG, "TlsVerifyStatusFailed");
     }
 
-    private void onSetAccount(String accountID) {
-        Logger.debug(LOG_TAG, "onSetAccount - accountID: " + getValue(getReceiverContext(), accountID));
-
+    public void onSetAccount(String username) {
+        Logger.debug(LOG_TAG, "onSetAccount - username: " + getValue(getReceiverContext(), username));
     }
 }
