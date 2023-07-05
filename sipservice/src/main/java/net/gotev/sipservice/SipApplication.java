@@ -31,10 +31,6 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import net.gotev.sipservice.model.FCMRegistrationDetails;
-import net.gotev.sipservice.model.ForegroundServiceNotificationDetails;
-import net.gotev.sipservice.model.SipInitializationDetails;
-
 import org.pjsip.pjsua2.SipHeader;
 import org.pjsip.pjsua2.SipHeaderVector;
 
@@ -52,47 +48,47 @@ public final class SipApplication {
     /**
      * This method is used to save information for push notification.
      *
-     * @param fcmRegistrationDetails FCMRegistrationDetails
+     * @param fcmRegistration FCMRegistration
      */
-    public static void saveInformationForPush(FCMRegistrationDetails fcmRegistrationDetails) {
-        Context context = fcmRegistrationDetails.getContext();
-        setPushToken(fcmRegistrationDetails.getPushToken(), context);
-        setVersionName(fcmRegistrationDetails.getVersionName(), context);
-        setBundleID(fcmRegistrationDetails.getBundleID(), context);
-        setDeviceInfo(fcmRegistrationDetails.getDeviceInfo(), context);
-        setApplicationID(fcmRegistrationDetails.getApplicationID(), context);
-        setHdeviceType(fcmRegistrationDetails.getDeviceType(), context);
-        sethVoipID(fcmRegistrationDetails.getVoipId(), context);
-        sethVoipPhoneID(fcmRegistrationDetails.getVoipPhoneID(), context);
+    public static void saveInformationForPush(FCMRegistration fcmRegistration) {
+        Context context = fcmRegistration.getContext();
+        setPushToken(fcmRegistration.getPushToken(), context);
+        setVersionName(fcmRegistration.getVersionName(), context);
+        setBundleID(fcmRegistration.getBundleID(), context);
+        setDeviceInfo(fcmRegistration.getDeviceInfo(), context);
+        setApplicationID(fcmRegistration.getApplicationID(), context);
+        setHdeviceType(fcmRegistration.getDeviceType(), context);
+        sethVoipID(fcmRegistration.getVoipId(), context);
+        sethVoipPhoneID(fcmRegistration.getVoipPhoneID(), context);
     }
 
 
     /**
      * This method is used to save information for library initialization.
      *
-     * @param sipInitializationDetails sipInitializationDetails
+     * @param sipInitialization SipInitialization
      */
-    public static void saveInformationForSipLibraryInitialization(SipInitializationDetails sipInitializationDetails) {
-        Context context = sipInitializationDetails.getContext();
-        setSipUsername(sipInitializationDetails.getSipUsername(), context);
-        setSipPassword(sipInitializationDetails.getSipPassword(), context);
-        setDomainName(sipInitializationDetails.getDomainName(), context);
-        setPort(sipInitializationDetails.getPort(), context);
-        setSecurePort(sipInitializationDetails.getSecurePort(), context);
-        setSecureProtocolName(sipInitializationDetails.getSecureProtocolName(), context);
-        setProtocolName(sipInitializationDetails.getProtocolName(), context);
+    public static void saveInformationForSipLibraryInitialization(SipInitialization sipInitialization) {
+        Context context = sipInitialization.getContext();
+        setSipUsername(sipInitialization.getSipUsername(), context);
+        setSipPassword(sipInitialization.getSipPassword(), context);
+        setDomainName(sipInitialization.getDomainName(), context);
+        setPort(sipInitialization.getPort(), context);
+        setSecurePort(sipInitialization.getSecurePort(), context);
+        setSecureProtocolName(sipInitialization.getSecureProtocolName(), context);
+        setProtocolName(sipInitialization.getProtocolName(), context);
     }
 
 
     /**
      * This method is used to save foreground notification information.
      *
-     * @param foreGroundServiceNotificationDetails ForegroundServiceNotificationDetails
+     * @param foregroundServiceNotification ForegroundServiceNotification
      */
-    public static void saveInformationForForegroundServiceNotification(ForegroundServiceNotificationDetails foreGroundServiceNotificationDetails) {
-        setNotificationBody(foreGroundServiceNotificationDetails.getAppName(), foreGroundServiceNotificationDetails.getContext());
-        setNotificationContentTitle(foreGroundServiceNotificationDetails.getNotificationMessage(), foreGroundServiceNotificationDetails.getContext());
-        setNotificationIcon(foreGroundServiceNotificationDetails.getNotificationIcon(), foreGroundServiceNotificationDetails.getContext());
+    public static void saveInformationForForegroundServiceNotification(ForegroundServiceNotification foregroundServiceNotification) {
+        setNotificationBody(foregroundServiceNotification.getAppName(), foregroundServiceNotification.getContext());
+        setNotificationContentTitle(foregroundServiceNotification.getNotificationMessage(), foregroundServiceNotification.getContext());
+        setNotificationIcon(foregroundServiceNotification.getNotificationIcon(), foregroundServiceNotification.getContext());
     }
 
 

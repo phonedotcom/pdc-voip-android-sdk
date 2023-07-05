@@ -6,10 +6,6 @@ import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.view.Surface;
 
-import net.gotev.sipservice.model.FCMRegistrationDetails;
-import net.gotev.sipservice.model.ForegroundServiceNotificationDetails;
-import net.gotev.sipservice.model.SipInitializationDetails;
-
 import org.pjsip.PjCameraInfo2;
 
 import java.util.ArrayList;
@@ -782,20 +778,20 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * This method is called after user login but before initializing the sdk library for passing the
      * information needed for push registration.
      *
-     * @param fcmRegistrationDetails: FCMRegistrationDetails
-     *                                fcmRegistrationDetails.pushToken               firebase push token
-     *                                fcmRegistrationDetails.versionName             app version name
-     *                                fcmRegistrationDetails.bundleID                application id
-     *                                fcmRegistrationDetails.deviceInfo              device unique identifier
-     *                                fcmRegistrationDetails.applicationID           amazon server push notification id
-     *                                fcmRegistrationDetails.deviceType              device type like android or iOS
-     *                                fcmRegistrationDetails.voipId                  user's VoIP id
-     *                                fcmRegistrationDetails.voipPhoneID             user's VoiP phone ID
-     *                                fcmRegistrationDetails.context                 Android Context needed for shared preferences operations
+     * @param fcmRegistration: FCMRegistration
+     *                         fcmRegistration.pushToken               firebase push token
+     *                         fcmRegistration.versionName             app version name
+     *                         fcmRegistration.bundleID                application id
+     *                         fcmRegistration.deviceInfo              device unique identifier
+     *                         fcmRegistration.applicationID           amazon server push notification id
+     *                         fcmRegistration.deviceType              device type like android or iOS
+     *                         fcmRegistration.voipId                  user's VoIP id
+     *                         fcmRegistration.voipPhoneID             user's VoiP phone ID
+     *                         fcmRegistration.context                 Android Context needed for shared preferences operations
      * @see SipApplication#getHeadersForPush(Context)
      */
-    public static void saveInformationForPushRegistration(FCMRegistrationDetails fcmRegistrationDetails) {
-        SipApplication.saveInformationForPush(fcmRegistrationDetails);
+    public static void saveInformationForPushRegistration(FCMRegistration fcmRegistration) {
+        SipApplication.saveInformationForPush(fcmRegistration);
     }
 
     /**
@@ -815,38 +811,38 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * This method is called by client for passing information to SDK which is needed for login
      * into SIP server.
      *
-     * @param sipInitializationDetails SipInitializationDetails
-     *                                 sipInitializationDetails.sipUsername         sipUsername credentials
-     *                                 sipInitializationDetails.sipPassword         sipPassword credentials
-     *                                 sipInitializationDetails.domainName          VoIP domain name
-     *                                 sipInitializationDetails.port                VoIP port name
-     *                                 sipInitializationDetails.securePort          optional needed in case of encrypted communication
-     *                                 sipInitializationDetails.secureProtocolName  optional needed in case of encrypted communication
-     *                                 sipInitializationDetails.protocolName        transport protocol to be used
-     *                                 sipInitializationDetails.context             Android Context needed for shared preferences operations
+     * @param sipInitialization SipInitialization
+     *                          sipInitialization.sipUsername         sipUsername credentials
+     *                          sipInitialization.sipPassword         sipPassword credentials
+     *                          sipInitialization.domainName          VoIP domain name
+     *                          sipInitialization.port                VoIP port name
+     *                          sipInitialization.securePort          optional needed in case of encrypted communication
+     *                          sipInitialization.secureProtocolName  optional needed in case of encrypted communication
+     *                          sipInitialization.protocolName        transport protocol to be used
+     *                          sipInitialization.context             Android Context needed for shared preferences operations
      * @see SipService#ACTION_SET_ACCOUNT
      */
     public static void saveInformationForSipLibraryInitialization
     (
-            SipInitializationDetails sipInitializationDetails
+            SipInitialization sipInitialization
     ) {
-        SipApplication.saveInformationForSipLibraryInitialization(sipInitializationDetails);
+        SipApplication.saveInformationForSipLibraryInitialization(sipInitialization);
     }
 
     /**
      * This method is called by client for passing information to SDK which is needed for showing
      * foreground service notification {@link SipService ForegroundServiceClass}.
      *
-     * @param foregroundServiceNotificationDetails ForegroundServiceNotificationDetails
-     *                                             foregroundServiceNotificationDetails.notificationTitle         notification title
-     *                                             foregroundServiceNotificationDetails.notificationSubtitle      notification subtitle
-     *                                             foregroundServiceNotificationDetails.notificationIcon          notification icon id
-     *                                             foregroundServiceNotificationDetails.context                   Android context needed for shared preferences operations
+     * @param foregroundServiceNotification ForegroundServiceNotification
+     *                                      foregroundServiceNotification.notificationTitle         notification title
+     *                                      foregroundServiceNotification.notificationSubtitle      notification subtitle
+     *                                      foregroundServiceNotification.notificationIcon          notification icon id
+     *                                      foregroundServiceNotification.context                   Android context needed for shared preferences operations
      */
 
     public static void saveInformationForForegroundServiceNotification
-    (ForegroundServiceNotificationDetails foregroundServiceNotificationDetails) {
-        SipApplication.saveInformationForForegroundServiceNotification(foregroundServiceNotificationDetails);
+    (ForegroundServiceNotification foregroundServiceNotification) {
+        SipApplication.saveInformationForForegroundServiceNotification(foregroundServiceNotification);
     }
 
     /**
