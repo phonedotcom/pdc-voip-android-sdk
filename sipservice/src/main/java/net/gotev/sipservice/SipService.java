@@ -221,11 +221,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 createForegroundServiceNotification(this, this.getApplicationInfo().loadLabel(getPackageManager()).toString()));
 
         final SipAccount sipAccount = getActiveSipAccount(this);
-        if(sipAccount != null) {
+        if (sipAccount != null) {
             try {
                 SharedPreferencesHelper.getInstance(this).clearAllSharedPreferences();
-                sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
                 sipAccount.setRegistration(false);
+                sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -269,7 +269,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     public synchronized void stopCallForegroundService(SipAccount sipAccount) {
-        if(sipAccount == null){
+        if (sipAccount == null) {
             stopForeground(true);
             return;
         }
@@ -367,7 +367,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             return sipCall;
         } /*else if (account.isActiveCallPresent()) {
             return account.getActiveCall();
-        } */else {
+        } */ else {
             notifyCallDisconnected(accountID, callID);
             return null;
         }
@@ -1465,7 +1465,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     public synchronized void stopForegroundService() {
-        if (getActiveSipAccount(this).isActiveCallPresent())
+        if (getActiveSipAccount(this) == null || getActiveSipAccount(this).isActiveCallPresent())
             return;
         stopForeground(true);
     }
