@@ -4,7 +4,7 @@
 package net.gotev.sipservice.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MissedCallData(val callerName: String, val linkedUUID: String, val notificationId: Int) :

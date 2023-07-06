@@ -4,7 +4,8 @@
 package net.gotev.sipservice.constants
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+
 
 @Parcelize
 enum class CallEvent(val code: Int, val state: String): Parcelable {
