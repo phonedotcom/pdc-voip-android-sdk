@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.view.Surface;
 
 import org.pjsip.pjsua2.AudDevManager;
@@ -223,9 +225,18 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final SipAccount sipAccount = getActiveSipAccount(this);
         if (sipAccount != null) {
             try {
-                SharedPreferencesHelper.getInstance(this).clearAllSharedPreferences();
-                sipAccount.setRegistration(false);
+                Logger.debug("IdURI => ", sipAccount.getData().getIdUri(this));
+                Logger.debug("IdURI => ", sipAccount.getData().getUsername());
                 sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
+                new Handler(Looper.myLooper()).postDelayed(() -> {
+                    try {
+                        sipAccount.setRegistration(false);
+                        SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                }, 2000);
             } catch (Exception e) {
                 e.printStackTrace();
             }

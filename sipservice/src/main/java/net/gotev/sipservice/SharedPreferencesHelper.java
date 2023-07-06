@@ -10,7 +10,6 @@ import androidx.security.crypto.MasterKeys;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.voismart.crypto.BuildConfig;
 import com.voismart.crypto.Crypto;
 import com.voismart.crypto.EncryptionHelper;
 
