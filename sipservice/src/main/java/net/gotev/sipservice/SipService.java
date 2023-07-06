@@ -15,6 +15,10 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.view.Surface;
 
+import net.gotev.sipservice.constants.CallEvent;
+import net.gotev.sipservice.model.IncomingCallData;
+import net.gotev.sipservice.model.MissedCallData;
+
 import org.pjsip.pjsua2.AudDevManager;
 import org.pjsip.pjsua2.CallOpParam;
 import org.pjsip.pjsua2.CallVidSetStreamParam;
@@ -268,7 +272,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             incomingCallObject.setCallType(CallType.MISSED);
             handleMissedCall(incomingCallObject, number);
 
-            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
+            mBroadcastEmitter.callState(CallEvent.DISCONNECTED);
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             audioManager.setSpeakerphoneOn(false);
 
@@ -302,14 +306,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleMissedCall(ICall call, String number) {
-
-        long seconds = 0;
-        if (call instanceof SipCall) {
-            seconds = ((SipCall) call).getConnectTimestamp();
-        }
-        mBroadcastEmitter.sendMissedCall(!(call instanceof SipCall),
-                number, call.getLinkedUUID(), call.getCallName(), call.getTime(),
-                seconds, call.getCallType());
+        mBroadcastEmitter.missedCall(new MissedCallData(call.getCallerName(), call.getLinkedUUID(), 0));
     }
 
     private void handleIncomingCallNotification(Intent intent) {
@@ -336,14 +333,16 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         getActiveSipAccount(this).setActiveIncomingCall(incomingCall);
 
-        getBroadcastEmitter().incomingCall(
+        final IncomingCallData incomingCallData = new IncomingCallData(
                 incomingCall.getNumber(),
-                incomingCall.getServer(),
-                incomingCall.getSlot(),
-                incomingCall.getLinkedUUID(),
                 incomingCall.getCallerName(),
-                getActiveSipAccount(this).isActiveCallPresent(),
+                incomingCall.getLinkedUUID(),
+                SERVICE_FOREGROUND_NOTIFICATION_ID,
                 false
+        );
+
+        getBroadcastEmitter().incomingCall(
+                incomingCallData, getActiveSipAccount(this).isActiveCallPresent()
         );
 
     }
@@ -385,7 +384,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void notifyCallDisconnected() {
-        mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
+        mBroadcastEmitter.callState(CallEvent.DISCONNECTED);
     }
 
     private void notifyCallDisconnected(String accountID, int callID) {
@@ -709,7 +708,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         final Set<Integer> activeCallIDs = getActiveSipAccount(accountID).getCallIDs();
 
-        if (activeCallIDs == null || activeCallIDs.isEmpty()) return;
+        if (activeCallIDs == null || activeCallIDs.isEmpty()) {
+            startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, createForegroundServiceNotification(this, getString(R.string.app_name)));
+            enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
+            return;
+        }
 
         SipCall sipCall = null;
 
@@ -722,16 +725,15 @@ public class SipService extends BackgroundService implements SipServiceConstants
             }
         }
 
-        if (sipCall != null) {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                Surface surface = bundle.getParcelable(PARAM_SURFACE);
-                sipCall.setIncomingVideoFeed(surface);
-            } else {
-                Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Surface NULL");
-                startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, createForegroundServiceNotification(this, getString(R.string.app_name)));
-                enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
-            }
+        final Bundle bundle = intent.getExtras();
+        if (sipCall != null && bundle != null) {
+            Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Surface NOT NULL");
+            Surface surface = bundle.getParcelable(PARAM_SURFACE);
+            sipCall.setIncomingVideoFeed(surface);
+        } else {
+            Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Surface NULL");
+            startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, createForegroundServiceNotification(this, getString(R.string.app_name)));
+            enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
         }
 
     }
@@ -854,7 +856,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final IncomingCall incomingCall = (IncomingCall) getActiveSipAccount(accountID).getActiveIncomingCall();
 
         if (incomingCall == null) {
-            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
+            mBroadcastEmitter.callState(CallEvent.DISCONNECTED);
             return;
         }
 
@@ -885,10 +887,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     isVideo
             );
             //call.setVideoParams(isVideo, isVideoConference);
-            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.ONGOING_CALL, true));
+            mBroadcastEmitter.callState(CallEvent.ONGOING_CALL);
         } catch (Exception exc) {
             Logger.error(TAG, "Error while making outgoing call", exc);
-            mBroadcastEmitter.callState(new CallEvents.ScreenUpdate(CallScreenState.DISCONNECTED, true));
+            mBroadcastEmitter.callState(CallEvent.DISCONNECTED);
         }
     }
 

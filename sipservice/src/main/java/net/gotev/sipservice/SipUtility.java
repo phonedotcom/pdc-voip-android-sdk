@@ -205,8 +205,6 @@ public class SipUtility {
         incomingCall.setServer(server);
         incomingCall.setSlot(slot);
         incomingCall.setNumber(number);
-
-        incomingCall.setCallerNumber(callerName);
         incomingCall.setCallerName(callerName);
         incomingCall.setCallType(CallType.INCOMING);
         incomingCall.setTime(SipUtility.timeInSeconds());

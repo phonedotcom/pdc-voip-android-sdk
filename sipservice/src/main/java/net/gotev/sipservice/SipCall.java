@@ -4,6 +4,8 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.view.Surface;
 
+import net.gotev.sipservice.constants.CallEvent;
+
 import org.pjsip.pjsua2.AudDevManager;
 import org.pjsip.pjsua2.AudioMedia;
 import org.pjsip.pjsua2.Call;
@@ -110,7 +112,7 @@ public class SipCall extends Call implements ICall {
              * Thus, it is recommended to delete the call object inside the callback.
              */
 
-            CallScreenState callScreenState = null;
+            CallEvent events = null;
 
             try {
                 callStatus = info.getLastStatusCode();
@@ -125,7 +127,7 @@ public class SipCall extends Call implements ICall {
                 //stopSendingKeyFrame();
                 account.removeCall(callID);
 
-                callScreenState = CallScreenState.DISCONNECTED;
+                events = CallEvent.DISCONNECTED;
 
                 if (connectTimestamp > 0 && streamInfo != null && streamStat != null) {
                     try {
@@ -146,11 +148,10 @@ public class SipCall extends Call implements ICall {
                 if (videoCall) {
                     //setVideoMute(false);
                     //startSendingKeyFrame();
-                    account.getService().getBroadcastEmitter().callState(new CallEvents.
-                            ScreenUpdate(CallScreenState.VIDEO_INITIATED, true));
+                    account.getService().getBroadcastEmitter().callState(CallEvent.VIDEO_INITIATED);
                 }
 
-                callScreenState = CallScreenState.ONGOING_CALL;
+                events = CallEvent.ONGOING_CALL;
 
                 // check whether the 183 has arrived or not
             } else if (callState == pjsip_inv_state.PJSIP_INV_STATE_EARLY) {
@@ -162,19 +163,14 @@ public class SipCall extends Call implements ICall {
                     toneGenerator.startTone(ToneGenerator.TONE_SUP_RINGTONE);
                     // check if 183
 
-                    callScreenState = CallScreenState.PLAY_RINGTONE;
+                    events = CallEvent.PLAY_RINGTONE;
                 } else if (statusCode == pjsip_status_code.PJSIP_SC_PROGRESS) {
                     checkAndStopLocalRingBackTone();
                 }
             }
 
-            if(callScreenState!= null)
-                account.getService().getBroadcastEmitter()
-                        .callState(new CallEvents.ScreenUpdate(callScreenState, true));
-
-            /*account.getService().getBroadcastEmitter()
-                    .callState(account.getData().getIdUri(account.getService().getApplicationContext()), callID, callState, callStatus, connectTimestamp);
-*/
+            if(events!= null)
+                account.getService().getBroadcastEmitter().callState(events);
 
             if (callState == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
                 account.getService().setLastCallStatus(0);
@@ -652,14 +648,14 @@ public class SipCall extends Call implements ICall {
     }
 
     /**
-     * Method for returning the CallerName, uses {@link #getCallerNumber()}, it performs operation on
-     * {@link #getCallerNumber()} to return name based on formatting and custom logic in implementatio
+     * Method for returning the CallerName, uses {@link #getNumber()}, it performs operation on
+     * {@link #getNumber()} to return name based on formatting and custom logic in implementatio
      * class.
      *
      * @return the callerName
      */
     @Override
-    public String getCallName() {
+    public String getCallerName() {
         return null;
     }
 
@@ -667,20 +663,20 @@ public class SipCall extends Call implements ICall {
      * Method for returning the CallerName
      *
      * @return the caller name
-     * @see #getCallName()
+     * @see #getCallerName()
      */
     @Override
-    public String getCallerNumber() {
+    public String getNumber() {
         return null;
     }
 
     /**
      * Method for setting the caller name
      *
-     * @param callerCname
+     * @param callerNumber
      */
     @Override
-    public void setCallerNumber(String callerCname) {
+    public void setNumber(String callerNumber) {
 
     }
 

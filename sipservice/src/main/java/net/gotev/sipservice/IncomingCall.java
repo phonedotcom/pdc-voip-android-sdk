@@ -30,7 +30,7 @@ public class IncomingCall implements Serializable, ICall {
      * @return callerName of incoming number
      */
     @Override
-    public String getCallName() {
+    public String getCallerName() {
         return callerName;
     }
 
@@ -209,17 +209,6 @@ public class IncomingCall implements Serializable, ICall {
 
 
     /**
-     * This method is used to set callerCname of incoming call
-     *
-     * @param callerCname of incoming call
-     */
-    @Override
-    public void setCallerNumber(String callerCname) {
-        this.callerCname = callerCname;
-    }
-
-
-    /**
      * This method is used to set callerName of incoming call
      *
      * @param callerName of incoming call
@@ -246,27 +235,6 @@ public class IncomingCall implements Serializable, ICall {
      */
     public String getServer() {
         return server;
-    }
-
-
-    /**
-     * This method is used to get callerCname of incoming call
-     *
-     * @return callerCname of incoming call
-     */
-    @Override
-    public String getCallerNumber() {
-        return callerCname;
-    }
-
-
-    /**
-     * This method is used to get caller name of incoming call
-     *
-     * @return callername of incoming call
-     */
-    public String getCallerName() {
-        return callerName;
     }
 
 
