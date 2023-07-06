@@ -694,7 +694,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         final Set<Integer> activeCallIDs = getActiveSipAccount(accountID).getCallIDs();
 
-        if (activeCallIDs == null || activeCallIDs.isEmpty()) return;
+        if (activeCallIDs == null || activeCallIDs.isEmpty()) {
+            startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, createForegroundServiceNotification(this, getString(R.string.app_name)));
+            enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
+            return;
+        }
 
         SipCall sipCall = null;
 
@@ -709,12 +713,13 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         final Bundle bundle = intent.getExtras();
         if (sipCall != null && bundle != null) {
+            Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Surface NOT NULL");
             Surface surface = bundle.getParcelable(PARAM_SURFACE);
             sipCall.setIncomingVideoFeed(surface);
         } else {
             Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Surface NULL");
             startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, createForegroundServiceNotification(this, getString(R.string.app_name)));
-            enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
+            enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
         }
 
     }
