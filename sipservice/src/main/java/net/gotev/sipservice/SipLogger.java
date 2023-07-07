@@ -10,7 +10,7 @@ import org.pjsip.pjsua2.pj_log_decoration;
  * Created by Vincenzo Esposito on 15/10/21.
  * Copyright © 2021 VoiSmart S.r.l. All rights reserved.
  */
-public class SipLogger extends LogWriter {
+class SipLogger extends LogWriter {
     public void write(LogEntry entry) {
         Logger.debug("Phone.com | SIP -> "+entry.getThreadName(), entry.getMsg());
     }
