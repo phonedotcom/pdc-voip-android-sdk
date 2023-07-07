@@ -3,6 +3,7 @@ package net.gotev.sipservice;
 import static net.gotev.sipservice.NotificationCreator.createForegroundServiceNotification;
 import static net.gotev.sipservice.ObfuscationHelper.getValue;
 import static net.gotev.sipservice.SipUtility.createIncomingCallObject;
+import static net.gotev.sipservice.utility.PushMessageConstants.SERVICE_FOREGROUND_NOTIFICATION_ID;
 
 import android.app.Notification;
 import android.content.Context;
@@ -223,7 +224,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Initiated for "
                 + getApplicationInfo().loadLabel(getPackageManager()).toString());
-        startForeground(SipServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID,
+        startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID,
                 createForegroundServiceNotification(this, this.getApplicationInfo().loadLabel(getPackageManager()).toString()));
 
         final SipAccount sipAccount = getActiveSipAccount(this);
@@ -260,7 +261,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             return;
         }
 
-        startForeground(SipServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID,
+        startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID,
                 createForegroundServiceNotification(this, this.getApplicationInfo().loadLabel(getPackageManager()).toString()));
 
         ICall activeIncomingCall = sipAccount.getActiveIncomingCall();
@@ -1089,7 +1090,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetAccount(Intent intent) {
-        startForeground(SipServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID,
+        startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID,
                 createForegroundServiceNotification(this, getString(R.string.app_name)));
         SipAccountData data = intent.getParcelableExtra(PARAM_ACCOUNT_DATA);
 

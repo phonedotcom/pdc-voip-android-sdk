@@ -19,12 +19,12 @@ import java.util.List;
 
 /**
  * connect
- *
+ * <p>
  * Created by Vincenzo Esposito on 25/11/19.
  * Copyright © 2019 VoiSmart S.r.l. All rights reserved.
  */
 @SuppressWarnings("unused")
-public class SharedPreferencesHelper {
+class SharedPreferencesHelper {
 
     @SuppressWarnings("FieldCanBeLocal")
     private final String PREFS_FILE_NAME = "com.phone.preference";
@@ -71,7 +71,8 @@ public class SharedPreferencesHelper {
         String codecPriorities = sharedPreferences.getString(PREFS_KEY_CODEC_PRIORITIES, "");
         if (codecPriorities.isEmpty()) return null;
 
-        Type listType = new TypeToken<ArrayList<CodecPriority>>(){}.getType();
+        Type listType = new TypeToken<ArrayList<CodecPriority>>() {
+        }.getType();
         return gson.fromJson(codecPriorities, listType);
     }
 
@@ -87,7 +88,8 @@ public class SharedPreferencesHelper {
         sharedPreferences.edit().putBoolean(PREFS_KEY_DND, dnd).apply();
     }
 
-    void setEncryption(Context context, boolean enableEncryption, String alias) {}
+    void setEncryption(Context context, boolean enableEncryption, String alias) {
+    }
 
     void setObfuscation(boolean obfuscate) {
         sharedPreferences.edit().putBoolean(PREFS_KEY_OBFUSCATION_ENABLED, obfuscate).apply();
@@ -95,6 +97,7 @@ public class SharedPreferencesHelper {
 
     /**
      * Whether the string obfuscation is enabled in logs
+     *
      * @return what is set in {@link #setObfuscation(boolean)} or true in release builds and false in debug ones
      */
     boolean isObfuscationEnabled() {
@@ -111,6 +114,7 @@ public class SharedPreferencesHelper {
 
     /**
      * Helpers to decrypt retrieved encrypted data
+     *
      * @return decrypted accounts
      */
     private synchronized List<SipAccountData> getDecryptedConfiguredAccounts(List<SipAccountData> accounts) {
@@ -125,7 +129,8 @@ public class SharedPreferencesHelper {
         if (accounts.isEmpty() || accounts.equals("[]")) {
             return new ArrayList<>();
         } else {
-            Type listType = new TypeToken<ArrayList<SipAccountData>>(){}.getType();
+            Type listType = new TypeToken<ArrayList<SipAccountData>>() {
+            }.getType();
             return gson.fromJson(accounts, listType);
         }
     }
@@ -211,8 +216,7 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to save string value in shared prefrences.
      *
-     * @param key     Shared pref key
-     *
+     * @param key Shared pref key
      */
     public void putInSharedPreference(String key, String value) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -223,8 +227,7 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to save integer value in shared preferences.
      *
-     * @param key     Shared pref key
-     *
+     * @param key Shared pref key
      */
     public void putInSharedPreference(String key, int value) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -235,7 +238,7 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to get shared pref string values on the basis of key.
      *
-     * @param key     Shared pref key
+     * @param key Shared pref key
      * @return string value from shared pref
      */
     public String getStringSharedPreference(String key) {
@@ -245,7 +248,7 @@ public class SharedPreferencesHelper {
     /**
      * This method is used to get shared pref integer values on the basis of key.
      *
-     * @param key     Shared pref key
+     * @param key Shared pref key
      * @return integer value from shared pref
      */
     public int getIntSharedPreference(String key) {
@@ -265,7 +268,6 @@ public class SharedPreferencesHelper {
 
     /**
      * This method is used to get secure protocol from shared prefs.
-     *
      */
     public boolean isSecureProtocol() {
         return getBooleanPreference(PROTOCOL, false);
