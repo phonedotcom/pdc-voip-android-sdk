@@ -1,6 +1,6 @@
 package net.gotev.sipservice;
 
-public interface SipServiceConstants {
+interface SipServiceConstants {
 
     /*
      * Intent Actions for Sip Service
@@ -89,7 +89,6 @@ public interface SipServiceConstants {
     String PARAM_INCOMING_LINKED_UUID = "incomingLinkedUuid";
     String PARAM_INCOMING_STATUS = "incomingStatus";
     String PARAM_ANY_ACTIVE_CALL = "isAnyActiveCall";
-    String PARAM_IS_CALL = "isCall";
     String PARAM_CALL_MEDIA_EVENT_TYPE = "callMediaEventType";
     String PARAM_INCOMING_CALL_DATA = "incomingCallData";
     String PARAM_MISSED_CALL_DATA = "missedCallData";
@@ -150,24 +149,9 @@ public interface SipServiceConstants {
 
     String PARAM_USERNAME = "USERNAME";
 
-    String GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL = "GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL";
-
-
     String ACTION_INCOMING_CALL_DISCONNECTED = "incomingCallDisconnected";
     String ACTION_INCOMING_CALL_NOTIFICATION = "incomingCallNotification";
 
-    String SERVICE_NOTIFICATION_CHANNEL_ID = "serviceNotificationChannelId";
-
-    String INTENT_HANDLED = "intentHandled";
-
-    int SERVICE_FOREGROUND_NOTIFICATION_ID = 121;
-
-    String MISS_CALL_NOTIFICATION_CHANNEL = "missCallNotificationChannelId";
-    String INCOMING_CALL_NOTIFICATION_CHANNEL_ID = "incomingCallNotificationChannelId";
-
-    int MISSED_NOTIFICATION_ID = 1674;
-    int HANGUP_BROADCAST_ACTION_ID = 2;
-    int ACCEPT_CALL_BROADCAST_ACTION_ID = 1;
     String PARAM_ERROR_MESSAGE = "errorMessage";
     String PARAM_CALLER_NAME = "caller_name";
     String PARAM_TIME = "time";

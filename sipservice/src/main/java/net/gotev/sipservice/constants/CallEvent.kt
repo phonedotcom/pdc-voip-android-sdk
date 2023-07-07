@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-enum class CallEvent(val code: Int, val state: String): Parcelable {
+enum class CallEvent(val code: Int, val state: String) : Parcelable {
     CALL_INITIATED(0, "Call Initiated"),
     DIALING(1, "Dialing"),
     RINGING(2, "Ringing"),
