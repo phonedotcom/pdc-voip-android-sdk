@@ -177,6 +177,8 @@ public interface SipServiceConstants {
     String PARAM_PHONE_NUMBER = "phone_number";
     String PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL = "errorCodeWhileRejectingIncomingCall";
 
+    int PDC_CALL_NOTIFICATION = 4;
+
     /*
      * Generic error messages
      */
