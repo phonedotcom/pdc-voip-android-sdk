@@ -1,6 +1,6 @@
 package net.gotev.sipservice;
 
-interface SipServiceConstants {
+public interface SipServiceConstants {
 
     /*
      * Intent Actions for Sip Service
