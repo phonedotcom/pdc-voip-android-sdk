@@ -31,6 +31,10 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import net.gotev.sipservice.models.ConfigureFCMPushNotification;
+import net.gotev.sipservice.models.ConfigurePhoneServiceNotification;
+import net.gotev.sipservice.models.ConfigureSip;
+
 import org.pjsip.pjsua2.SipHeader;
 import org.pjsip.pjsua2.SipHeaderVector;
 
@@ -42,76 +46,51 @@ public final class SipApplication {
 
     public static final String TAG = SipApplication.class.getSimpleName();
 
-    private SipApplication(){}
+    private SipApplication() {
+    }
 
     /**
      * This method is used to save information for push notification.
      *
-     * @param pushToken     pushToken
-     * @param versionName   versionName
-     * @param bundleID      bundleID
-     * @param deviceInfo    deviceInfo
-     * @param applicationID applicationID
-     * @param deviceType    deviceType
-     * @param voipId        voipId
-     * @param voipPhoneID   voipPhoneID
-     * @param context       Android context needed
+     * @param fcmRegistration FCMRegistration
      */
-    public static void saveInformationForPush(String pushToken, String versionName, String bundleID,
-                                              String deviceInfo, String applicationID, String deviceType,
-                                              String voipId, String voipPhoneID, Context context) {
-        setPushToken(pushToken, context);
-        setVersionName(versionName, context);
-        setBundleID(bundleID, context);
-        setDeviceInfo(deviceInfo, context);
-        setApplicationID(applicationID, context);
-        setHdeviceType(deviceType, context);
-        sethVoipID(voipId, context);
-        sethVoipPhoneID(voipPhoneID, context);
+    public static void saveInformationForPush(ConfigureFCMPushNotification fcmRegistration, Context context) {
+        setPushToken(fcmRegistration.getPushToken(), context);
+        setVersionName(fcmRegistration.getVersionName(), context);
+        setBundleID(fcmRegistration.getBundleID(), context);
+        setDeviceInfo(fcmRegistration.getDeviceInfo(), context);
+        setApplicationID(fcmRegistration.getApplicationID(), context);
+        setHdeviceType(fcmRegistration.getDeviceType(), context);
+        sethVoipID(fcmRegistration.getVoipId(), context);
+        sethVoipPhoneID(fcmRegistration.getVoipPhoneID(), context);
     }
 
 
     /**
      * This method is used to save information for library initialization.
      *
-     * @param sipUsername        sipUsername
-     * @param sipPassword        sipPassword
-     * @param domainName         domainName
-     * @param port               port
-     * @param securePort         securePort
-     * @param secureProtocolName secureProtocolName
-     * @param protocolName       protocolName
-     * @param context            Android context needed
+     * @param sipInitialization SipInitialization
      */
-    public static void saveInformationForSipLibraryInitialization(String sipUsername, String sipPassword,
-                                                                  String domainName, int port,
-                                                                  int securePort, String secureProtocolName,
-                                                                  String protocolName, Context context) {
-        setSipUsername(sipUsername, context);
-        setSipPassword(sipPassword, context);
-        setDomainName(domainName, context);
-        setPort(port, context);
-        setSecurePort(securePort, context);
-        setSecureProtocolName(secureProtocolName, context);
-        setProtocolName(protocolName, context);
+    public static void saveInformationForSipLibraryInitialization(ConfigureSip sipInitialization, Context context) {
+        setSipUsername(sipInitialization.getSipUsername(), context);
+        setSipPassword(sipInitialization.getSipPassword(), context);
+        setDomainName(sipInitialization.getDomainName(), context);
+        setPort(sipInitialization.getPort(), context);
+        setSecurePort(sipInitialization.getSecurePort(), context);
+        setSecureProtocolName(sipInitialization.getSecureProtocolName(), context);
+        setProtocolName(sipInitialization.getProtocolName(), context);
     }
 
 
     /**
      * This method is used to save foreground notification information.
      *
-     * @param notificationTitle    notification Title
-     * @param notificationSubtitle notification Subtitle
-     * @param notificationIcon     notification icon
-     * @param context              Android context needed
+     * @param foregroundServiceNotification ForegroundServiceNotification
      */
-    public static void saveInformationForForegroundServiceNotification(String notificationTitle,
-                                                                       String notificationSubtitle,
-                                                                       int notificationIcon,
-                                                                       Context context) {
-        setNotificationBody(notificationTitle, context);
-        setNotificationContentTitle(notificationSubtitle, context);
-        setNotificationIcon(notificationIcon, context);
+    public static void saveInformationForForegroundServiceNotification(ConfigurePhoneServiceNotification foregroundServiceNotification, Context context) {
+        setNotificationBody(foregroundServiceNotification.getAppName(), context);
+        setNotificationContentTitle(foregroundServiceNotification.getNotificationMessage(), context);
+        setNotificationIcon(foregroundServiceNotification.getNotificationIcon(), context);
     }
 
 

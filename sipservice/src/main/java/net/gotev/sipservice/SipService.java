@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.view.Surface;
 
 import net.gotev.sipservice.constants.CallEvent;
@@ -225,12 +227,20 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 createForegroundServiceNotification(this, this.getApplicationInfo().loadLabel(getPackageManager()).toString()));
 
         final SipAccount sipAccount = getActiveSipAccount(this);
-        if(sipAccount != null) {
+        if (sipAccount != null) {
             try {
+                Logger.debug("IdURI => ", sipAccount.getData().getIdUri(this));
+                Logger.debug("IdURI => ", sipAccount.getData().getUsername());
                 sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
-                sipAccount.setRegistration(false);
-
-                SharedPreferencesHelper.getInstance(this).clearAllSharedPreferences();
+                new Handler(Looper.myLooper()).postDelayed(() -> {
+                    try {
+                        sipAccount.setRegistration(false);
+                        SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                }, 2000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -274,6 +284,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     public synchronized void stopCallForegroundService(SipAccount sipAccount) {
+        if (sipAccount == null) {
+            stopForeground(true);
+            return;
+        }
         Logger.debug(TAG, "stopCallForegroundService");
         if (sipAccount.isActiveCallPresent()) {
             Logger.debug(TAG, "stopCallForegroundService -> Active Call Present");
@@ -363,7 +377,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             return sipCall;
         } /*else if (account.isActiveCallPresent()) {
             return account.getActiveCall();
-        } */else {
+        } */ else {
             notifyCallDisconnected(accountID, callID);
             return null;
         }
@@ -1464,7 +1478,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     public synchronized void stopForegroundService() {
-        if (getActiveSipAccount(this).isActiveCallPresent())
+        if (getActiveSipAccount(this) == null || getActiveSipAccount(this).isActiveCallPresent())
             return;
         stopForeground(true);
     }

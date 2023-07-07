@@ -6,12 +6,17 @@ import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.view.Surface;
 
+import net.gotev.sipservice.models.ConfigureFCMPushNotification;
+import net.gotev.sipservice.models.ConfigurePhoneServiceNotification;
+import net.gotev.sipservice.models.ConfigureSip;
+
 import org.pjsip.PjCameraInfo2;
 
 import java.util.ArrayList;
 
 /**
  * Triggers sip service commands.
+ *
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
@@ -20,7 +25,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     public static final String TAG = SipServiceCommand.class.getSimpleName();
 
     //Private Constructor
-    private SipServiceCommand(){
+    private SipServiceCommand() {
     }
 
     /**
@@ -32,8 +37,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Adds a new SIP account.
+     *
      * @param context application context
-     * //@param sipAccount sip account data
+     *                //@param sipAccount sip account data
      * @return sip account ID uri as a string
      */
     public static String setAccount(Context context) {
@@ -56,10 +62,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         intent.putExtra(PARAM_ACCOUNT_DATA, sipAccountData);
         executeSipServiceAction(context, intent);
         //context.startService(intent);
-        SharedPreferencesHelper.getInstance(context).putInSharedPreference(
-                SharedPreferenceConstant.SIP_ACCOUNT_ID,
-                accountID
-        );
+        SharedPreferencesHelper.getInstance(context).putInSharedPreference(SharedPreferenceConstant.SIP_ACCOUNT_ID, accountID);
 
         return accountID;
     }
@@ -68,13 +71,13 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * Adds a new SIP account and changes the sip stack codec priority settings.
      * This is handy to set an account plus the global codec priority configuration with
      * just a single call.
-     * @param context application context
-     * @param sipAccount sip account data
+     *
+     * @param context         application context
+     * @param sipAccount      sip account data
      * @param codecPriorities list with the codec priorities to set
      * @return sip account ID uri as a string
      */
-    public static String setAccountWithCodecs(Context context, SipAccountData sipAccount,
-                                              ArrayList<CodecPriority> codecPriorities) {
+    public static String setAccountWithCodecs(Context context, SipAccountData sipAccount, ArrayList<CodecPriority> codecPriorities) {
         if (sipAccount == null) {
             throw new IllegalArgumentException("sipAccount MUST not be null!");
         }
@@ -93,7 +96,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Remove a SIP account.
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID uri
      */
     public static void removeAccount(Context context, String accountID) {
@@ -107,6 +111,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Starts the SIP service.
+     *
      * @param context application context
      */
     public static void start(Context context) {
@@ -115,6 +120,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Stops the SIP service.
+     *
      * @param context application context
      */
     public static void stop(Context context) {
@@ -123,6 +129,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Restarts the SIP stack without restarting the service.
+     *
      * @param context application context
      */
     public static void restartSipStack(Context context) {
@@ -133,21 +140,15 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Makes a call.
-     * @param context application context
-     * @param accountID account ID used to make the call
-     * @param numberToCall number to call
-     * @param isVideo whether the call has video or not
+     *
+     * @param context           application context
+     * @param accountID         account ID used to make the call
+     * @param numberToCall      number to call
+     * @param isVideo           whether the call has video or not
      * @param isVideoConference whether the call is video conference or not
-     * @param isTransfer whether this (second) call will eventually be transferred to the current
+     * @param isTransfer        whether this (second) call will eventually be transferred to the current
      */
-    public static void makeCall(
-            Context context,
-            String accountID,
-            String numberToCall,
-            boolean isVideo,
-            boolean isVideoConference,
-            boolean isTransfer
-    ) {
+    public static void makeCall(Context context, String accountID, String numberToCall, boolean isVideo, boolean isVideoConference, boolean isTransfer) {
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
@@ -178,8 +179,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * Instead of {@link BroadcastEventEmitter#outgoingCall(String, int, String, boolean, boolean, boolean)}
      * Useful when the calls only enables/disables features/services on the pbx via feature codes
      * E.g. enable dnd, join/leave queue, ...
-     * @param context application context
-     * @param accountID account ID used to make the call
+     *
+     * @param context      application context
+     * @param accountID    account ID used to make the call
      * @param numberToCall number to call
      */
     public static void makeSilentCall(Context context, String accountID, String numberToCall) {
@@ -194,23 +196,16 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Makes a Direct call.
-     * @param context application context
-     * @param guestName name to display when making guest calls
-     * @param host sip host
-     * @param sipUri sip uri to call in the format: sip:number@realm:port
-     * @param isVideo whether the call has video or not
+     *
+     * @param context           application context
+     * @param guestName         name to display when making guest calls
+     * @param host              sip host
+     * @param sipUri            sip uri to call in the format: sip:number@realm:port
+     * @param isVideo           whether the call has video or not
      * @param isVideoConference whether the call is video conference or not
-     * @param transport transport to be configured on guest account
+     * @param transport         transport to be configured on guest account
      */
-    public static void makeDirectCall(
-            Context context,
-            String guestName,
-            Uri sipUri,
-            String host,
-            boolean isVideo,
-            boolean isVideoConference,
-            SipAccountTransport transport
-    ) {
+    public static void makeDirectCall(Context context, String guestName, Uri sipUri, String host, boolean isVideo, boolean isVideoConference, SipAccountTransport transport) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_MAKE_DIRECT_CALL);
         intent.putExtra(PARAM_GUEST_NAME, guestName);
@@ -231,7 +226,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID used to make the call
-     * @param callID call ID
+     * @param callID    call ID
      */
     public static void getCallStatus(Context context, String accountID, int callID) {
         checkAccount(accountID);
@@ -249,7 +244,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID to hang up
+     * @param callID    call ID to hang up
      */
     public static void hangUpCall(Context context, String accountID, int callID) {
         checkAccount(accountID);
@@ -263,8 +258,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Hangs up active calls.
-     * @param context application context
      *
+     * @param context application context
      */
     public static void hangUpActiveCalls(Context context) {
         final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
@@ -278,7 +273,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Hangs up active calls.
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      */
     public static void holdActiveCalls(Context context, String accountID) {
@@ -296,9 +292,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID to hang up
-     * @param dtmfTone DTMF tone to send (e.g. number from 0 to 9 or # or *).
-     *                 You can send only one DTMF at a time.
+     * @param callID    call ID to hang up
+     * @param dtmfTone  DTMF tone to send (e.g. number from 0 to 9 or # or *).
+     *                  You can send only one DTMF at a time.
      */
     public static void sendDTMF(Context context, String accountID, int callID, String dtmfTone) {
         checkAccount(accountID);
@@ -337,8 +333,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID to hang up
-     * @param isVideo video call or not
+     * @param callID    call ID to hang up
+     * @param isVideo   video call or not
      */
     public static void acceptIncomingCall(Context context, String accountID, int callID, boolean isVideo) {
         checkAccount(accountID);
@@ -356,7 +352,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
-     * //@param accountID account ID
+     *                //@param accountID account ID
      * @param isVideo video call or not
      */
     public static void acceptIncomingCall(Context context, boolean isVideo) {
@@ -397,8 +393,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID
-     * @param number number to which to transfer the call
+     * @param callID    call ID
+     * @param number    number to which to transfer the call
      */
     public static void transferCall(Context context, String accountID, int callID, String number) {
         checkAccount(accountID);
@@ -437,8 +433,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID
-     * @param hold true to hold the call, false to un-hold it
+     * @param callID    call ID
+     * @param hold      true to hold the call, false to un-hold it
      */
     public static void setCallHold(Context context, String accountID, int callID, boolean hold) {
         checkAccount(accountID);
@@ -457,7 +453,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID
+     * @param callID    call ID
      */
     public static void toggleCallHold(Context context, String accountID, int callID) {
         checkAccount(accountID);
@@ -474,7 +470,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
-     * @param mute true to mute the call, false to un-mute it
+     * @param mute    true to mute the call, false to un-mute it
      */
     public static void setCallMute(Context context, boolean mute) {
 
@@ -494,7 +490,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID
+     * @param callID    call ID
      */
     public static void toggleCallMute(Context context, String accountID, int callID) {
         checkAccount(accountID);
@@ -509,6 +505,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Requests the codec priorities. This is going to return results only if the sip stack has
      * been started, otherwise you will see an error message in LogCat.
+     *
      * @param context application context
      */
     public static void getCodecPriorities(Context context) {
@@ -520,7 +517,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Set codec priorities. this is going to work only if the sip stack has
      * been started, otherwise you will see an error message in LogCat.
-     * @param context application context
+     *
+     * @param context         application context
      * @param codecPriorities list with the codec priorities to set
      */
     public static void setCodecPriorities(Context context, ArrayList<CodecPriority> codecPriorities) {
@@ -538,7 +536,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
 
     /**
      * Gets the registration status for an account.
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID sip account data
      */
     public static void getRegistrationStatus(Context context, String accountID) {
@@ -550,7 +549,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         context.startService(intent);
     }
 
-    public static void refreshRegistration(Context context, String accountID, int regExpTimeout, String regContactParams){
+    public static void refreshRegistration(Context context, String accountID, int regExpTimeout, String regContactParams) {
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
@@ -574,8 +573,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID
-     * @param surface surface on which to render the incoming video
+     * @param callID    call ID
+     * @param surface   surface on which to render the incoming video
      */
     public static void setupIncomingVideoFeed(Context context, String accountID, int callID, Surface surface) {
         checkAccount(accountID);
@@ -613,7 +612,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
-     * @param mute whether to mute or un-mute the video
+     * @param mute    whether to mute or un-mute the video
      */
     public static void setVideoMute(Context context, boolean mute) {
 
@@ -633,10 +632,10 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID
-     * @param surface surface on which to render the preview
+     * @param callID    call ID
+     * @param surface   surface on which to render the preview
      */
-    public static void startVideoPreview(Context context, String accountID,  int callID, Surface surface) {
+    public static void startVideoPreview(Context context, String accountID, int callID, Surface surface) {
         checkAccount(accountID);
 
         Intent intent = new Intent(context, SipService.class);
@@ -673,7 +672,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID
+     * @param callID    call ID
      */
     public static void stopVideoPreview(Context context, String accountID, int callID) {
         checkAccount(accountID);
@@ -691,7 +690,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
      * @param context application context
      * @param accountID account ID
-     * @param callID call ID
+     * @param callID    call ID
      */
     public static void switchVideoCaptureDevice(Context context, String accountID, int callID) {
         checkAccount(accountID);
@@ -706,13 +705,14 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Depending on the configuration (accountConfig.setIpChangeConfig) the reconnection process may differ
      * By default it will try to recover an existing call if present by
-     *      restarting the transport
-     *      registering
-     *      updating via & contact
-     *
+     * restarting the transport
+     * registering
+     * updating via & contact
+     * <p>
      * Before calling this you should listen to network connection/disconnection events.
      * As soon as the connection comes back after a disconnection event you can call this
      * to try to reconnect the ongoing call
+     *
      * @param context the context
      */
     public static void reconnectCall(Context context) {
@@ -724,6 +724,7 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     /**
      * Sets the camera manager within the PjCamera2Info class
      * it is used to enumerate the video devices without the CAMERA permission
+     *
      * @param cm CameraManager retrieved with {@link Context#getSystemService(String)}}
      */
     public static void setCameraManager(CameraManager cm) {
@@ -731,9 +732,8 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
     }
 
     /**
-     *
      * @param context the context
-     * @param verify enables and disables the sip server certificate verification
+     * @param verify  enables and disables the sip server certificate verification
      */
     public static void setVerifySipServerCert(Context context, boolean verify) {
         SharedPreferencesHelper.getInstance(context).setVerifySipServerCert(verify);
@@ -743,113 +743,83 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * This method is called after user login but before initializing the sdk library for passing the
      * information needed for push registration.
      *
-     * @param pushToken  firebase push token
-     * @param versionName app version name
-     * @param bundleID    application id
-     * @param deviceInfo  device unique identifier
-     * @param applicationID amazon server push notification id
-     * @param deviceType device type like android or iOS
-     * @param voipId user's VoIP id
-     * @param voipPhoneID user's VoiP phone ID
-     * @param context Android Context needed for shared preferences operations
+     * @param configureFCMPushNotification: ConfigureFCMPushNotification
+     *                                      configureFCMPushNotification.pushToken               firebase push token
+     *                                      configureFCMPushNotification.versionName             app version name
+     *                                      configureFCMPushNotification.bundleID                application id
+     *                                      configureFCMPushNotification.deviceInfo              device unique identifier
+     *                                      configureFCMPushNotification.applicationID           amazon server push notification id
+     *                                      configureFCMPushNotification.deviceType              device type like android or iOS
+     *                                      configureFCMPushNotification.voipId                  user's VoIP id
+     *                                      configureFCMPushNotification.voipPhoneID             user's VoiP phone ID
+     * @param context:                      Context                 Android Context needed for shared preferences operations
      * @see SipApplication#getHeadersForPush(Context)
      */
-    public static void saveInformationForPushRegistration
-    (
-            String pushToken, String versionName,
-            String bundleID, String deviceInfo,
-            String applicationID, String deviceType,
-            String voipId, String voipPhoneID, Context context
-    ) {
-
-        SipApplication.saveInformationForPush(pushToken, versionName, bundleID, deviceInfo,
-                applicationID, deviceType, voipId, voipPhoneID,
-                context);
+    public static void saveInformationForPushRegistration(ConfigureFCMPushNotification configureFCMPushNotification, Context context) {
+        SipApplication.saveInformationForPush(configureFCMPushNotification, context);
     }
 
     /**
-     *This method sets the file path in sdk for saving the VoIP logs.
-     *If file path is a valid path then VoIP logging is enabled,
-     *else not
+     * This method sets the file path in sdk for saving the VoIP logs.
+     * If file path is a valid path then VoIP logging is enabled,
+     * else not
      *
-     * @param fileName  file path for saving the voip logs
-     * @param context Activity context
-     * //@see org.pjsip.pjsua2.app.MyApp#init(MyAppObserver, String, boolean, boolean, Context)
+     * @param fileName file path for saving the voip logs
+     * @param context  Activity context
+     *                 //@see org.pjsip.pjsua2.app.MyApp#init(MyAppObserver, String, boolean, boolean, Context)
      */
     public static void saveInformationForLogFiles(String fileName, Context context) {
         SipApplication.setLogFilesPathInformation(fileName, context);
     }
 
-    /** This method is called by client for passing information to SDK which is needed for login
+    /**
+     * This method is called by client for passing information to SDK which is needed for login
      * into SIP server.
      *
-     * @param sipUsername  sipUsername credentials
-     * @param sipPassword sipPassword credentials
-     * @param domainName  VoIP domain name
-     * @param port VoIP port name
-     * @param securePort optional needed in case of encrypted communication
-     * @param secureProtocolName optional needed in case of encrypted communication
-     * @param protocolName transport protocol to be used
-     * @param context Android Context needed for shared preferences operations
-     *
+     * @param configureSip ConfigureSip
+     *                     configureSip.sipUsername         sipUsername credentials
+     *                     configureSip.sipPassword         sipPassword credentials
+     *                     configureSip.domainName          VoIP domain name
+     *                     configureSip.port                VoIP port name
+     *                     configureSip.securePort          optional needed in case of encrypted communication
+     *                     configureSip.secureProtocolName  optional needed in case of encrypted communication
+     *                     configureSip.protocolName        transport protocol to be used
+     * @param context:     Context                 Android Context needed for shared preferences operations
      * @see SipService#ACTION_SET_ACCOUNT
      */
-    public static void saveInformationForSipLibraryInitialization
-    (
-            String sipUsername, String sipPassword,
-            String domainName, int port,
-            int securePort, String secureProtocolName,
-            String protocolName, Context context
-    ) {
-
-        SipApplication.saveInformationForSipLibraryInitialization(sipUsername,
-                sipPassword,
-                domainName,
-                port,
-                securePort,
-                secureProtocolName,
-                protocolName, context);
+    public static void saveInformationForSipLibraryInitialization(ConfigureSip configureSip, Context context) {
+        SipApplication.saveInformationForSipLibraryInitialization(configureSip, context);
     }
 
     /**
      * This method is called by client for passing information to SDK which is needed for showing
      * foreground service notification {@link SipService ForegroundServiceClass}.
      *
-     * @param notificationTitle notification title
-     * @param notificationSubtitle notification subtitle
-     * @param notificationIcon notification icon id
-     * @param context Android Context needed for shared preferences operations
+     * @param configurePhoneServiceNotification ConfigurePhoneServiceNotification
+     *                                          configurePhoneServiceNotification.notificationTitle         notification title
+     *                                          configurePhoneServiceNotification.notificationSubtitle      notification subtitle
+     *                                          configurePhoneServiceNotification.notificationIcon          notification icon id
+     * @param context:                          Context                 Android Context needed for shared preferences operations
      */
 
-    public static void saveInformationForForegroundServiceNotification
-    (
-            String notificationTitle,
-            String notificationSubtitle,
-            int notificationIcon,
-            Context context
-    ) {
-        SipApplication.saveInformationForForegroundServiceNotification(notificationTitle,
-                notificationSubtitle, notificationIcon, context);
-
+    public static void saveInformationForForegroundServiceNotification(ConfigurePhoneServiceNotification configurePhoneServiceNotification, Context context) {
+        SipApplication.saveInformationForForegroundServiceNotification(configurePhoneServiceNotification, context);
     }
 
     /**
      * Method to handle the push notifications
      *
-     * @param status if canceled--> call is canceled by caller<br>
-     *               answered --> call has been answered on another device<br>
-     *               else it's an incoming call
-     * @param from number of caller
-     * @param server VoIP server
-     * @param slot VoIP slot
+     * @param status     if canceled--> call is canceled by caller<br>
+     *                   answered --> call has been answered on another device<br>
+     *                   else it's an incoming call
+     * @param from       number of caller
+     * @param server     VoIP server
+     * @param slot       VoIP slot
      * @param linkedUUID unique id for identifying each call
      * @param callerName name of caller
-     * @param context Android context needed for talking to SDK service
+     * @param context    Android context needed for talking to SDK service
      */
-    public static void handleIncomingCallPushNotification(Context context, String status,
-                                                          String from, String server, String slot,
-                                                          String linkedUUID,
-                                                          String callerName) {
+    public static void handleIncomingCallPushNotification(Context context, String status, String from, String server, String slot, String linkedUUID, String callerName) {
 
         final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
