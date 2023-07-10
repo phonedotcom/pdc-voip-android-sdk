@@ -846,6 +846,9 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
      * @param context Android context needed for talking to SDK service
      */
     public static void rejectCallUserBusy(Context context) {
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
+        checkAccount(accountID);
+
         final Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_REJECT_CALL_USER_BUSY);
         intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context).getAccountID());
@@ -866,6 +869,26 @@ public final class SipServiceCommand extends ServiceExecutor implements SipServi
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(SipServiceConstants.ACTION_UNREGISTER_PUSH_LOGOUT);
         executeSipServiceAction(context, intent);
+    }
+
+    public static void holdCall(Context context){
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
+        checkAccount(accountID);
+
+        Intent intent = new Intent(context, SipService.class);
+        intent.setAction(ACTION_TOGGLE_HOLD);
+        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        context.startService(intent);
+    }
+
+    public static void resumeCall(Context context){
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
+        checkAccount(accountID);
+
+        Intent intent = new Intent(context, SipService.class);
+        intent.setAction(ACTION_TOGGLE_HOLD);
+        intent.putExtra(PARAM_ACCOUNT_ID, accountID);
+        context.startService(intent);
     }
 }
 

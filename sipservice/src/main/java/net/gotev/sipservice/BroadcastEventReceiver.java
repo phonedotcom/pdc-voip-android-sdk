@@ -103,6 +103,10 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALL_MEDIA_EVENT).equals(action)) {
             onCallMediaEvent(intent.getIntExtra(PARAM_CALL_MEDIA_EVENT_TYPE, -1));
+        } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.HOLD_CALL).equals(action)) {
+            onHoldCall();
+        } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.RESUME_CALL).equals(action)) {
+            onResumeCall();
         }
     }
 
@@ -157,6 +161,10 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
                 BroadcastEventEmitter.BroadcastAction.END_SERVICE_ACTION));
         intentFilter.addAction(BroadcastEventEmitter.getAction(
                 BroadcastEventEmitter.BroadcastAction.CALL_MEDIA_EVENT));
+        intentFilter.addAction(BroadcastEventEmitter.getAction(
+                BroadcastEventEmitter.BroadcastAction.HOLD_CALL));
+        intentFilter.addAction(BroadcastEventEmitter.getAction(
+                BroadcastEventEmitter.BroadcastAction.RESUME_CALL));
         context.registerReceiver(this, intentFilter);
     }
 
@@ -203,7 +211,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
     }
 
     public void onCallEvent(final CallEvent event) {
-        Logger.debug(LOG_TAG, "onCallEvent - "+event.toString());
+        Logger.debug(LOG_TAG, "onCallEvent - " + event.toString());
     }
 
     public void onCallMediaState(String accountID, int callID, MediaState stateType, boolean stateValue) {
@@ -275,5 +283,13 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
 
     public void onSetAccount(String username) {
         Logger.debug(LOG_TAG, "onSetAccount - username: " + getValue(getReceiverContext(), username));
+    }
+
+    public void onHoldCall() {
+        Logger.debug(LOG_TAG, "onHoldCall");
+    }
+
+    public void onResumeCall() {
+        Logger.debug(LOG_TAG, "onResumeCall");
     }
 }

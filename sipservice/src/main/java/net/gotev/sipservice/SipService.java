@@ -485,10 +485,16 @@ public class SipService extends BackgroundService implements SipServiceConstants
         SipCall sipCall = getCall(accountID, callID);
         if (sipCall != null) {
             try {
-                sipCall.toggleHold();
+                boolean isHold = sipCall.toggleHold();
+                if(isHold){
+                    mBroadcastEmitter.holdCall();
+                } else {
+                    mBroadcastEmitter.resumeCall();
+                }
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while toggling hold. AccountID: "
                         + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                mBroadcastEmitter.errorCallback(exc.getMessage());
             }
         }
     }
