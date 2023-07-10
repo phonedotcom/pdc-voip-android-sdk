@@ -1,6 +1,6 @@
 package net.gotev.sipservice.constants
 
-public object PushMessageConstants {
+public object PhoneComServiceConstants {
     const val GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL = "GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL"
     const val SERVICE_NOTIFICATION_CHANNEL_ID = "serviceNotificationChannelId"
     const val MISS_CALL_NOTIFICATION_CHANNEL = "missCallNotificationChannelId"
