@@ -12,7 +12,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-object PhoneComFirebaseMessageHelper {
+object PhoneComServiceConstants {
 
     private const val APNS_VOIP = "APNS_VOIP"
     private const val APNS_VOIP_SANDBOX = "APNS_VOIP_SANDBOX"
