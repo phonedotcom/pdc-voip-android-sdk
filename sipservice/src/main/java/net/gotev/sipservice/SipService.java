@@ -3,7 +3,7 @@ package net.gotev.sipservice;
 import static net.gotev.sipservice.NotificationCreator.createForegroundServiceNotification;
 import static net.gotev.sipservice.ObfuscationHelper.getValue;
 import static net.gotev.sipservice.SipUtility.createIncomingCallObject;
-import static net.gotev.sipservice.utility.PushMessageConstants.SERVICE_FOREGROUND_NOTIFICATION_ID;
+import static net.gotev.sipservice.constants.PushMessageConstants.SERVICE_FOREGROUND_NOTIFICATION_ID;
 
 import android.app.Notification;
 import android.content.Context;
@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.view.Surface;
 
 import net.gotev.sipservice.constants.CallEvent;
+import net.gotev.sipservice.constants.SipServiceConstants;
 import net.gotev.sipservice.model.IncomingCallData;
 import net.gotev.sipservice.model.MissedCallData;
 

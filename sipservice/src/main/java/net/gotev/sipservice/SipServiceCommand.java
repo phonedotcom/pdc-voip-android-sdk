@@ -6,6 +6,7 @@ import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.view.Surface;
 
+import net.gotev.sipservice.constants.SipServiceConstants;
 import net.gotev.sipservice.models.ConfigureFCMPushNotification;
 import net.gotev.sipservice.models.ConfigurePhoneServiceNotification;
 import net.gotev.sipservice.models.ConfigureSip;

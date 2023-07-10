@@ -5,6 +5,7 @@ import android.media.ToneGenerator;
 import android.view.Surface;
 
 import net.gotev.sipservice.constants.CallEvent;
+import net.gotev.sipservice.constants.SipServiceConstants;
 
 import org.pjsip.pjsua2.AudDevManager;
 import org.pjsip.pjsua2.AudioMedia;

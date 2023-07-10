@@ -1,10 +1,10 @@
 package net.gotev.sipservice;
 
-import static net.gotev.sipservice.SipServiceConstants.OPENH264_CODEC_ID;
-import static net.gotev.sipservice.SipServiceConstants.H264_DEF_HEIGHT;
-import static net.gotev.sipservice.SipServiceConstants.H264_DEF_WIDTH;
-import static net.gotev.sipservice.SipServiceConstants.PROFILE_LEVEL_ID_HEADER;
-import static net.gotev.sipservice.SipServiceConstants.PROFILE_LEVEL_ID_JANUS_BRIDGE;
+import static net.gotev.sipservice.constants.SipServiceConstants.OPENH264_CODEC_ID;
+import static net.gotev.sipservice.constants.SipServiceConstants.H264_DEF_HEIGHT;
+import static net.gotev.sipservice.constants.SipServiceConstants.H264_DEF_WIDTH;
+import static net.gotev.sipservice.constants.SipServiceConstants.PROFILE_LEVEL_ID_HEADER;
+import static net.gotev.sipservice.constants.SipServiceConstants.PROFILE_LEVEL_ID_JANUS_BRIDGE;
 
 import com.voismart.crypto.BuildConfig;
 

@@ -3,7 +3,7 @@
  */
 package net.gotev.sipservice;
 
-import static net.gotev.sipservice.utility.PushMessageConstants.SERVICE_NOTIFICATION_CHANNEL_ID;
+import static net.gotev.sipservice.constants.PushMessageConstants.SERVICE_NOTIFICATION_CHANNEL_ID;
 
 import android.app.Notification;
 import android.content.Context;

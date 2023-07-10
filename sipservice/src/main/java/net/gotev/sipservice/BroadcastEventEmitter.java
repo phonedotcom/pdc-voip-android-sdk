@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Parcelable;
 
 import net.gotev.sipservice.constants.CallEvent;
+import net.gotev.sipservice.constants.SipServiceConstants;
 import net.gotev.sipservice.model.IncomingCallData;
 import net.gotev.sipservice.model.MissedCallData;
 
