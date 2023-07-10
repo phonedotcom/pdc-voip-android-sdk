@@ -24,11 +24,11 @@ object PhoneComFirebaseMessageHelper {
     fun validate(messageData: String?): Boolean {
         messageData?.let {
             val json: JSONObject
-            var processedData: String? = null
+            var processedData: String? = messageData
             try {
                 json = JSONObject(messageData)
                 if (json.has(APNS_VOIP)) {
-                   processedData  = json.getString(APNS_VOIP)
+                    processedData = json.getString(APNS_VOIP)
                 }
                 if (json.has(APNS_VOIP_SANDBOX)) {
                     processedData = json.getString(APNS_VOIP_SANDBOX)
