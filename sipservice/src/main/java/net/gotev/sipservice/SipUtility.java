@@ -3,10 +3,10 @@
  */
 package net.gotev.sipservice;
 
-import static net.gotev.sipservice.SipServiceConstants.PARAM_INCOMING_FROM;
-import static net.gotev.sipservice.SipServiceConstants.PARAM_INCOMING_LINKED_UUID;
-import static net.gotev.sipservice.SipServiceConstants.PARAM_INCOMING_SERVER;
-import static net.gotev.sipservice.SipServiceConstants.PARAM_INCOMING_SLOT;
+import static net.gotev.sipservice.constants.SipServiceConstants.PARAM_INCOMING_FROM;
+import static net.gotev.sipservice.constants.SipServiceConstants.PARAM_INCOMING_LINKED_UUID;
+import static net.gotev.sipservice.constants.SipServiceConstants.PARAM_INCOMING_SERVER;
+import static net.gotev.sipservice.constants.SipServiceConstants.PARAM_INCOMING_SLOT;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 
 import androidx.annotation.NonNull;
+
+import net.gotev.sipservice.constants.SipServiceConstants;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

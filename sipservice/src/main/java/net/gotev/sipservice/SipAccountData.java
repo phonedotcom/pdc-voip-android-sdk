@@ -3,11 +3,13 @@ package net.gotev.sipservice;
 import static net.gotev.sipservice.SipApplication.getHeadersForPush;
 import static net.gotev.sipservice.SipApplication.getHeadersForUnregisterPush;
 import static net.gotev.sipservice.SipApplication.isToAddHeadersForPushNotification;
-import static net.gotev.sipservice.SipServiceConstants.DEFAULT_SIP_PORT;
+import static net.gotev.sipservice.constants.SipServiceConstants.DEFAULT_SIP_PORT;
 
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import net.gotev.sipservice.constants.SipServiceConstants;
 
 import org.pjsip.pjsua2.AccountConfig;
 import org.pjsip.pjsua2.AuthCredInfo;

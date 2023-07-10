@@ -1,4 +1,4 @@
-package net.gotev.sipservice;
+package net.gotev.sipservice.constants;
 
 public interface SipServiceConstants {
 

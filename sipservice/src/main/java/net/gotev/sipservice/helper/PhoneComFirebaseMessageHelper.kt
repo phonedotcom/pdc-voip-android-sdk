@@ -6,7 +6,7 @@ package net.gotev.sipservice.helper
 import android.content.Context
 import com.google.gson.Gson
 import net.gotev.sipservice.SipServiceCommand
-import net.gotev.sipservice.SipServiceConstants
+import net.gotev.sipservice.constants.SipServiceConstants
 import net.gotev.sipservice.model.FCMResponse
 import org.json.JSONException
 import org.json.JSONObject
