@@ -165,7 +165,7 @@ class AndroidApplication : Application() {
 List of all the commands support are as follows,
 
 - `phoneComService.initialize()`
-This method initialize the library. It gets all the information provided with **[Phone.com Service Configuration and Initialization](https://github.com/phonedotcom/pdc-voip-android-sdk/edit/develop/README.md#3-phonecom-service-configuration-and-initialization)** section
+This method initialize the library. It gets all the information provided with **[Phone.com Service Configuration and Initialization](https://github.com/phonedotcom/pdc-voip-android-sdk/blob/develop/README.md#3-phonecom-service-configuration-and-initialization)** section
 
 - `PhoneComServiceCommand.unregisterPushAndLogout(<Application Context>)` 
 This method unregister the firebase messaging service and  logout user so application will stop receiving push notification and calls from sip library
@@ -225,7 +225,7 @@ data = if (remoteMessageData.containsKey("data")) {
 
    `PhoneComFirebaseMessageHelper.processMessageData` process on push notification data and send a callback based on the notification type i.e Incoming call or Missed call 
 
-> (For more details on callback methods, please refer documents related to ***BroadcastEventReceiver***)
+> (For more details on callback methods, please refer documents related to [***BroadcastEventReceiver***](https://github.com/phonedotcom/pdc-voip-android-sdk/blob/develop/README.md#4-event-broadcast-receiver---receive-callback-back-to-the-application))
 
 ```kotlin
 if (PhoneComFirebaseMessageHelper.validate(messageData)) {
