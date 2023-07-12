@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Parcelable;
 
 import com.phone.sip.constants.CallEvent;
+import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
 import com.phone.sip.model.IncomingCallData;
 import com.phone.sip.model.MissedCallData;
@@ -45,13 +46,14 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         CALL_RECONNECTION_STATE,
         SILENT_CALL_STATUS,
         NOTIFY_TLS_VERIFY_STATUS_FAILED,
-        CALLBACK_SET_ACCOUNT,
         CALLBACK_REMOVE_ACCOUNT,
         INCOMING_CALL_NOTIFICATION_CLICK,
         ACCEPT_INCOMING_CALL_ACTION,
         END_SERVICE_ACTION,
         CALL_MEDIA_EVENT,
-        CALLBACK_GENERIC_ERROR
+        CALLBACK_GENERIC_ERROR,
+
+        INITIALIZE
     }
 
     public BroadcastEventEmitter(Context context) {
@@ -100,7 +102,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      * Emit an incoming call broadcast intent.
      *
      * @param incomingCallData {@link IncomingCallData}
-     * @param isAnyActiveCall Any active call present (true/false)
+     * @param isAnyActiveCall  Any active call present (true/false)
      */
     public void incomingCall(final IncomingCallData incomingCallData, boolean isAnyActiveCall) {
         final Intent intent = new Intent();
@@ -298,10 +300,10 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         sendExplicitBroadcast(intent);
     }
 
-    void setAccount(SipAccountData data) {
+    void onInitialize(InitializeStatus initializeStatus) {
         final Intent intent = new Intent();
-        intent.setAction(getAction(BroadcastAction.CALLBACK_SET_ACCOUNT));
-        intent.putExtra(PARAM_USERNAME, data.getUsername());
+        intent.setAction(getAction(BroadcastAction.INITIALIZE));
+        intent.putExtra(PARAM_INITIALIZE_STATUS, initializeStatus);
         sendExplicitBroadcast(intent);
     }
 
@@ -318,7 +320,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
      * @param mediaEventType Type of mediaEvent  {@link org.pjsip.pjsua2.pjmedia_event_type}
      */
     public void callMediaEvent(int mediaEventType) {
-        Logger.debug(TAG, "sendCallMediaEvent : "+mediaEventType);
+        Logger.debug(TAG, "sendCallMediaEvent : " + mediaEventType);
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, mediaEventType);
         intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));

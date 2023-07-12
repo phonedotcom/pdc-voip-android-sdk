@@ -7,9 +7,9 @@ import com.phone.sip.models.ConfigureSip
 
 class PhoneComService(
     var context: Context? = null,
-    var configurePushNotification: ConfigureFCMPushNotification? = null,
-    var configureSip: ConfigureSip? = null,
-    var configureServiceNotification: ConfigurePhoneServiceNotification? = null
+    var configurePushNotification: ConfigureFCMPushNotification,
+    var configureSip: ConfigureSip,
+    var configureServiceNotification: ConfigurePhoneServiceNotification
 ) {
 
     private constructor(builder: Builder) : this(
@@ -22,11 +22,11 @@ class PhoneComService(
     class Builder {
         var context: Context? = null
             private set
-        var configurePushNotification: ConfigureFCMPushNotification? = null
+        lateinit var configurePushNotification: ConfigureFCMPushNotification
             private set
-        var configureSip: ConfigureSip? = null
+        lateinit var configureSip: ConfigureSip
             private set
-        var configureServiceNotification: ConfigurePhoneServiceNotification? = null
+        lateinit var configureServiceNotification: ConfigurePhoneServiceNotification
             private set
 
         fun setFcmRegistrationDetails(configurePushNotification: ConfigureFCMPushNotification) =
@@ -42,31 +42,19 @@ class PhoneComService(
 
         fun build(context: Context): PhoneComService {
             this.context = context
-            if (configurePushNotification != null) {
-                PhoneComServiceCommand.saveInformationForPushRegistration(
-                    configurePushNotification,
-                    context
-                )
-            } else {
-                throw Exception("Missing Push notification parameters.")
-            }
+            PhoneComServiceCommand.saveInformationForPushRegistration(
+                configurePushNotification,
+                context
+            )
 
-            if (configureSip != null) {
-                PhoneComServiceCommand.saveInformationForSipLibraryInitialization(
-                    configureSip,
-                    context
-                )
-            } else {
-                throw Exception("Missing SIP configuration parameters.")
-            }
+            PhoneComServiceCommand.saveInformationForSipLibraryInitialization(
+                configureSip,
+                context
+            )
 
-            if (configureServiceNotification != null) {
-                PhoneComServiceCommand.saveInformationForForegroundServiceNotification(
-                    configureServiceNotification, context
-                )
-            } else {
-                throw Exception("Missing phone service notification parameters.")
-            }
+            PhoneComServiceCommand.saveInformationForForegroundServiceNotification(
+                configureServiceNotification, context
+            )
 
             return PhoneComService(this)
         }

@@ -92,7 +92,7 @@ public interface SipServiceConstants {
     String PARAM_CALL_MEDIA_EVENT_TYPE = "callMediaEventType";
     String PARAM_INCOMING_CALL_DATA = "incomingCallData";
     String PARAM_MISSED_CALL_DATA = "missedCallData";
-
+    String PARAM_INITIALIZE_STATUS = "initializeStatus";
 
     /**
      * Specific Parameters passed in the broadcast intents for call stats.

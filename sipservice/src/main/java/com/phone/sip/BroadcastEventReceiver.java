@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import androidx.annotation.NonNull;
 
 import com.phone.sip.constants.CallEvent;
+import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
 import com.phone.sip.model.IncomingCallData;
 import com.phone.sip.model.MissedCallData;
@@ -37,8 +38,8 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
 
         String action = intent.getAction();
 
-        if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALLBACK_SET_ACCOUNT).equals(action)) {
-            onSetAccount(intent.getStringExtra(PARAM_USERNAME));
+        if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.INITIALIZE).equals(action)) {
+            onInitialize(intent.getParcelableExtra(PARAM_INITIALIZE_STATUS));
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.REGISTRATION).equals(action)) {
             int stateCode = intent.getIntExtra(PARAM_REGISTRATION_CODE, -1);
             onRegistration(intent.getStringExtra(PARAM_ACCOUNT_ID), stateCode);
@@ -149,7 +150,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
         intentFilter.addAction(BroadcastEventEmitter.getAction(
                 BroadcastEventEmitter.BroadcastAction.NOTIFY_TLS_VERIFY_STATUS_FAILED));
         intentFilter.addAction(BroadcastEventEmitter.getAction(
-                BroadcastEventEmitter.BroadcastAction.CALLBACK_SET_ACCOUNT));
+                BroadcastEventEmitter.BroadcastAction.INITIALIZE));
         intentFilter.addAction(BroadcastEventEmitter.getAction(
                 BroadcastEventEmitter.BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
         intentFilter.addAction(BroadcastEventEmitter.getAction(
@@ -204,7 +205,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
     }
 
     public void onCallEvent(final CallEvent event) {
-        Logger.debug(LOG_TAG, "onCallEvent - "+event.toString());
+        Logger.debug(LOG_TAG, "onCallEvent - " + event.toString());
     }
 
     public void onCallMediaState(String accountID, int callID, MediaState stateType, boolean stateValue) {
@@ -274,7 +275,11 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
         Logger.debug(LOG_TAG, "TlsVerifyStatusFailed");
     }
 
-    public void onSetAccount(String username) {
-        Logger.debug(LOG_TAG, "onSetAccount - username: " + getValue(getReceiverContext(), username));
+    public void onInitialize(InitializeStatus initializeStatus) {
+        if (initializeStatus instanceof InitializeStatus.Success) {
+            Logger.debug(LOG_TAG, "onInitialize - SUCCESS: " + ((InitializeStatus.Success) initializeStatus).getUsername());
+        } else if (initializeStatus instanceof InitializeStatus.Failure) {
+            Logger.debug(LOG_TAG, "onInitialize - FAILURE: " + ((InitializeStatus.Failure) initializeStatus).getErrorMessage());
+        }
     }
 }
