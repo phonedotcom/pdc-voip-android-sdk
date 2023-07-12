@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.view.Surface;
 
 import com.phone.sip.constants.CallEvent;
+import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
 import com.phone.sip.model.IncomingCallData;
 import com.phone.sip.model.MissedCallData;
@@ -1103,10 +1104,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 addAccount(data);
                 mConfiguredAccounts.add(data);
                 persistConfiguredAccounts();
-                mBroadcastEmitter.setAccount(data);
+                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
                 enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
+                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
                 return;
             }
         } else {
@@ -1118,9 +1120,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 addAccount(data);
                 mConfiguredAccounts.set(index, data);
                 persistConfiguredAccounts();
-                mBroadcastEmitter.setAccount(data);
+                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
                 enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
                 return;
             }
