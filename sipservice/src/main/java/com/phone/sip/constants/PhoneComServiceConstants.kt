@@ -2,7 +2,6 @@ package com.phone.sip.constants
 
 public object PhoneComServiceConstants {
     const val GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL = "GENERIC_PDC_VOIP_NOTIFICATION_CHANNEL"
-    const val SERVICE_NOTIFICATION_CHANNEL_NAME = "Phone Service Channel"
     const val SERVICE_NOTIFICATION_CHANNEL_ID = "serviceNotificationChannelId"
     const val MISS_CALL_NOTIFICATION_CHANNEL = "missCallNotificationChannelId"
     const val INCOMING_CALL_NOTIFICATION_CHANNEL_ID = "incomingCallNotificationChannelId"
