@@ -103,6 +103,11 @@ This class helps to make client ready for communication with SIP server. All you
 							.setForegroundServiceNotificationDetails(configPhoneServiceNotification
 							.build(this)
 		```   
+	
+ 	- ***PhoneComService*** can be initialized once build. This internally gather all the information regarding SIP params, device token, service notification and create SIP account for the user.
+	    ```java 
+		phoneComService.initialize()
+		```   
 
       
 <br/>
