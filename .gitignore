@@ -27,6 +27,7 @@ lint
 .idea/encodings.xml
 .idea/misc.xml
 .idea/modules.xml
+.idea/kotlinc.xml
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
 .idea/kotlinc.xml
