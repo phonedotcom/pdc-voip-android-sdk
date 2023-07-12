@@ -105,4 +105,47 @@ This class helps to make client ready for communication with SIP server. All you
 		```   
 
       
+<br/>
+4. Configure Channels to host Notification
+
+Channel created with id SERVICE_NOTIFICATION_CHANNEL_ID, helps library to host service notification generated for Foreground service. 
+
+```java 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+		            createChannelId(
+		                PhoneComServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID,
+		                false,
+		                NotificationManager.IMPORTANCE_DEFAULT,
+		                getString(R.string.service_notification_channel_name)
+		            )
+		 }
+        
+```
+   
+<br/>   
+5. Once mobile device is registered with Firebase Cloud Messaging (FCM), client app should start getting push notification in FirebaseMessagingService class. 
+
+`PhoneComFirebaseMessageHelper` class helps to validate and process message `data` extracted from `RemoteMessage` received in `onMessageReceived(...)` 
+
+```kotlin
+  var data: String? = ""
+         data = if (remoteMessageData.containsKey("data")) {
+              remoteMessageData["data"]
+         } else if (remoteMessageData.containsKey("default")) {
+              remoteMessageData["default"]
+         }
+```
+
+ 
+
+   `PhoneComFirebaseMessageHelper.processMessageData` process on push notification data and send a callback based on the notification type i.e Incoming call or Missed call 
+
+> (For more details on callback methods, please refer documents related to ***BroadcastEventReceiver***)
+
+```kotlin
+  if (PhoneComFirebaseMessageHelper.validate(messageData)) {
+      PhoneComFirebaseMessageHelper.processMessageData(this, messageData)
+  }
+```
+ 
 
