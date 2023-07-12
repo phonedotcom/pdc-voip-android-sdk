@@ -8,7 +8,7 @@ This library wraps the standard SIP service bindings in a background service and
 	All the commands that you will send to the service will get executed in the background and without blocking your main thread. Once the service has done the requested job or operation, it will notify you in a callback method in a class extended from BroadcastEvenReceiver. So, you don't risk blocking your UI thread in any way.
 
 
-#### What is implemented and working
+### What is implemented and working
 
 - Single account
 - In-Call operations
@@ -39,7 +39,7 @@ This library wraps the standard SIP service bindings in a background service and
 
 ### How to get our library in your project
 
-1. Add Jitpack repository to your build.gradle file (project level)
+#### 1. Add Jitpack repository to your build.gradle file (project level)
 
 ```kotlin
 allprojects {
@@ -52,7 +52,7 @@ allprojects {
 ```
 <br/>
 
-2. Add the dependency in your build.gradle file (module level)  
+#### 2. Add the dependency in your build.gradle file (module level)  
 [![](https://jitpack.io/v/phonedotcom/pdc-voip-android-sdk.svg)](https://jitpack.io/#phonedotcom/pdc-voip-android-sdk)
 ```kotlin
 dependencies {
@@ -61,7 +61,7 @@ dependencies {
 ```
 <br/>
 	
-3. Phone.com Service Configuration and Initialization
+#### 3. Phone.com Service Configuration and Initialization
 This class helps to make client ready for communication with SIP server. All you need to provide is basic data while configuration. 
 	 
 - Configure FCM Push Notification
@@ -107,7 +107,7 @@ val phoneComService = PhoneComService.Builder()
 ```   
 <br/>
       
-4. #### Event broadcast receiver - Receive callback back to the application
+#### 4. Event broadcast receiver - Receive callback back to the application
 - BroadcastEventReceiver class helps client application to receive callback events corresponding to the commands given to library. You have to create a class and extend `BroadcastEventReceiver` class of library and override pre-defined methods created for specific purpose.
 ```kotlin
 class CallEventBroadcastReceiver : com.phone.sip.BroadcastEventReceiver() {
@@ -160,12 +160,12 @@ class AndroidApplication : Application() {
 ```
 <br/>
 
-5. #### Call the library methods to perform tasks
+#### 5. Call the library methods to perform tasks
 `PhoneComServiceCommand` - This class allows you to communicate with the library. There are several static methods which allows to send commands to library to perform different tasks like login with sip account, connect incoming call, mute/unmute call, notify for missed call, approve or decline the entry request and etc.
 List of all the commands support are as follows,
 
 - `phoneComService.initialize()`
-This method initialize the library. It gets all the information provided with **[Phone.com Service Configuration and Initialization](#phone.com-service-configuration-and-initialization)** section
+This method initialize the library. It gets all the information provided with **[Phone.com Service Configuration and Initialization](https://github.com/phonedotcom/pdc-voip-android-sdk/edit/develop/README.md#3-phonecom-service-configuration-and-initialization)** section
 
 - `PhoneComServiceCommand.unregisterPushAndLogout(<Application Context>)` 
 This method unregister the firebase messaging service and  logout user so application will stop receiving push notification and calls from sip library
@@ -192,7 +192,7 @@ This method allows application to decline an incoming call.
 This method allows application to reject an incoming call automatically when user is busy on another call from other application.
  <br/>
  
-6. Configure Channels to host Notification
+#### 6. Configure Channels to host Notification
 
 Channel created with id SERVICE_NOTIFICATION_CHANNEL_ID, helps library to host service notification generated for Foreground service. 
 
@@ -208,7 +208,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 ```
 <br/>   
 
-7. Once mobile device is registered with Firebase Cloud Messaging (FCM), client app should start getting push notification in FirebaseMessagingService class. 
+#### 7. Once mobile device is registered with Firebase Cloud Messaging (FCM), client app should start getting push notification in FirebaseMessagingService class. 
 
 `PhoneComFirebaseMessageHelper` class helps to validate and process message `data` extracted from `RemoteMessage` received in `onMessageReceived(...)` 
 
