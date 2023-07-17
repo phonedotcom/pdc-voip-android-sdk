@@ -1395,9 +1395,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
             pjSipAndroidAccount.create();
             mActiveSipAccounts.put(accountString, pjSipAndroidAccount);
             Logger.debug(TAG, "SIP account " + getValue(getApplicationContext(), account.getIdUri(getApplicationContext())) + " successfully added");
-        } else {
-            sipAccount.setRegistration(true);
         }
+//        else {
+//            sipAccount.setRegistration(true);
+//        }
     }
 
     /**
