@@ -5,6 +5,7 @@ package com.phone.sip.helper
 
 import android.content.Context
 import com.google.gson.Gson
+import com.phone.sip.Logger
 import com.phone.sip.PhoneComServiceCommand
 import com.phone.sip.constants.SipServiceConstants
 import com.phone.sip.model.FCMResponse
@@ -14,6 +15,7 @@ import org.json.JSONObject
 
 object PhoneComFirebaseMessageHelper {
 
+    private val TAG = PhoneComFirebaseMessageHelper.javaClass.simpleName
     private const val APNS_VOIP = "APNS_VOIP"
     private const val APNS_VOIP_SANDBOX = "APNS_VOIP_SANDBOX"
 
@@ -55,7 +57,7 @@ object PhoneComFirebaseMessageHelper {
     fun processMessageData(context: Context, messageData: String?) {
         if (validate(messageData)) {
             val data = Gson().fromJson(messageData, FCMResponse::class.java)
-
+            Logger.debug(TAG, "Message Data: $data")
             PhoneComServiceCommand.handleIncomingCallPushNotification(
                 context,
                 data.status,

@@ -8,7 +8,7 @@ package com.phone.sip;
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
-class Logger {
+public class Logger {
 
     public enum LogLevel {
         DEBUG,

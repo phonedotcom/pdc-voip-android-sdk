@@ -13,11 +13,16 @@ android {
         versionCode 29
         versionName "2.10.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    sourceSets.main {
+        jniLibs.srcDir 'libs'
     }
 }
 

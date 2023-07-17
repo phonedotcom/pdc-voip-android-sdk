@@ -6,8 +6,6 @@ import static com.phone.sip.constants.SipServiceConstants.OPENH264_CODEC_ID;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_HEADER;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_JANUS_BRIDGE;
 
-import com.voismart.crypto.BuildConfig;
-
 import org.pjsip.pjsua2.CodecFmtpVector;
 import org.pjsip.pjsua2.CodecInfo;
 import org.pjsip.pjsua2.EpConfig;
@@ -42,7 +40,6 @@ public class SipServiceUtils {
             sipLogger = new SipLogger();
             logCfg.setWriter(sipLogger);
             logCfg.setDecor(sipLogger.getDecor() | sipLogger.getDecor());
-            //logCfg.setConsoleLevel();
         }
     }
 
