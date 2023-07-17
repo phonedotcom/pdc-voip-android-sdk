@@ -186,12 +186,14 @@ public class SipAccount extends Account {
                                     final String server,
                                     final String linkedUuid,
                                     boolean isVideo) throws Exception {
+        Logger.debug(LOG_TAG, "declineIncomingCall");
 
         // allow calls only if there are no other ongoing calls
         SipCall call = new SipCall(this);
         call.setVideoParam(isVideo);
 
         CallOpParam callOpParam = new CallOpParam(true);
+        Logger.debug(LOG_TAG, "declineIncomingCall -> CallOpParam instantiated");
 
         final SipHeader hSlot = new SipHeader();
         hSlot.setHName("X-Slot");
@@ -211,6 +213,8 @@ public class SipAccount extends Account {
         headerVector.add(hDisconnect);
         callOpParam.getTxOption().setHeaders(headerVector);
 
+        Logger.debug(LOG_TAG, "declineIncomingCall -> Header Set");
+
         try {
             //Put Number in SipCall for further use
             call.setNumber(numberToDial);
@@ -220,6 +224,7 @@ public class SipAccount extends Account {
 
             if (numberToDial.startsWith("sip:")) {
                 call.makeCall(numberToDial, callOpParam);
+                Logger.debug(LOG_TAG, "declineIncomingCall -> makeCall");
             } else {
                 if ("*".equals(data.getRealm())) {
                     call.makeCall("sip:" + numberToDial, callOpParam);
@@ -231,6 +236,7 @@ public class SipAccount extends Account {
             call.setLinkedUUID(linkedUuid);
             call.setState(CallState.DISCONNECTED);
             call.setCallType(CallType.INCOMING);
+            Logger.debug(LOG_TAG, "declineIncomingCall -> set other params");
 
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "Error while making sip call", exc);

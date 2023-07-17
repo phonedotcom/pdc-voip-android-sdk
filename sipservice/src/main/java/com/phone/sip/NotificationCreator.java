@@ -27,7 +27,13 @@ public final class NotificationCreator {
      * @param context Android context needed for talking to SDK service
      */
     public static Notification createForegroundServiceNotification(Context context, String notificationBody, boolean isCall) {
-        Logger.debug(TAG, "createForegroundServiceNotification(context, notificationBody, isCall)");
+        return createForegroundServiceNotification(context, notificationBody);
+    }
+
+    static Notification createForegroundServiceNotification(
+            Context context, String notificationBody
+    ) {
+        Logger.debug(TAG, "createForegroundServiceNotification(context, notificationBody)");
         if (notificationBody == null) {
             notificationBody = SipApplication.getNotificationBody(context);
         }
@@ -36,32 +42,11 @@ public final class NotificationCreator {
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(SipApplication.getNotificationIcon(context))
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setContentTitle(SipApplication.getNotificationContentTitle(context))
+                .setAutoCancel(true)
                 .setContentText(notificationBody);
 
-        return mBuilder.build();
-    }
-
-    static Notification createForegroundServiceNotification(
-            Context context, String callName
-    ) {
-        Logger.debug(TAG, "createForegroundServiceNotification(context, callName)");
-        /*Intent resultIntent = new Intent();
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(
-                context,
-                0,
-                resultIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );*/
-        String channelId = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ? SERVICE_NOTIFICATION_CHANNEL_ID : "";
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(SipApplication.getNotificationIcon(context))
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentTitle(SipApplication.getNotificationContentTitle(context))
-                .setContentText(callName);
-        //mBuilder.setContentIntent(resultPendingIntent);
         return mBuilder.build();
     }
 }
