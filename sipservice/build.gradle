@@ -13,7 +13,7 @@ android {
         versionCode 29
         versionName "2.10.0"
 
-        manifestPlaceholders = [consumerAppId: " "]
+        manifestPlaceholders = [consumerAppId: "com.phone"]
     }
 
     buildTypes {
