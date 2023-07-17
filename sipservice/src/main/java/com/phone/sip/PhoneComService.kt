@@ -9,14 +9,17 @@ class PhoneComService(
     var context: Context? = null,
     var configurePushNotification: ConfigureFCMPushNotification,
     var configureSip: ConfigureSip,
-    var configureServiceNotification: ConfigurePhoneServiceNotification
+    var configureServiceNotification: ConfigurePhoneServiceNotification,
+    var enableSipLogging: Boolean
 ) {
 
     private constructor(builder: Builder) : this(
         builder.context,
         builder.configurePushNotification,
         builder.configureSip,
-        builder.configureServiceNotification
+        builder.configureServiceNotification,
+        builder.enableSipLogging
+
     )
 
     class Builder {
@@ -27,6 +30,8 @@ class PhoneComService(
         lateinit var configureSip: ConfigureSip
             private set
         lateinit var configureServiceNotification: ConfigurePhoneServiceNotification
+            private set
+        var enableSipLogging: Boolean = false
             private set
 
         fun setFcmRegistrationDetails(configurePushNotification: ConfigureFCMPushNotification) =
@@ -39,6 +44,8 @@ class PhoneComService(
             apply { this.configureServiceNotification = configureServiceNotification }
 
         fun setContext(context: Context) = apply { this.context = context }
+
+        fun setSipLoggingEnabled(enableSipLogging: Boolean) = apply { this.enableSipLogging = enableSipLogging }
 
         fun build(context: Context): PhoneComService {
             this.context = context
@@ -54,6 +61,10 @@ class PhoneComService(
 
             PhoneComServiceCommand.saveInformationForForegroundServiceNotification(
                 configureServiceNotification, context
+            )
+
+            PhoneComServiceCommand.setSipLoggingEnabled(
+                enableSipLogging, context
             )
 
             return PhoneComService(this)
