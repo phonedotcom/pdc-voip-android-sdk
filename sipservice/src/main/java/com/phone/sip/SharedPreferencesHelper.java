@@ -234,6 +234,17 @@ class SharedPreferencesHelper {
     }
 
     /**
+     * This method is used to save boolean value in shared preferences.
+     *
+     * @param key Shared pref key
+     */
+    public void putInSharedPreference(String key, boolean value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
+    /**
      * This method is used to get shared pref string values on the basis of key.
      *
      * @param key Shared pref key
