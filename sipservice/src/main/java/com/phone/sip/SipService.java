@@ -1201,7 +1201,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 ua_cfg.setMainThreadOnly(true);
             }*/
 
-            SipServiceUtils.setSipLogger(epConfig);
+            SipServiceUtils.setSipLogger(SipService.this, epConfig);
             mEndpoint.libInit(epConfig);
 
             /*TransportConfig udpTransport = new TransportConfig();

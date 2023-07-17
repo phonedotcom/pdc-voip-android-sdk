@@ -115,8 +115,12 @@ val phoneComService = PhoneComService.Builder()
 	.setFcmRegistrationDetails(configFCMPushNotification)
 	.setSipInitializationDetails(configSip)
 	.setForegroundServiceNotificationDetails(configPhoneServiceNotification)
+	.setSipLoggingEnabled(true/false)
 	.build(this)
 ```
+
+> setSipLoggingEnabled() methods allows you enable the logs for sip library. Default value for this is set to false.
+
 <br/>
 
 #### 5. Event broadcast receiver - Receive callback back to the application

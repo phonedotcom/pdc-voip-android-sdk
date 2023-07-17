@@ -74,6 +74,15 @@ public final class SipApplication {
         setNotificationIcon(foregroundServiceNotification.getNotificationIcon(), context);
     }
 
+    /**
+     * This method is called by client for enabling SIP logging.
+     *
+     * @param enableSipLogging boolean
+     * @param context
+     */
+    public static void setSipLoggingEnabled(boolean enableSipLogging, Context context) {
+        setSipLogging(enableSipLogging, context);
+    }
 
     /**
      * This method is used to get sipUsername.
@@ -504,6 +513,10 @@ public final class SipApplication {
                 .putInSharedPreference(SharedPreferenceConstant.NOTIFICATION_ICON, notificationIcon);
     }
 
+    private static void setSipLogging(boolean enableSipLogging, Context context) {
+        SharedPreferencesHelper.getInstance(context)
+                .putInSharedPreference(SharedPreferenceConstant.ENABLE_SIP_LOGGING, enableSipLogging);
+    }
 
     /**
      * This method is used to set log file name and path to sdk
