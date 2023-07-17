@@ -468,20 +468,19 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void handleToggleCallHold(Intent intent) {
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
-        int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
 
-        SipCall sipCall = getCall(accountID, callID);
+        SipCall sipCall = getActiveSipAccount(accountID).getActiveCall();
         if (sipCall != null) {
             try {
-                boolean isHold = sipCall.toggleHold();
-                if(isHold){
+                sipCall.toggleHold();
+                if (sipCall.isLocalHold()) {
                     mBroadcastEmitter.holdCall();
                 } else {
                     mBroadcastEmitter.resumeCall();
                 }
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while toggling hold. AccountID: "
-                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                        + getValue(getApplicationContext(), accountID) + ", CallID: " + sipCall.getId());
                 mBroadcastEmitter.errorCallback(exc.getMessage());
             }
         }
