@@ -1,10 +1,13 @@
 package com.phone.sip;
 
+import static com.phone.sip.SharedPreferenceConstant.ENABLE_SIP_LOGGING;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_HEIGHT;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_WIDTH;
 import static com.phone.sip.constants.SipServiceConstants.OPENH264_CODEC_ID;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_HEADER;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_JANUS_BRIDGE;
+
+import android.content.Context;
 
 import org.pjsip.pjsua2.CodecFmtpVector;
 import org.pjsip.pjsua2.CodecInfo;
@@ -24,7 +27,6 @@ import java.util.ArrayList;
 public class SipServiceUtils {
 
     private static final String TAG = SipServiceUtils.class.getSimpleName();
-    public static boolean ENABLE_SIP_LOGGING = false;
     // Keeping the reference avoids the logger being garbage collected thus crashing the lib
     @SuppressWarnings("FieldCanBeLocal")
     private static SipLogger sipLogger;
@@ -34,8 +36,8 @@ public class SipServiceUtils {
      * Change flags as needed
      * Applies only for debug builds
      */
-    public static void setSipLogger(EpConfig epConfig) {
-        if (BuildConfig.DEBUG && ENABLE_SIP_LOGGING) {
+    public static void setSipLogger(Context context, EpConfig epConfig) {
+        if (SharedPreferencesHelper.getInstance(context).getBooleanPreference(ENABLE_SIP_LOGGING, false)) {
             LogConfig logCfg = epConfig.getLogConfig();
             sipLogger = new SipLogger();
             logCfg.setWriter(sipLogger);
@@ -43,7 +45,7 @@ public class SipServiceUtils {
         }
     }
 
-    public static void setAudioCodecPriorities (
+    public static void setAudioCodecPriorities(
             ArrayList<CodecPriority> codecPriorities,
             SipEndpoint sipEndpoint
     ) throws Exception {
@@ -75,10 +77,10 @@ public class SipServiceUtils {
         }
     }
 
-    public static void setVideoCodecPriorities (SipEndpoint sipEndpoint) throws Exception {
-        sipEndpoint.videoCodecSetPriority(OPENH264_CODEC_ID, (short) (CodecPriority.PRIORITY_MAX_VIDEO -1));
+    public static void setVideoCodecPriorities(SipEndpoint sipEndpoint) throws Exception {
+        sipEndpoint.videoCodecSetPriority(OPENH264_CODEC_ID, (short) (CodecPriority.PRIORITY_MAX_VIDEO - 1));
 
-        for (CodecInfo codecInfo: sipEndpoint.videoCodecEnum2()) {
+        for (CodecInfo codecInfo : sipEndpoint.videoCodecEnum2()) {
             if (!OPENH264_CODEC_ID.equals(codecInfo.getCodecId())) {
                 sipEndpoint.videoCodecSetPriority(
                         codecInfo.getCodecId(),

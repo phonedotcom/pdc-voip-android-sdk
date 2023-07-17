@@ -30,13 +30,6 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     }
 
     /**
-     * Enables pjsip logging (valid only for debug builds)
-     */
-    public static void enableSipDebugLogging(boolean enable) {
-        SipServiceUtils.ENABLE_SIP_LOGGING = enable;
-    }
-
-    /**
      * Adds a new SIP account.
      *
      * @param context application context
@@ -805,6 +798,16 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
     public static void saveInformationForForegroundServiceNotification(ConfigurePhoneServiceNotification configurePhoneServiceNotification, Context context) {
         SipApplication.saveInformationForForegroundServiceNotification(configurePhoneServiceNotification, context);
+    }
+
+    /**
+     * This method is called by client for enabling SIP logging.
+     *
+     * @param enableSipLogging boolean
+     * @param context
+     */
+    public static void setSipLoggingEnabled(boolean enableSipLogging, Context context) {
+        SipApplication.setSipLoggingEnabled(enableSipLogging, context);
     }
 
     /**
