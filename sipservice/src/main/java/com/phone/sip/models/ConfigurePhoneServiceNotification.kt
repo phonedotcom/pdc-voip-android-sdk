@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull
 
 data class ConfigurePhoneServiceNotification(
     @NotNull
-    var appName: String,
+    var notificationTitle: String,
     @NotNull
     var notificationMessage: String,
     @NotNull

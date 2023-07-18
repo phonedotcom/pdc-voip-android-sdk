@@ -69,8 +69,8 @@ public final class SipApplication {
      * @param foregroundServiceNotification ForegroundServiceNotification
      */
     public static void saveInformationForForegroundServiceNotification(ConfigurePhoneServiceNotification foregroundServiceNotification, Context context) {
-        setNotificationBody(foregroundServiceNotification.getAppName(), context);
-        setNotificationContentTitle(foregroundServiceNotification.getNotificationMessage(), context);
+        setNotificationContentTitle(foregroundServiceNotification.getNotificationTitle(), context);
+        setNotificationBody(foregroundServiceNotification.getNotificationMessage(), context);
         setNotificationIcon(foregroundServiceNotification.getNotificationIcon(), context);
     }
 
@@ -637,11 +637,11 @@ public final class SipApplication {
 
     public static boolean isToAddHeadersForPushNotification(Context context) {
         if (
-                StringUtility.validateString(SipApplication.getPushToken(context))
-                        && StringUtility.validateString(SipApplication.getVersionName(context))
-                        && StringUtility.validateString(SipApplication.getBundleID(context))
-                        && StringUtility.validateString(SipApplication.getDeviceInfo(context))
-                        && StringUtility.validateString(SipApplication.getApplicationID(context))
+                StringUtility.validate(SipApplication.getPushToken(context))
+                        && StringUtility.validate(SipApplication.getVersionName(context))
+                        && StringUtility.validate(SipApplication.getBundleID(context))
+                        && StringUtility.validate(SipApplication.getDeviceInfo(context))
+                        && StringUtility.validate(SipApplication.getApplicationID(context))
         ) {
             Logger.debug(TAG, "Headers are present");
             return true;

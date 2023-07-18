@@ -25,16 +25,33 @@ public final class NotificationCreator {
      * @param notificationBody notification body
      * @param isCall boolean if true there is an ongoing active call else there is no active call
      * @param context Android context needed for talking to SDK service
+     *
+     * @apiNote  getApplicationInfo().loadLabel(getPackageManager()) provides app name, if no title is provided
      */
-    public static Notification createForegroundServiceNotification(Context context, String notificationBody, boolean isCall) {
+    static Notification createForegroundServiceNotification(Context context, String notificationBody, boolean isCall) {
         return createForegroundServiceNotification(context, notificationBody);
     }
 
+    /**
+     * Method for creating an ongoing call notification
+     *
+     * @param context Android context needed for talking to SDK service
+     */
+    static Notification createForegroundServiceNotification(Context context) {
+        return createForegroundServiceNotification(context, "");
+    }
+
+    /**
+     * Method for creating an ongoing call notification
+     *
+     * @param notificationBody notification body
+     * @param context Android context needed for talking to SDK service
+     */
     static Notification createForegroundServiceNotification(
             Context context, String notificationBody
     ) {
         Logger.debug(TAG, "createForegroundServiceNotification(context, notificationBody)");
-        if (notificationBody == null) {
+        if (!StringUtility.validate(notificationBody)) {
             notificationBody = SipApplication.getNotificationBody(context);
         }
 
@@ -46,6 +63,8 @@ public final class NotificationCreator {
                 .setContentTitle(SipApplication.getNotificationContentTitle(context))
                 .setAutoCancel(true)
                 .setContentText(notificationBody);
+
+        Logger.debug(TAG, "NotificationTitle: "+SipApplication.getNotificationContentTitle(context) + "\n" + "NotificationBody: "+notificationBody);
 
         return mBuilder.build();
     }
