@@ -17,6 +17,7 @@
  */
 package org.pjsip;
 
+import android.annotation.SuppressLint;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
@@ -29,14 +30,12 @@ import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Range;
 import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.pjsip.PjCameraInfo2;
 
 public class PjCamera2
 {
@@ -234,7 +233,8 @@ public class PjCamera2
 	}
     }
 
-    public int Start()
+    @SuppressLint("MissingPermission")
+	public int Start()
     {
 	PjCameraInfo2 ci = PjCameraInfo2.GetCameraInfo(camIdx);
 	if (ci == null) {
