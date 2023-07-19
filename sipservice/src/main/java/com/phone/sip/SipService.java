@@ -467,9 +467,15 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleToggleCallHold(Intent intent) {
-        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+        startForeground(NotificationCreator.createForegroundServiceNotification(this, SipServiceConstants.PARAM_APP_NAME));
 
-        SipCall sipCall = getActiveSipAccount(accountID).getActiveCall();
+        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+        SipAccount sipAccount = mActiveSipAccounts.get(accountID);
+        if (sipAccount == null) {
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
+            return;
+        }
+        SipCall sipCall = sipAccount.getActiveCall();
         if (sipCall != null) {
             try {
                 sipCall.toggleHold();
@@ -484,6 +490,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mBroadcastEmitter.errorCallback(exc.getMessage());
             }
         }
+        stopForegroundService(sipAccount);
     }
 
     private void handleSetCallMute(Intent intent) {
