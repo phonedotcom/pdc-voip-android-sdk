@@ -467,7 +467,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleToggleCallHold(Intent intent) {
-        startForeground(NotificationCreator.createForegroundServiceNotification(this, SipServiceConstants.PARAM_APP_NAME));
+        startForeground(NotificationCreator.createForegroundServiceNotification(this));
 
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
