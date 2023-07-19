@@ -1,15 +1,16 @@
 package com.phone.sip
 
 import android.content.Context
+import com.phone.sip.constants.SipServiceConstants
 import com.phone.sip.models.ConfigureFCMPushNotification
 import com.phone.sip.models.ConfigurePhoneServiceNotification
 import com.phone.sip.models.ConfigureSip
 
 class PhoneComService(
     var context: Context? = null,
-    var configurePushNotification: ConfigureFCMPushNotification,
-    var configureSip: ConfigureSip,
-    var configureServiceNotification: ConfigurePhoneServiceNotification,
+    var configurePushNotification: ConfigureFCMPushNotification?,
+    var configureSip: ConfigureSip?,
+    var configureServiceNotification: ConfigurePhoneServiceNotification?,
     var enableSipLogging: Boolean
 ) {
 
@@ -25,11 +26,11 @@ class PhoneComService(
     class Builder {
         var context: Context? = null
             private set
-        lateinit var configurePushNotification: ConfigureFCMPushNotification
+        var configurePushNotification: ConfigureFCMPushNotification? = null
             private set
-        lateinit var configureSip: ConfigureSip
+        var configureSip: ConfigureSip? = null
             private set
-        lateinit var configureServiceNotification: ConfigurePhoneServiceNotification
+        var configureServiceNotification: ConfigurePhoneServiceNotification? = null
             private set
         var enableSipLogging: Boolean = false
             private set
@@ -45,10 +46,16 @@ class PhoneComService(
 
         fun setContext(context: Context) = apply { this.context = context }
 
-        fun setSipLoggingEnabled(enableSipLogging: Boolean) = apply { this.enableSipLogging = enableSipLogging }
+        fun setSipLoggingEnabled(enableSipLogging: Boolean) =
+            apply { this.enableSipLogging = enableSipLogging }
 
         fun build(context: Context): PhoneComService {
             this.context = context
+
+            configurePushNotification ?: throw IllegalArgumentException(SipServiceConstants.ERROR_INITIALIZE_MISSING_PARAMS)
+            configureSip ?: throw IllegalArgumentException(SipServiceConstants.ERROR_INITIALIZE_MISSING_PARAMS)
+            configureServiceNotification ?: throw IllegalArgumentException(SipServiceConstants.ERROR_INITIALIZE_MISSING_PARAMS)
+
             PhoneComServiceCommand.saveInformationForPushRegistration(
                 configurePushNotification,
                 context
