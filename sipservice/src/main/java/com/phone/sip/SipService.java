@@ -607,11 +607,17 @@ public class SipService extends BackgroundService implements SipServiceConstants
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
         SipAccount account = mActiveSipAccounts.get(accountID);
-        if (account == null) return;
+        if (account == null) {
+            startAndStopForegroundService(null);
+            return;
+        }
 
         Set<Integer> activeCallIDs = account.getCallIDs();
 
-        if (activeCallIDs == null || activeCallIDs.isEmpty()) return;
+        if (activeCallIDs == null || activeCallIDs.isEmpty()) {
+            startAndStopForegroundService(account);
+            return;
+        }
 
         startForeground(NotificationCreator.createForegroundServiceNotification(this));
 
@@ -1467,4 +1473,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
         startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, notification);
     }
 
+    private void startAndStopForegroundService(final SipAccount account) {
+        startForeground(NotificationCreator.createForegroundServiceNotification(this));
+        new Handler().postDelayed(() -> stopForegroundService(account), DELAY_STOP_SERVICE);
+    }
 }
