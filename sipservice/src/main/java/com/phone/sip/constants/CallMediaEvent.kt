@@ -29,13 +29,13 @@ enum class CallMediaEvent(val code: Int, private val desc: String) : Parcelable 
         private val map = HashMap<Int, CallMediaEvent>()
 
         init {
-            for (pageType in values()) {
-                map[pageType.code] = pageType
+            for (event in values()) {
+                map[event.code] = event
             }
         }
 
-        fun valueOf(pageType: Int): CallMediaEvent? {
-            return map[pageType] as CallMediaEvent?
+        fun valueOf(event: Int): CallMediaEvent? {
+            return map[event]
         }
     }
 
