@@ -1,5 +1,7 @@
 package com.phone.sip.constants;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface SipServiceConstants {
 
     /*
@@ -160,7 +162,6 @@ public interface SipServiceConstants {
     String PARAM_IS_INCOMING_CALL = "isIncomingCall";
     String PARAM_PHONE_NUMBER = "phone_number";
     String PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL = "errorCodeWhileRejectingIncomingCall";
-
     int PDC_CALL_NOTIFICATION = 4;
 
     /*
@@ -168,6 +169,6 @@ public interface SipServiceConstants {
      */
     String ERR_SIP_ACCOUNT_NULL = "Sip account in not found.";
     String ERR_SIP_CALL_NULL = "No Sip call found with given call id.";
-
     String PARAM_APP_NAME = "Phone.com";
+    String ERROR_INITIALIZE_MISSING_PARAMS = "Missing parameters required for library initialization. Please refer this document, https://github.com/phonedotcom/pdc-voip-android-sdk#4-phonecom-service-configuration-and-initialization";
 }
