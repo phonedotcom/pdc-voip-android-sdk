@@ -882,7 +882,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_TOGGLE_HOLD);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 
     public static void resumeCall(Context context){
@@ -892,7 +892,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_TOGGLE_HOLD);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
-        context.startService(intent);
+        executeSipServiceAction(context, intent);
     }
 }
 
