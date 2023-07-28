@@ -153,7 +153,7 @@ class CallEventBroadcastReceiver : com.phone.sip.BroadcastEventReceiver() {
         	super.onMissedCall(missedCallData)
     	}
 
-    	override fun onCallMediaEvent(mediaEvent: Int) {
+    	override fun onCallMediaEvent(mediaEvent: CallMediaEvent) {
         	super.onCallMediaEvent(mediaEvent)
     	}
 
