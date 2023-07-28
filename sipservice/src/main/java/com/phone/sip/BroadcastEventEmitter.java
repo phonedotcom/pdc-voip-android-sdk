@@ -53,8 +53,9 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         END_SERVICE_ACTION,
         CALL_MEDIA_EVENT,
         CALLBACK_GENERIC_ERROR,
-
-        INITIALIZE
+        INITIALIZE,
+        HOLD_CALL,
+        RESUME_CALL
     }
 
     public BroadcastEventEmitter(Context context) {
@@ -398,6 +399,18 @@ public class BroadcastEventEmitter implements SipServiceConstants {
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
 
+        mContext.sendBroadcast(intent);
+    }
+
+    public void holdCall() {
+        Intent intent = new Intent();
+        intent.setAction(getAction(BroadcastAction.HOLD_CALL));
+        mContext.sendBroadcast(intent);
+    }
+
+    public void resumeCall() {
+        Intent intent = new Intent();
+        intent.setAction(getAction(BroadcastAction.RESUME_CALL));
         mContext.sendBroadcast(intent);
     }
 }

@@ -371,9 +371,9 @@ public class SipCall extends Call implements ICall {
         xfer(transferString, param);
     }
 
-    public void setHold(boolean hold) {
+    public boolean setHold(boolean hold) throws Exception {
         // return immediately if we are not changing the current state
-        if (localHold == hold) return;
+        if (localHold == hold) return hold;
 
         CallOpParam param = new CallOpParam();
 
@@ -392,14 +392,16 @@ public class SipCall extends Call implements ICall {
             localHold = hold;
             account.getService().getBroadcastEmitter().callMediaState(
                     account.getData().getIdUri(account.getService().getApplicationContext()), getId(), MediaState.LOCAL_HOLD, localHold);
+            return hold;
         } catch (Exception exc) {
             String operation = hold ? "hold" : "unhold";
             Logger.error(LOG_TAG, "Error while trying to " + operation + " call", exc);
+            throw new Exception("Error while trying to " + operation + " call \n + exc");
         }
     }
 
-    public void toggleHold() {
-        setHold(!localHold);
+    public boolean toggleHold() throws Exception {
+        return setHold(!localHold);
     }
 
     public boolean isLocalHold() {
