@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import androidx.annotation.NonNull;
 
 import com.phone.sip.constants.CallEvent;
+import com.phone.sip.constants.CallMediaEvent;
 import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
 import com.phone.sip.model.IncomingCallData;
@@ -104,7 +105,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
             onTlsVerifyStatusFailed();
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALL_MEDIA_EVENT).equals(action)) {
-            onCallMediaEvent(intent.getIntExtra(PARAM_CALL_MEDIA_EVENT_TYPE, -1));
+            onCallMediaEvent(intent.getParcelableExtra(PARAM_CALL_MEDIA_EVENT_TYPE));
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.HOLD_CALL).equals(action)) {
             onHoldCall();
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.RESUME_CALL).equals(action)) {
@@ -228,7 +229,7 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
                 ", mediaStateValue: " + stateValue);
     }
 
-    public void onCallMediaEvent(int mediaEvent) {
+    public void onCallMediaEvent(CallMediaEvent mediaEvent) {
         Logger.debug(LOG_TAG, "onCallMediaEvent - mediaEvent: " + mediaEvent);
     }
 

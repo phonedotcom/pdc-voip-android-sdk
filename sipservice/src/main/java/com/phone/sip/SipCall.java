@@ -5,6 +5,7 @@ import android.media.ToneGenerator;
 import android.view.Surface;
 
 import com.phone.sip.constants.CallEvent;
+import com.phone.sip.constants.CallMediaEvent;
 import com.phone.sip.constants.SipServiceConstants;
 
 import org.pjsip.pjsua2.AudDevManager;
@@ -223,7 +224,8 @@ public class SipCall extends Call implements ICall {
                 account.getService().getBroadcastEmitter().videoSize(
                         (int) mVideoWindow.getInfo().getSize().getW(),
                         (int) mVideoWindow.getInfo().getSize().getH());
-                account.getService().getBroadcastEmitter().callMediaEvent(prm.getEv().getType());
+                account.getService().getBroadcastEmitter().callMediaEvent(CallMediaEvent.FORMAT_CHANGED);
+//                account.getService().getBroadcastEmitter().callMediaEvent(prm.getEv().getType());
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Unable to get video dimensions", ex);
             }

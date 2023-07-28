@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Parcelable;
 
 import com.phone.sip.constants.CallEvent;
+import com.phone.sip.constants.CallMediaEvent;
 import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
 import com.phone.sip.model.IncomingCallData;
@@ -324,6 +325,19 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         Logger.debug(TAG, "sendCallMediaEvent : " + mediaEventType);
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, mediaEventType);
+        intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));
+        mContext.sendBroadcast(intent);
+    }
+
+    /**
+     * This method is used for sending different type of mediaEvents to client.
+     *
+     * @param mediaEventType Type of mediaEvent  {@link org.pjsip.pjsua2.pjmedia_event_type}
+     */
+    public void callMediaEvent(CallMediaEvent mediaEventType) {
+        Logger.debug(TAG, "sendCallMediaEvent : " + mediaEventType);
+        final Intent intent = new Intent();
+        intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, (Parcelable) mediaEventType);
         intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));
         mContext.sendBroadcast(intent);
     }
