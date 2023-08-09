@@ -5,6 +5,7 @@ import android.media.ToneGenerator;
 import android.view.Surface;
 
 import com.phone.sip.constants.CallEvent;
+import com.phone.sip.constants.CallMediaEvent;
 import com.phone.sip.constants.SipServiceConstants;
 
 import org.pjsip.pjsua2.AudDevManager;
@@ -223,7 +224,8 @@ public class SipCall extends Call implements ICall {
                 account.getService().getBroadcastEmitter().videoSize(
                         (int) mVideoWindow.getInfo().getSize().getW(),
                         (int) mVideoWindow.getInfo().getSize().getH());
-                account.getService().getBroadcastEmitter().callMediaEvent(prm.getEv().getType());
+                account.getService().getBroadcastEmitter().callMediaEvent(CallMediaEvent.FORMAT_CHANGED);
+//                account.getService().getBroadcastEmitter().callMediaEvent(prm.getEv().getType());
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Unable to get video dimensions", ex);
             }
@@ -369,9 +371,9 @@ public class SipCall extends Call implements ICall {
         xfer(transferString, param);
     }
 
-    public void setHold(boolean hold) {
+    public boolean setHold(boolean hold) throws Exception {
         // return immediately if we are not changing the current state
-        if (localHold == hold) return;
+        if (localHold == hold) return hold;
 
         CallOpParam param = new CallOpParam();
 
@@ -390,14 +392,16 @@ public class SipCall extends Call implements ICall {
             localHold = hold;
             account.getService().getBroadcastEmitter().callMediaState(
                     account.getData().getIdUri(account.getService().getApplicationContext()), getId(), MediaState.LOCAL_HOLD, localHold);
+            return hold;
         } catch (Exception exc) {
             String operation = hold ? "hold" : "unhold";
             Logger.error(LOG_TAG, "Error while trying to " + operation + " call", exc);
+            throw new Exception("Error while trying to " + operation + " call \n + exc");
         }
     }
 
-    public void toggleHold() {
-        setHold(!localHold);
+    public boolean toggleHold() throws Exception {
+        return setHold(!localHold);
     }
 
     public boolean isLocalHold() {

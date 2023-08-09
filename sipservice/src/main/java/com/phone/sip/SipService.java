@@ -467,18 +467,30 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleToggleCallHold(Intent intent) {
-        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
-        int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
+        startForeground(NotificationCreator.createForegroundServiceNotification(this));
 
-        SipCall sipCall = getCall(accountID, callID);
+        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+        SipAccount sipAccount = mActiveSipAccounts.get(accountID);
+        if (sipAccount == null) {
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
+            return;
+        }
+        SipCall sipCall = sipAccount.getActiveCall();
         if (sipCall != null) {
             try {
                 sipCall.toggleHold();
+                if (sipCall.isLocalHold()) {
+                    mBroadcastEmitter.holdCall();
+                } else {
+                    mBroadcastEmitter.resumeCall();
+                }
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while toggling hold. AccountID: "
-                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                        + getValue(getApplicationContext(), accountID) + ", CallID: " + sipCall.getId());
+                mBroadcastEmitter.errorCallback(exc.getMessage());
             }
         }
+        stopForegroundService(sipAccount);
     }
 
     private void handleSetCallMute(Intent intent) {
@@ -607,11 +619,17 @@ public class SipService extends BackgroundService implements SipServiceConstants
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
         SipAccount account = mActiveSipAccounts.get(accountID);
-        if (account == null) return;
+        if (account == null) {
+            startAndStopForegroundService(null);
+            return;
+        }
 
         Set<Integer> activeCallIDs = account.getCallIDs();
 
-        if (activeCallIDs == null || activeCallIDs.isEmpty()) return;
+        if (activeCallIDs == null || activeCallIDs.isEmpty()) {
+            startAndStopForegroundService(account);
+            return;
+        }
 
         startForeground(NotificationCreator.createForegroundServiceNotification(this));
 
@@ -1467,4 +1485,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
         startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, notification);
     }
 
+    private void startAndStopForegroundService(final SipAccount account) {
+        startForeground(NotificationCreator.createForegroundServiceNotification(this));
+        new Handler().postDelayed(() -> stopForegroundService(account), DELAY_STOP_SERVICE);
+    }
 }
