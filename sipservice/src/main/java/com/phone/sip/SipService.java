@@ -3,9 +3,11 @@ package com.phone.sip;
 import static com.phone.sip.ObfuscationHelper.getValue;
 import static com.phone.sip.constants.PhoneComServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID;
 
+import android.Manifest;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.view.Surface;
+
+import androidx.core.content.ContextCompat;
 
 import com.phone.sip.constants.CallEvent;
 import com.phone.sip.constants.InitializeStatus;
@@ -856,6 +860,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void handleMakeCallForIncomingCall(Intent intent) {
         Logger.debug(TAG, "handleMakeCallForIncomingCall()");
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
+            handleDeclineIncomingCall(intent);
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_MICROPHONE_PERMISSION_NOT_ALLOWED);
+            return;
+        }
 
         final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
