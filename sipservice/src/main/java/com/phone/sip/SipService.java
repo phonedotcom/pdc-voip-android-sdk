@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.view.Surface;
 
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.phone.sip.constants.CallEvent;
@@ -1105,7 +1106,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetAccount(Intent intent) {
-        startForeground(NotificationCreator.createForegroundServiceNotification(this));
+        startForeground(NotificationCreator.createForegroundServiceNotification(this, NotificationCompat.PRIORITY_MIN));
         SipAccountData data = intent.getParcelableExtra(PARAM_ACCOUNT_DATA);
 
         int index = mConfiguredAccounts.indexOf(data);
@@ -1121,7 +1122,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
-                enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
+                enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
                 mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
                 return;
             }
@@ -1138,12 +1139,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
                 mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
-                enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
+                enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
                 return;
             }
         }
 
-        enqueueDelayedJob(() -> stopForeground(false), SipServiceConstants.DELAY_STOP_SERVICE);
+        enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
     }
 
     private void handleGetRegistrationStatus(Intent intent) {

@@ -22,8 +22,27 @@ public final class NotificationCreator {
     /**
      * Method for creating an ongoing call notification
      *
+     * @param context Android context needed for talking to SDK service
+     */
+    static Notification createForegroundServiceNotification(Context context) {
+        return createForegroundServiceNotification(context, "");
+    }
+
+    /**
+     * Method for creating an ongoing call notification
+     *
      * @param notificationBody notification body
-     * @param isCall boolean if true there is an ongoing active call else there is no active call
+     * @param context Android context needed for talking to SDK service
+     *
+     * @apiNote  getApplicationInfo().loadLabel(getPackageManager()) provides app name, if no title is provided
+     */
+    static Notification createForegroundServiceNotification(Context context, String notificationBody) {
+        return createForegroundServiceNotification(context, notificationBody, NotificationCompat.PRIORITY_MAX);
+    }
+
+    /**
+     * Method for creating an ongoing call notification
+     *
      * @param context Android context needed for talking to SDK service
      *
      * @apiNote  getApplicationInfo().loadLabel(getPackageManager()) provides app name, if no title is provided
@@ -37,18 +56,20 @@ public final class NotificationCreator {
      *
      * @param context Android context needed for talking to SDK service
      */
-    static Notification createForegroundServiceNotification(Context context) {
-        return createForegroundServiceNotification(context, "");
+    static Notification createForegroundServiceNotification(Context context, int priority) {
+        return createForegroundServiceNotification(context, "", priority);
     }
 
     /**
      * Method for creating an ongoing call notification
      *
-     * @param notificationBody notification body
      * @param context Android context needed for talking to SDK service
+     * @param notificationBody Notification body
+     * @param priority {@link NotificationCompat#PRIORITY_MAX} | {@link NotificationCompat#PRIORITY_MIN}
+     *                                                        | {@link NotificationCompat#PRIORITY_DEFAULT}
      */
     static Notification createForegroundServiceNotification(
-            Context context, String notificationBody
+            Context context, String notificationBody, int priority
     ) {
         Logger.debug(TAG, "createForegroundServiceNotification(context, notificationBody)");
         if (!StringUtility.validate(notificationBody)) {
@@ -59,7 +80,7 @@ public final class NotificationCreator {
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(SipApplication.getNotificationIcon(context))
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setPriority(priority)
                 .setContentTitle(SipApplication.getNotificationContentTitle(context))
                 .setAutoCancel(true)
                 .setContentText(notificationBody);
@@ -68,4 +89,5 @@ public final class NotificationCreator {
 
         return mBuilder.build();
     }
+
 }
