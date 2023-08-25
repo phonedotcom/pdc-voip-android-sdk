@@ -229,7 +229,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Initiated for "
                 + getApplicationInfo().loadLabel(getPackageManager()).toString());
-        startForeground(NotificationCreator.createForegroundServiceNotification(this));
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this, NotificationCompat.PRIORITY_MIN));
 
         final SipAccount sipAccount = getActiveSipAccount(this);
         if (sipAccount != null) {
@@ -245,27 +245,35 @@ public class SipService extends BackgroundService implements SipServiceConstants
                         e.printStackTrace();
                         throw new RuntimeException(e);
                     }
+                    stopForegroundService(sipAccount);
                 }, 2000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        stopForegroundService(sipAccount);
+       // stopForegroundService(sipAccount);
         Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Completed-----");
     }
 
     private void handleIncomingCallDisconnected(Intent intent) {
         Logger.debug(TAG, "handleIncomingCallDisconnected");
+
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(
+                        this,
+                        NotificationCompat.PRIORITY_MIN
+                )
+        );
+
         String linkedUUID = intent.getStringExtra(SipServiceConstants.PARAM_INCOMING_LINKED_UUID);
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
         if (sipAccount == null) {
             mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
+            stopForegroundService(null);
             return;
         }
 
-        startForeground(NotificationCreator.createForegroundServiceNotification(this));
 
         ICall activeIncomingCall = sipAccount.getActiveIncomingCall();
         if (activeIncomingCall != null && activeIncomingCall.getLinkedUUID().equalsIgnoreCase(linkedUUID) &&
@@ -293,8 +301,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
             return;
         }
         Logger.debug(TAG, "stopForegroundService");
-        stopForeground(true);
         sipAccount.setActiveIncomingCall(null);
+        stopForeground(true);
         Logger.debug(TAG, "stopForegroundService -> After Set ActiveIncomingCall to NULL");
     }
 
@@ -322,7 +330,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     private void notifyIncomingCallNotification(Intent intent, ICall iCall) {
         final IncomingCall incomingCall = (IncomingCall) iCall;
         //incomingCall.setVideoCall(isVideo);
-        startForeground(NotificationCreator.createForegroundServiceNotification(this, incomingCall.getCallerName()));
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this, incomingCall.getCallerName()));
 
         getActiveSipAccount(this).setActiveIncomingCall(incomingCall);
 
@@ -472,7 +480,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleToggleCallHold(Intent intent) {
-        startForeground(NotificationCreator.createForegroundServiceNotification(this));
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this));
 
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
@@ -540,10 +548,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleDeclineIncomingCall(Intent intent) {
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this, NotificationCompat.PRIORITY_MIN));
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
         if (sipAccount == null) {
             mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
+            stopForegroundService(null);
             return;
         }
 
@@ -561,12 +571,13 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingServer,
                     incomingLinkedUuid,
                     isVideo);
-            //stopCallForegroundService(sipAccount);
+
         } catch (Exception exc) {
             Logger.error(TAG, "Error while declining incoming call. AccountID: "
                     + getValue(getApplicationContext(), accountID));
             mBroadcastEmitter.errorCallback("Error while declining incoming call. AccountID: "
                     + getValue(getApplicationContext(), accountID));
+            stopForegroundService(sipAccount);
         }
     }
 
@@ -636,7 +647,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             return;
         }
 
-        startForeground(NotificationCreator.createForegroundServiceNotification(this));
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this));
 
         for (int callID : activeCallIDs) {
             try {
@@ -720,7 +731,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final Set<Integer> activeCallIDs = getActiveSipAccount(accountID).getCallIDs();
 
         if (activeCallIDs == null || activeCallIDs.isEmpty()) {
-            startForeground(NotificationCreator.createForegroundServiceNotification(this));
+            startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this));
             enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
             return;
         }
@@ -743,7 +754,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             sipCall.setIncomingVideoFeed(surface);
         } else {
             Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Surface NULL");
-            startForeground(NotificationCreator.createForegroundServiceNotification(this));
+            startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this));
             enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
         }
 
@@ -1106,7 +1117,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetAccount(Intent intent) {
-        startForeground(NotificationCreator.createForegroundServiceNotification(this, NotificationCompat.PRIORITY_MIN));
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this, NotificationCompat.PRIORITY_MIN));
         SipAccountData data = intent.getParcelableExtra(PARAM_ACCOUNT_DATA);
 
         int index = mConfiguredAccounts.indexOf(data);
@@ -1497,7 +1508,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void startAndStopForegroundService(final SipAccount account) {
-        startForeground(NotificationCreator.createForegroundServiceNotification(this));
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this));
         new Handler().postDelayed(() -> stopForegroundService(account), DELAY_STOP_SERVICE);
     }
 }

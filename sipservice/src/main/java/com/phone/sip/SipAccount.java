@@ -189,7 +189,7 @@ public class SipAccount extends Account {
         Logger.debug(LOG_TAG, "declineIncomingCall");
 
         // allow calls only if there are no other ongoing calls
-        SipCall call = new SipCall(this);
+        SipCall call = new SipCall(this, -1);
         call.setVideoParam(isVideo);
 
         CallOpParam callOpParam = new CallOpParam(true);
@@ -238,6 +238,7 @@ public class SipAccount extends Account {
             call.setCallType(CallType.INCOMING);
             Logger.debug(LOG_TAG, "declineIncomingCall -> set other params");
 
+            setActiveIncomingCall(null);
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "Error while making sip call", exc);
             throw exc;

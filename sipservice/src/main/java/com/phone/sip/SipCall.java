@@ -140,7 +140,9 @@ public class SipCall extends Call implements ICall {
                     }
                 }
 
-                account.getService().stopForegroundService(account);
+                if(account.isActiveCallPresent()) {
+                    account.getService().stopForegroundService(account);
+                }
 
             } else if (callState == pjsip_inv_state.PJSIP_INV_STATE_CONFIRMED) {
                 Logger.debug(LOG_TAG, "PJSIP_INV_STATE_CONFIRMED");
@@ -176,13 +178,14 @@ public class SipCall extends Call implements ICall {
 
             if (callState == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
                 account.getService().setLastCallStatus(0);
-                delete();
+                //delete();
+
             }
 
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "onCallState: error while getting call info", exc);
         }
-
+        Runtime.getRuntime().gc();
     }
 
     @Override
