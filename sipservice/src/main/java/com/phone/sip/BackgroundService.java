@@ -40,8 +40,17 @@ abstract class BackgroundService extends Service {
         releaseWakeLock();
     }
 
-    protected void enqueueJob(Runnable job) {
+    /*protected void enqueueJob(Runnable job) {
         mHandler.post(job);
+    }*/
+
+    protected void enqueueJob(Runnable job) {
+        if (mWorkerThread.isAlive()) {
+            mHandler.post(job);
+        } else {
+            startWorkerThread();
+            enqueueJob(job);
+        }
     }
 
     protected void enqueueDelayedJob(Runnable job, long delayMillis) {

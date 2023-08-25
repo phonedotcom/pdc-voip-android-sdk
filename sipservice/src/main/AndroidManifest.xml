@@ -30,7 +30,8 @@
         <service
             android:name="com.phone.sip.SipService"
             android:enabled="true"
-            android:exported="false"/>
+            android:stopWithTask="false"
+            android:exported="true" />
     </application>
 
 </manifest>
