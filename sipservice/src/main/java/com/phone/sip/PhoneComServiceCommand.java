@@ -825,14 +825,17 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      */
     public static void handleIncomingCallPushNotification(Context context, String status, String from, String server, String slot, String linkedUUID, String callerName) {
 
+        Logger.debug(TAG, "alpha17 debug -> handleIncomingCallPushNotification() -> linkedUUID -> " + linkedUUID);
         final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
         final Intent intent = new Intent(context, SipService.class);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         if ("canceled".equalsIgnoreCase(status) || "answered".equalsIgnoreCase(status)) {
+            Logger.debug(TAG, "alpha17 debug -> ACTION_INCOMING_CALL_DISCONNECTED -> linkedUUID -> " + linkedUUID);
             intent.setAction(ACTION_INCOMING_CALL_DISCONNECTED);
         } else {
+            Logger.debug(TAG, "alpha17 debug -> ACTION_INCOMING_CALL_NOTIFICATION -> linkedUUID -> " + linkedUUID);
             intent.setAction(ACTION_INCOMING_CALL_NOTIFICATION);
         }
         intent.putExtra(PARAM_INCOMING_FROM, from);

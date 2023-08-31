@@ -81,7 +81,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Logger.debug(TAG, "alpha17 debug -> onCreate()");
         enqueueJob(() -> {
             Logger.debug(TAG, "Creating SipService with priority: " + Thread.currentThread().getPriority());
 
@@ -97,10 +97,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
+        Logger.debug(TAG, "alpha17 debug -> onStartCommand()");
         enqueueJob(() -> {
             if (intent == null) return;
 
             String action = intent.getAction();
+            Logger.debug(TAG, "alpha17 debug -> onStartCommand() -> action -> " + action);
 
             if (action == null) return;
 
@@ -252,12 +254,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
             }
         }
 
-       // stopForegroundService(sipAccount);
+        // stopForegroundService(sipAccount);
         Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Completed-----");
     }
 
     private void handleIncomingCallDisconnected(Intent intent) {
-        Logger.debug(TAG, "handleIncomingCallDisconnected");
+
 
         startForeground(NotificationCreator.Companion.createForegroundServiceNotification(
                         this,
@@ -266,6 +268,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
         );
 
         String linkedUUID = intent.getStringExtra(SipServiceConstants.PARAM_INCOMING_LINKED_UUID);
+        Logger.debug(TAG, "alpha17 debug -> handleIncomingCallDisconnected() -> linkedUUID -> " + linkedUUID);
+
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
         if (sipAccount == null) {
@@ -314,6 +318,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
         //Stop Music (if any)
         MediaPlayerController.getInstance(this).stopMusicPlayer();
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+
+        Logger.debug(TAG, "alpha17 debug -> handleIncomingCallNotification() -> accountID -> " + accountID);
 
         final ICall iCall = SipUtility.createIncomingCallObject(intent);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
@@ -1504,6 +1510,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void startForeground(final Notification notification) {
+        Logger.debug(TAG, "alpha17 debug -> startForeground()");
         startForeground(SERVICE_FOREGROUND_NOTIFICATION_ID, notification);
     }
 

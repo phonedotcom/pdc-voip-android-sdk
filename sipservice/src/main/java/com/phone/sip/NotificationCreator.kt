@@ -55,7 +55,7 @@ class NotificationCreator private constructor() {
         ): Notification {
             var contentText = notificationBody
             Logger.debug(
-                TAG, "createForegroundServiceNotification(context, notificationBody, priority)"
+                TAG, "alpha17 debug -> createForegroundServiceNotification(context, notificationBody, priority)"
             )
             if (!StringUtility.validate(contentText)) {
                 contentText = SipApplication.getNotificationBody(context)

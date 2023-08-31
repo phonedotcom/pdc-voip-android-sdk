@@ -36,11 +36,14 @@ abstract class ServiceExecutor {
      *                This bundle also contains the information required for performing the operation
      */
     public static synchronized void executeSipServiceAction(Context context, Intent intent) {
+        Logger.debug(TAG, "alpha17 debug -> executeSipServiceAction()");
         intent.setComponent(new ComponentName(context, SipService.class));
         try {
             if (isServiceRunningInForeground(context, SipService.class)) {
+                Logger.debug(TAG, "alpha17 debug -> executeSipServiceAction() -> if");
                 context.startService(intent);
             } else {
+                Logger.debug(TAG, "alpha17 debug -> executeSipServiceAction() -> else");
                 ContextCompat.startForegroundService(context, intent);
             }
         } catch (Exception e) {

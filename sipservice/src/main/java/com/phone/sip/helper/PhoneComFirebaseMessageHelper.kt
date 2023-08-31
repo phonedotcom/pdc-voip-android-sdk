@@ -24,6 +24,7 @@ object PhoneComFirebaseMessageHelper {
      * call notification. Validate message before process.
      */
     fun validate(messageData: String?): Boolean {
+        Logger.debug(TAG, "alpha17 debug -> validate() -> $messageData")
         messageData?.let {
             val json: JSONObject
             var processedData: String? = messageData
@@ -57,7 +58,7 @@ object PhoneComFirebaseMessageHelper {
     fun processMessageData(context: Context, messageData: String?) {
         if (validate(messageData)) {
             val data = Gson().fromJson(messageData, FCMResponse::class.java)
-            Logger.debug(TAG, "Message Data: $data")
+            Logger.debug(TAG, "alpha17 debug -> processMessageData() -> $data")
             PhoneComServiceCommand.handleIncomingCallPushNotification(
                 context,
                 data.status,
