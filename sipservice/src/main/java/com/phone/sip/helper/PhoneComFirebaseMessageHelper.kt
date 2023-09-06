@@ -8,7 +8,7 @@ import com.google.gson.Gson
 import com.phone.sip.Logger
 import com.phone.sip.PhoneComServiceCommand
 import com.phone.sip.constants.SipServiceConstants
-import com.phone.sip.model.FCMResponse
+import com.phone.sip.models.FCMResponse
 import org.json.JSONException
 import org.json.JSONObject
 
