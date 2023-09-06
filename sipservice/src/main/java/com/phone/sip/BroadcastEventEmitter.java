@@ -11,8 +11,8 @@ import com.phone.sip.constants.CallEvent;
 import com.phone.sip.constants.CallMediaEvent;
 import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
-import com.phone.sip.model.IncomingCallData;
-import com.phone.sip.model.MissedCallData;
+import com.phone.sip.models.IncomingCallData;
+import com.phone.sip.models.MissedCallData;
 
 import java.util.ArrayList;
 import java.util.List;

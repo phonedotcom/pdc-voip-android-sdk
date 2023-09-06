@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023 Phone.com®, All Rights Reserved.
  */
-package com.phone.sip.model
+package com.phone.sip.models
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
