@@ -749,7 +749,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * @param context:                      Context                 Android Context needed for shared preferences operations
      * @see SipApplication#getHeadersForPush(Context)
      */
-    public static void saveInformationForPushRegistration(ConfigureFCMPushNotification configureFCMPushNotification, Context context) {
+    static void saveInformationForPushRegistration(ConfigureFCMPushNotification configureFCMPushNotification, Context context) {
         SipApplication.saveInformationForPush(configureFCMPushNotification, context);
     }
 
@@ -781,7 +781,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * @param context:     Context                 Android Context needed for shared preferences operations
      * @see SipService#ACTION_SET_ACCOUNT
      */
-    public static void saveInformationForSipLibraryInitialization(ConfigureSip configureSip, Context context) {
+    static void saveInformationForSipLibraryInitialization(ConfigureSip configureSip, Context context) {
         SipApplication.saveInformationForSipLibraryInitialization(configureSip, context);
     }
 
@@ -796,7 +796,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * @param context:                          Context                 Android Context needed for shared preferences operations
      */
 
-    public static void saveInformationForForegroundServiceNotification(ConfigurePhoneServiceNotification configurePhoneServiceNotification, Context context) {
+    static void saveInformationForForegroundServiceNotification(ConfigurePhoneServiceNotification configurePhoneServiceNotification, Context context) {
         SipApplication.saveInformationForForegroundServiceNotification(configurePhoneServiceNotification, context);
     }
 
@@ -804,9 +804,9 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * This method is called by client for enabling SIP logging.
      *
      * @param enableSipLogging boolean
-     * @param context
+     * @param context {@link android.app.Application} {@link Context}
      */
-    public static void setSipLoggingEnabled(boolean enableSipLogging, Context context) {
+    static void setSipLoggingEnabled(boolean enableSipLogging, Context context) {
         SipApplication.setSipLoggingEnabled(enableSipLogging, context);
     }
 

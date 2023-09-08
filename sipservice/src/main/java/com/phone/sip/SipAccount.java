@@ -233,9 +233,9 @@ public class SipAccount extends Account {
                 }
             }
 
-            call.setLinkedUUID(linkedUuid);
+            /*call.setLinkedUUID(linkedUuid);
             call.setState(CallState.DISCONNECTED);
-            call.setCallType(CallType.INCOMING);
+            call.setCallType(CallType.INCOMING);*/
             Logger.debug(LOG_TAG, "declineIncomingCall -> set other params");
 
             setActiveIncomingCall(null);
