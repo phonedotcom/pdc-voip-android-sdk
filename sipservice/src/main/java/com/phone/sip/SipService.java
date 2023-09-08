@@ -22,8 +22,8 @@ import androidx.core.content.ContextCompat;
 import com.phone.sip.constants.CallEvent;
 import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
-import com.phone.sip.model.IncomingCallData;
-import com.phone.sip.model.MissedCallData;
+import com.phone.sip.models.IncomingCallData;
+import com.phone.sip.models.MissedCallData;
 
 import org.pjsip.pjsua2.AudDevManager;
 import org.pjsip.pjsua2.CallOpParam;
@@ -293,17 +293,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         // disconnect call if active
         stopForegroundService(sipAccount);
-    }
-
-    public synchronized void stopForegroundService(SipAccount sipAccount) {
-        if (sipAccount == null) {
-            stopForeground(true);
-            return;
-        }
-        Logger.debug(TAG, "stopForegroundService");
-        sipAccount.setActiveIncomingCall(null);
-        stopForeground(true);
-        Logger.debug(TAG, "stopForegroundService -> After Set ActiveIncomingCall to NULL");
     }
 
     private void handleMissedCall(ICall call, String number) {
@@ -1155,7 +1144,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             }
         }
 
-        enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
+        enqueueDelayedJob(() -> stopForegroundService(getActiveSipAccount(this), true), SipServiceConstants.DELAY_STOP_SERVICE);
     }
 
     private void handleGetRegistrationStatus(Intent intent) {
@@ -1510,5 +1499,24 @@ public class SipService extends BackgroundService implements SipServiceConstants
     private void startAndStopForegroundService(final SipAccount account) {
         startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this));
         new Handler().postDelayed(() -> stopForegroundService(account), DELAY_STOP_SERVICE);
+    }
+
+    public synchronized void stopForegroundService(SipAccount sipAccount) {
+        if (sipAccount == null) {
+            stopForeground(true);
+            return;
+        }
+        Logger.debug(TAG, "stopForegroundService");
+        sipAccount.setActiveIncomingCall(null);
+        stopForeground(true);
+        Logger.debug(TAG, "stopForegroundService -> After Set ActiveIncomingCall to NULL");
+    }
+
+    private synchronized void stopForegroundService(final SipAccount sipAccount, final boolean isRegistration) {
+        Logger.debug(TAG, "stopForegroundService() -> isRegistration : "+isRegistration);
+        if(isRegistration && !sipAccount.isActiveCallPresent()) {
+            Logger.debug(TAG, "stopForegroundService() -> No Active Call Present");
+            stopForegroundService(sipAccount);
+        }
     }
 }

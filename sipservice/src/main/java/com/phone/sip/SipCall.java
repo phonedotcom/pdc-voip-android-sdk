@@ -99,11 +99,15 @@ public class SipCall extends Call implements ICall {
 
     @Override
     public void onCallState(OnCallStateParam prm) {
+        Logger.debug(LOG_TAG, "onCallState()");
         try {
             CallInfo info = getInfo();
             int callID = info.getId();
             int callState = info.getState();
             int callStatus = pjsip_status_code.PJSIP_SC_NULL;
+            Logger.debug(LOG_TAG, "onCallState() -> Try");
+            Logger.debug(LOG_TAG, "onCallState() -> Try -> callState : " +callState);
+            Logger.debug(LOG_TAG, "onCallState() -> Try -> callStatus 1: "+callStatus);
 
             /*
              * From: http://www.pjsip.org/docs/book-latest/html/call.html#call-disconnection
@@ -118,6 +122,7 @@ public class SipCall extends Call implements ICall {
 
             try {
                 callStatus = info.getLastStatusCode();
+                Logger.debug(LOG_TAG, "onCallState() -> Try -> callStatus 2: "+callStatus);
                 account.getService().setLastCallStatus(callStatus);
             } catch (Exception ex) {
                 Logger.error(LOG_TAG, "Error while getting call status", ex);
