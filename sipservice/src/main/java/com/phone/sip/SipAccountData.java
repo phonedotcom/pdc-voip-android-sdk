@@ -329,7 +329,7 @@ public class SipAccountData implements Parcelable {
         accountConfig.getNatConfig().setSdpNatRewriteUse(pj_constants_.PJ_TRUE);
         accountConfig.getNatConfig().setViaRewriteUse(pj_constants_.PJ_TRUE);
         //TODO: Check
-        //accountConfig.getNatConfig().setContactRewriteUse(1);
+        accountConfig.getNatConfig().setContactRewriteUse(1);
 
         // account media configs
         accountConfig.getMediaConfig().getTransportConfig().setQosType(pj_qos_type.PJ_QOS_TYPE_VIDEO);

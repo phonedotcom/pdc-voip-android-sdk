@@ -1,7 +1,5 @@
 package com.phone.sip.constants;
 
-import org.jetbrains.annotations.Nullable;
-
 public interface SipServiceConstants {
 
     /*
