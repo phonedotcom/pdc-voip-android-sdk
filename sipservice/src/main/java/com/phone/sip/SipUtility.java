@@ -87,7 +87,7 @@ public class SipUtility {
     public static String getDomainUri(Context context) {
         String protocolName = getProtocolName(context);
         String domainName = SipApplication.getDomainName(context);
-        return String.format("sip:%s:%d;%s", domainName, getPortNumber(context), protocolName);
+        return String.format(Locale.ENGLISH, "sip:%s:%d;%s", domainName, getPortNumber(context), protocolName);
     }
 
 
