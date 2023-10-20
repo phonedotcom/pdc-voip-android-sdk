@@ -910,7 +910,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 Logger.error(TAG, "Error while making outgoing call", exc);
                 mBroadcastEmitter.callState(CallEvent.DISCONNECTED);
             }
-        }, 300L);
+        }, 1000L);
 
         /*try {
 //            SipCall call = mActiveSipAccounts.get(accountID).addOutgoingCall(number, isVideo, isVideoConference, isTransfer);
