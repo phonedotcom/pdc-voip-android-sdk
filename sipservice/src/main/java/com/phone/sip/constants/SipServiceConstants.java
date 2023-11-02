@@ -170,4 +170,6 @@ public interface SipServiceConstants {
     String PARAM_APP_NAME = "Phone.com";
     String ERROR_INITIALIZE_MISSING_PARAMS = "Missing parameters required for library initialization. Please refer this document, https://github.com/phonedotcom/pdc-voip-android-sdk#4-phonecom-service-configuration-and-initialization";
     String ERR_MICROPHONE_PERMISSION_NOT_ALLOWED = "Microphone permission is not allowed by user. Please ask user to allow Microphone Permission in order to use the VOIP calling";
+
+    long DELAY_ACCEPT_INCOMING_CALL = 1000L;
 }
