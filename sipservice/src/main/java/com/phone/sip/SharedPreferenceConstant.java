@@ -24,7 +24,8 @@ public final class SharedPreferenceConstant {
     public static final String NOTIFICATION_ICON = "notificationIcon";
     public static final String PROTOCOL = "protocol";
     public static final String SIP_ACCOUNT_ID = "SIP_ACCOUNT_ID";
-    public static final String ENABLE_SIP_LOGGING = "enableSipLogging";
+    public static final String ENABLE_SIP_CONSOLE_LOGS = "enableSipConsoleLogging";
+    public static final String ENABLE_SIP_FILE_LOGS = "enableSipFileLogging";
 
     private SharedPreferenceConstant() {
     }

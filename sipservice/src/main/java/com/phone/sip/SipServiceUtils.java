@@ -1,6 +1,5 @@
 package com.phone.sip;
 
-import static com.phone.sip.SharedPreferenceConstant.ENABLE_SIP_LOGGING;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_HEIGHT;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_WIDTH;
 import static com.phone.sip.constants.SipServiceConstants.OPENH264_CODEC_ID;
@@ -37,11 +36,12 @@ public class SipServiceUtils {
      * Applies only for debug builds
      */
     public static void setSipLogger(Context context, EpConfig epConfig) {
-        if (SharedPreferencesHelper.getInstance(context).getBooleanPreference(ENABLE_SIP_LOGGING, false)) {
+        if (SharedPreferencesHelper.getInstance(context).getBooleanPreference(SharedPreferenceConstant.ENABLE_SIP_CONSOLE_LOGS, false)) {
             LogConfig logCfg = epConfig.getLogConfig();
-            sipLogger = new SipLogger();
+            sipLogger = new SipLogger(context);
             logCfg.setWriter(sipLogger);
             logCfg.setDecor(sipLogger.getDecor() | sipLogger.getDecor());
+            epConfig.setLogConfig(logCfg);
         }
     }
 

@@ -11,8 +11,11 @@ import com.phone.sip.models.ConfigureFCMPushNotification;
 import com.phone.sip.models.ConfigurePhoneServiceNotification;
 import com.phone.sip.models.ConfigureSip;
 
+import org.jetbrains.annotations.NotNull;
 import org.pjsip.PjCameraInfo2;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -757,13 +760,26 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * This method sets the file path in sdk for saving the VoIP logs.
      * If file path is a valid path then VoIP logging is enabled,
      * else not
-     *
-     * @param fileName file path for saving the voip logs
-     * @param context  Activity context
-     *                 //@see org.pjsip.pjsua2.app.MyApp#init(MyAppObserver, String, boolean, boolean, Context)
+     * @param enableSipFileLogging to set weather to enable sip logging in provided file or not
+     * @param logFilePath          file path for saving the voip logs
+     * @param context              Activity context
+     *                             //@see org.pjsip.pjsua2.app.MyApp#init(MyAppObserver, String, boolean, boolean, Context)
      */
-    public static void saveInformationForLogFiles(String fileName, Context context) {
-        SipApplication.setLogFilesPathInformation(fileName, context);
+    public static void setSipFileLoggingEnabled(boolean enableSipFileLogging, @NotNull String logFilePath, @NotNull Context context) {
+        if(enableSipFileLogging){
+            File file = new File(logFilePath);
+            try {
+                if (!file.exists()) {
+                    boolean isFileCreated = file.createNewFile();
+                    if(!isFileCreated){
+                        Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        SipApplication.setSipFileLoggingEnabled(enableSipFileLogging, logFilePath, context);
     }
 
     /**
@@ -804,9 +820,9 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * This method is called by client for enabling SIP logging.
      *
      * @param enableSipLogging boolean
-     * @param context {@link android.app.Application} {@link Context}
+     * @param context          {@link android.app.Application} {@link Context}
      */
-    static void setSipLoggingEnabled(boolean enableSipLogging, Context context) {
+    static void setSipConsoleLoggingEnabled(boolean enableSipLogging, Context context) {
         SipApplication.setSipLoggingEnabled(enableSipLogging, context);
     }
 
@@ -875,7 +891,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         executeSipServiceAction(context, intent);
     }
 
-    public static void holdCall(Context context){
+    public static void holdCall(Context context) {
         final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
@@ -885,7 +901,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         executeSipServiceAction(context, intent);
     }
 
-    public static void resumeCall(Context context){
+    public static void resumeCall(Context context) {
         final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
