@@ -16,6 +16,7 @@ import com.phone.sip.models.ConfigureFCMPushNotification;
 import com.phone.sip.models.ConfigurePhoneServiceNotification;
 import com.phone.sip.models.ConfigureSip;
 
+import org.jetbrains.annotations.NotNull;
 import org.pjsip.pjsua2.SipHeader;
 import org.pjsip.pjsua2.SipHeaderVector;
 
@@ -515,18 +516,20 @@ public final class SipApplication {
 
     private static void setSipLogging(boolean enableSipLogging, Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(SharedPreferenceConstant.ENABLE_SIP_LOGGING, enableSipLogging);
+                .putInSharedPreference(SharedPreferenceConstant.ENABLE_SIP_CONSOLE_LOGS, enableSipLogging);
     }
 
     /**
      * This method is used to set log file name and path to sdk
      *
-     * @param fileName filename for saving logs
+     * @param logFilePath filePath for saving logs
      * @param context  Android context needed
      */
-    public static void setLogFilesPathInformation(String fileName, Context context) {
+    public static void setSipFileLoggingEnabled(boolean enableSipFileLogging, @NotNull String logFilePath, @NotNull Context context) {
         SharedPreferencesHelper.getInstance(context)
-                .putInSharedPreference(SharedPreferenceConstant.LOGS_FILE_NAME, fileName);
+                .putInSharedPreference(SharedPreferenceConstant.ENABLE_SIP_FILE_LOGS, enableSipFileLogging);
+        SharedPreferencesHelper.getInstance(context)
+                .putInSharedPreference(SharedPreferenceConstant.LOGS_FILE_NAME, logFilePath);
     }
 
 
@@ -548,7 +551,7 @@ public final class SipApplication {
      * @param context Android context needed
      * @return path of log file
      */
-    public static String getLogFilePath(Context context) {
+    public static String getLogFileName(Context context) {
         return SharedPreferencesHelper.getInstance(context)
                 .getStringSharedPreference(SharedPreferenceConstant.LOGS_FILE_NAME);
     }
