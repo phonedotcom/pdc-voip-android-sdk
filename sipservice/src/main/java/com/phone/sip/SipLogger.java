@@ -16,7 +16,7 @@ import org.pjsip.pjsua2.pj_log_decoration;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  * connect
@@ -40,7 +40,7 @@ class SipLogger extends LogWriter {
             File logFile = new File(logFileName);
 
             if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.R &&
-                ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Logger.error("SIP -> " + entry.getThreadName(), ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
             }
 
@@ -48,12 +48,12 @@ class SipLogger extends LogWriter {
                 Logger.error("SIP -> " + entry.getThreadName(), ERR_LOG_FILE_NOT_FOUND);
                 return;
             }
-            try (FileOutputStream fileOutputStream = new FileOutputStream(logFileName, true)) {
-                OutputStreamWriter outputStream = new OutputStreamWriter(fileOutputStream);
-                outputStream.append(entry.getMsg());
-                outputStream.append("\n\n\n");
-                outputStream.flush();
-                outputStream.close();
+            try (FileOutputStream fileOutputStream = context.openFileOutput(logFileName, Context.MODE_APPEND)) {
+                fileOutputStream.write("SIP -> ".getBytes(StandardCharsets.UTF_8));
+                fileOutputStream.write(entry.getThreadName().getBytes(StandardCharsets.UTF_8));
+                fileOutputStream.write(entry.getMsg().getBytes(StandardCharsets.UTF_8));
+                fileOutputStream.write("\n\n\n".getBytes(StandardCharsets.UTF_8));
+                fileOutputStream.close();
                 fileOutputStream.flush();
             } catch (Exception e) {
                 Logger.error("SIP -> " + entry.getThreadName(), ERR_LOG_FILE_NOT_FOUND);
@@ -63,6 +63,7 @@ class SipLogger extends LogWriter {
 
     /**
      * Change decor flags as needed
+     *
      * @return decor flags
      */
     public long getDecor() {
