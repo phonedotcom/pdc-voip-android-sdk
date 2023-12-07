@@ -768,15 +768,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     public static void setSipFileLoggingEnabled(boolean enableSipFileLogging, @NotNull String logFilePath, @NotNull Context context) {
         if(enableSipFileLogging){
             File file = new File(logFilePath);
-            try {
-                if (!file.exists()) {
-                    boolean isFileCreated = file.createNewFile();
-                    if(!isFileCreated){
-                        Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
-                    }
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (!file.exists()) {
+                Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
             }
         }
         SipApplication.setSipFileLoggingEnabled(enableSipFileLogging, logFilePath, context);
