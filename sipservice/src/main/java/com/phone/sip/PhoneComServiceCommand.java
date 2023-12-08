@@ -769,7 +769,13 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         if(enableSipFileLogging){
             File file = new File(logFilePath);
             if (!file.exists()) {
-                Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
+                try {
+                    if(!file.createNewFile()) {
+                        Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
+                    }
+                } catch (IOException e) {
+                    Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
+                }
             }
         }
         SipApplication.setSipFileLoggingEnabled(enableSipFileLogging, logFilePath, context);

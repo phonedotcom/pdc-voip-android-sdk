@@ -16,6 +16,7 @@ import org.pjsip.pjsua2.pj_log_decoration;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -48,13 +49,12 @@ class SipLogger extends LogWriter {
                 Logger.error("SIP -> " + entry.getThreadName(), ERR_LOG_FILE_NOT_FOUND);
                 return;
             }
-            try (FileOutputStream fileOutputStream = context.openFileOutput(logFileName, Context.MODE_APPEND)) {
-                fileOutputStream.write("SIP -> ".getBytes(StandardCharsets.UTF_8));
-                fileOutputStream.write(entry.getThreadName().getBytes(StandardCharsets.UTF_8));
-                fileOutputStream.write(entry.getMsg().getBytes(StandardCharsets.UTF_8));
-                fileOutputStream.write("\n\n\n".getBytes(StandardCharsets.UTF_8));
-                fileOutputStream.close();
-                fileOutputStream.flush();
+            try (FileWriter fileWriter = new FileWriter(logFile, true)) {
+                fileWriter.write("SIP -> ");
+                fileWriter.write(entry.getThreadName());
+                fileWriter.write(entry.getMsg());
+                fileWriter.write("\n\n\n");
+                fileWriter.flush();
             } catch (Exception e) {
                 Logger.error("SIP -> " + entry.getThreadName(), ERR_LOG_FILE_NOT_FOUND);
             }
