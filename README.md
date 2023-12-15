@@ -1,12 +1,13 @@
 
 
+
 # Phone.com VoIP Android SDK
 
 
 ## Architecture
 
 This library wraps the standard SIP service bindings in a background service and completely hides SIP from the rest of the client application, to be able to have VoIP capabilities at a high level of abstraction. You can talk to the service using static methods and you will receive broadcast intents as a response. To talk to the service, refer to [PhoneComServiceCommand](https://github.com/phonedotcom/pdc-voip-android-sdk/blob/develop/sipservice/src/main/java/com/phone/sip/PhoneComServiceCommand.java) static methods. To receive events from the service, extend [BroadcastEventReceiver](https://github.com/phonedotcom/pdc-voip-android-sdk/blob/develop/sipservice/src/main/java/com/phone/sip/BroadcastEventReceiver.java).
-	All the commands that you will send to the service will get executed in the background and without blocking your main thread. Once the service has done the requested job or operation, it will notify you in a callback method in a class extended from BroadcastEvenReceiver. So, you don't risk blocking your UI thread in any way.
+All the commands that you will send to the service will get executed in the background and without blocking your main thread. Once the service has done the requested job or operation, it will notify you in a callback method in a class extended from BroadcastEvenReceiver. So, you don't risk blocking your UI thread in any way.
 
 
 ### What is implemented and working
@@ -69,8 +70,19 @@ This library works with foreground service to manage ongoing calls and notificat
 ```xml
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 <uses-permission android:name="android.permission.INTERNET" />
+```
+
+**Update:** If you are developing an app for Android 13, you will need to request the *POST_NOTIFICATIONS* permission in your app's manifest file.
+```xml
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 ```
+
+Once you have requested the permission, you will need to ask the user at runtime for permission to post notifications. You can do this by calling the `requestPermissions()` method.
+
+```java
+ActivityCompat.requestPermissions(<Context>, new String[{Manifest.permission.POST_NOTIFICATIONS}, <Request Code>);
+```
+You will only be able to show any notification If the user grants permission. That means if user denies it, you will not be able to show the notification related to calls from library.
 <br/>
 
 #### 4. Phone.com Service Configuration and Initialization
@@ -89,7 +101,7 @@ val configFCMPushNotification = ConfigureFCMPushNotification(
 	"<Sip Extension ID>"
 )
 ```
-   - Configure SIP Account
+- Configure SIP Account
 ```kotlin
 val configSip = ConfigureSip(
 	"<SIP Username>",
@@ -109,17 +121,33 @@ val configPhoneServiceNotification = ConfigurePhoneServiceNotification(
 	<App Icon Resource>
 )
 ```
-  -  Now set configuration and build ***PhoneComService*** instance
+-  Now set configuration and build ***PhoneComService*** instance
 ```kotlin
-val phoneComService = PhoneComService.Builder()
-	.setFcmRegistrationDetails(configFCMPushNotification)
-	.setSipInitializationDetails(configSip)
-	.setForegroundServiceNotificationDetails(configPhoneServiceNotification)
-	.setSipLoggingEnabled(true/false)
-	.build(this)
+try{
+	val phoneComService = PhoneComService.Builder()
+		.setFcmRegistrationDetails(configFCMPushNotification)
+		.setSipInitializationDetails(configSip)
+		.setForegroundServiceNotificationDetails(configPhoneServiceNotification)
+		.build(this)
+} catch (exeception : IllegalArgumentException) {
+	exeception.printStackTrace();
+}
 ```
 
-> setSipLoggingEnabled() methods allows you enable the logs for sip library. Default value for this is set to false.
+-  Configure the PhoneComLogger to enabled SIP library logs to console and file
+```kotlin
+try{
+	PhoneComLogger.Builder()  
+    .setSipConsoleLoggingEnabled(true)  
+    .setSipFileLoggingEnabled(true, filePath)  
+    .build(this)
+} catch (exeception : IllegalArgumentException) {
+	exeception.printStackTrace();
+}
+```
+> setSipConsoleLoggingEnabled() methods allows you enable the logs for sip library and print in console. Default value for this is set to false.
+
+> setSipFileLoggingEnabled() methods allows to log the SIP logs in file path provided. Default value for this is set to false.
 
 <br/>
 
@@ -128,50 +156,50 @@ val phoneComService = PhoneComService.Builder()
 ```kotlin
 class CallEventBroadcastReceiver : com.phone.sip.BroadcastEventReceiver() {
 
-	private lateinit var context: Context
-	override fun onReceive(context: Context?, intent: Intent?) {
-        	super.onReceive(context, intent)
-		if (intent == null) return
-		context?.let {
-			this.context = it
-		}
-	}
+  private lateinit var context: Context
+  override fun onReceive(context: Context?, intent: Intent?) {
+    super.onReceive(context, intent)
+    if (intent == null) return
+    context?.let {
+      this.context = it
+    }
+  }
 
-	override fun onInitialize(initializeStatus: InitializeStatus) {
-        	super.onInitialize(initializeStatus)
-    	}
+  override fun onInitialize(initializeStatus: InitializeStatus) {
+    super.onInitialize(initializeStatus)
+  }
 
-    	override fun onCallEvent(event: CallEvent) {
-        	super.onCallEvent(event)
-    	}
+  override fun onCallEvent(event: CallEvent) {
+    super.onCallEvent(event)
+  }
 
-    	override fun onIncomingCall(incomingCallData: IncomingCallData, isAnyActiveCall: Boolean) {
-        	super.onIncomingCall(incomingCallData, isAnyActiveCall)
-	}
+  override fun onIncomingCall(incomingCallData: IncomingCallData, isAnyActiveCall: Boolean) {
+    super.onIncomingCall(incomingCallData, isAnyActiveCall)
+  }
 
-    	override fun onMissedCall(missedCallData: MissedCallData) {
-        	super.onMissedCall(missedCallData)
-    	}
+  override fun onMissedCall(missedCallData: MissedCallData) {
+    super.onMissedCall(missedCallData)
+  }
 
-    	override fun onCallMediaEvent(mediaEvent: CallMediaEvent) {
-        	super.onCallMediaEvent(mediaEvent)
-    	}
+  override fun onCallMediaEvent(mediaEvent: Int) {
+    super.onCallMediaEvent(mediaEvent)
+  }
 
-    	override fun onCallMediaState(stateType: MediaState?, stateValue: Boolean) {
-        	super.onCallMediaState(stateType, stateValue)
-  	}
+  override fun onCallMediaState(stateType: MediaState?, stateValue: Boolean) {
+    super.onCallMediaState(stateType, stateValue)
+  }
 }
 ```
- - Register `CallEventBroadcastReceiver` and start receiving callbacks
-Register `CallEventBroadcastReceiver` class created by extending `BroadcastEventReceiver`, in the `onCreate()` of Application class. So the callback can be received any time while the process of client application is running in system.
+- Register `CallEventBroadcastReceiver` and start receiving callbacks
+  Register `CallEventBroadcastReceiver` class created by extending `BroadcastEventReceiver`, in the `onCreate()` of Application class. So the callback can be received any time while the process of client application is running in system.
 ```kotlin
 class AndroidApplication : Application() {
-	override fun onCreate() {
-		super.onCreate()
-	    	...
-		callEventBroadcastReceiver.register(this)
-		...
-	}
+  override fun onCreate() {
+    super.onCreate()
+    ...
+    callEventBroadcastReceiver.register(this)
+    ...
+  }
 }
 ```
 <br/>
@@ -181,32 +209,32 @@ class AndroidApplication : Application() {
 List of all the commands support are as follows,
 
 - `phoneComService.initialize()`
-This method initialize the library. It gets all the information provided with **[Phone.com Service Configuration and Initialization](https://github.com/phonedotcom/pdc-voip-android-sdk/blob/develop/README.md#4-phonecom-service-configuration-and-initialization)** section
+  This method initialize the library. It gets all the information provided with **[Phone.com Service Configuration and Initialization](https://github.com/phonedotcom/pdc-voip-android-sdk/blob/develop/README.md#4-phonecom-service-configuration-and-initialization)** section
 
 - `PhoneComServiceCommand.unregisterPushAndLogout(<Application Context>)`
-This method unregister the firebase messaging service and  logout user so application will stop receiving push notification and calls from sip library
+  This method unregister the firebase messaging service and  logout user so application will stop receiving push notification and calls from sip library
 
 - `PhoneComServiceCommand.acceptIncomingCall(<Application Context>, <Boolean isVideo>)`
-This method allows client application to accept the incoming call, and also check weather it is a video call or not.
+  This method allows client application to accept the incoming call, and also check weather it is a video call or not.
 
 - `PhoneComServiceCommand.hangUpActiveCalls(<Application Context>)`
-This method allows application to hangup or disconnect an active call.
+  This method allows application to hangup or disconnect an active call.
 
 - `PhoneComServiceCommand.setCallMute(<Application Context>, <Boolean mute/unmute>)`
-This method allows application to mute or unmute the active call.
+  This method allows application to mute or unmute the active call.
 
 - `PhoneComServiceCommand.setupIncomingVideoFeed(<Application Context>, <android.VideoView surface>)`
-This method allows application to start showing incoming video feed from call.
+  This method allows application to start showing incoming video feed from call.
 
 - `PhoneComServiceCommand.sendDTMF(<Application Context>, <String key>)`
-This method allows application to send a DTMF tone to library to perform various operations. most common use case for this is to play keypad tone.
+  This method allows application to send a DTMF tone to library to perform various operations. most common use case for this is to play keypad tone.
 
 - `PhoneComServiceCommand.declineIncomingCall(context)`
-This method allows application to decline an incoming call.
+  This method allows application to decline an incoming call.
 
 - `PhoneComServiceCommand.rejectCallUserBusy(context)`
-This method allows application to reject an incoming call automatically when user is busy on another call from other application.
- <br/>
+  This method allows application to reject an incoming call automatically when user is busy on another call from other application.
+  <br/>
 
 #### 7. Configure Channels to host Notification
 
@@ -214,13 +242,13 @@ Channel created with id SERVICE_NOTIFICATION_CHANNEL_ID, helps library to host s
 
 ```kotlin
 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-    val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-	val notificationChannel = NotificationChannel(
-		PhoneComServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID,
-		PhoneComServiceConstants.SERVICE_NOTIFICATION_CHANNEL_NAME,
-		NotificationManager.IMPORTANCE_DEFAULT
-	)
-	notificationManager.createNotificationChannel(notificationChannel)
+  val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+  val notificationChannel = NotificationChannel(
+    PhoneComServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID,
+    PhoneComServiceConstants.SERVICE_NOTIFICATION_CHANNEL_NAME,
+    NotificationManager.IMPORTANCE_DEFAULT
+  )
+  notificationManager.createNotificationChannel(notificationChannel)
 }
 ```
 <br/>
@@ -232,20 +260,20 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 ```kotlin
 var data: String? = ""
 data = if (remoteMessageData.containsKey("data")) {
-		remoteMessageData["data"]
-	} else if (remoteMessageData.containsKey("default")) {
-		remoteMessageData["default"]
-	}
+  remoteMessageData["data"]
+} else if (remoteMessageData.containsKey("default")) {
+  remoteMessageData["default"]
+}
 ```
 
 
 
-   `PhoneComFirebaseMessageHelper.processMessageData` process on push notification data and send a callback based on the notification type i.e Incoming call or Missed call
+`PhoneComFirebaseMessageHelper.processMessageData` process on push notification data and send a callback based on the notification type i.e Incoming call or Missed call
 
 > (For more details on callback methods, please refer documents related to [***BroadcastEventReceiver***](https://github.com/phonedotcom/pdc-voip-android-sdk/blob/develop/README.md#5-event-broadcast-receiver---receive-callback-back-to-the-application))
 
 ```kotlin
 if (PhoneComFirebaseMessageHelper.validate(messageData)) {
-	PhoneComFirebaseMessageHelper.processMessageData(this, messageData)
+  PhoneComFirebaseMessageHelper.processMessageData(this, messageData)
 }
 ```
