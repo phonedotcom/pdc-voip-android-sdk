@@ -9,19 +9,13 @@ import com.phone.sip.models.ConfigureSip
 class PhoneComService(
     var context: Context? = null,
     var configureSip: ConfigureSip?,
-    var configureServiceNotification: ConfigurePhoneServiceNotification?,
-    var enableSipConsoleLogging: Boolean,
-    var enableSipFileLogging: Boolean,
-    var logFilePath: String
+    var configureServiceNotification: ConfigurePhoneServiceNotification?
 ) {
 
     private constructor(builder: Builder) : this(
         builder.context,
         builder.configureSip,
-        builder.configureServiceNotification,
-        builder.enableSipConsoleLogging,
-        builder.enableSipFileLogging,
-        builder.logFilePath
+        builder.configureServiceNotification
     )
 
     class Builder {
@@ -33,12 +27,7 @@ class PhoneComService(
             private set
         var configureServiceNotification: ConfigurePhoneServiceNotification? = null
             private set
-        var enableSipConsoleLogging: Boolean = false
-            private set
-        var enableSipFileLogging: Boolean = false
-            private set
-        var logFilePath: String = ""
-            private set
+
 
         fun setFcmRegistrationDetails(configurePushNotification: ConfigureFCMPushNotification) =
             apply { this.configurePushNotification = configurePushNotification }
@@ -51,13 +40,6 @@ class PhoneComService(
 
         fun setContext(context: Context) = apply { this.context = context }
 
-        fun setSipFileLoggingEnabled(enableSipFileLogging: Boolean, logFilePath: String) = apply {
-            this.enableSipFileLogging = enableSipFileLogging
-            this.logFilePath = logFilePath
-        }
-
-        fun setSipConsoleLoggingEnabled(enableSipConsoleLogging: Boolean) =
-            apply { this.enableSipConsoleLogging = enableSipConsoleLogging }
 
         fun build(context: Context): PhoneComService {
             this.context = context
@@ -78,14 +60,6 @@ class PhoneComService(
 
             PhoneComServiceCommand.saveInformationForForegroundServiceNotification(
                 configureServiceNotification, context
-            )
-
-            PhoneComServiceCommand.setSipFileLoggingEnabled(
-                enableSipFileLogging, logFilePath, context
-            )
-
-            PhoneComServiceCommand.setSipConsoleLoggingEnabled(
-                enableSipConsoleLogging, context
             )
 
             return PhoneComService(this)
