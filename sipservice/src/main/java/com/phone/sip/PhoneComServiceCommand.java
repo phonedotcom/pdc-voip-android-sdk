@@ -765,7 +765,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * @param context              Activity context
      *                             //@see org.pjsip.pjsua2.app.MyApp#init(MyAppObserver, String, boolean, boolean, Context)
      */
-    public static void setSipFileLoggingEnabled(boolean enableSipFileLogging, @NotNull String logFilePath, @NotNull Context context) {
+     static void setSipFileLoggingEnabled(boolean enableSipFileLogging, @NotNull String logFilePath, @NotNull Context context) {
         if(enableSipFileLogging){
             if(logFilePath.trim().isEmpty()){
                 Logger.error(TAG, ERR_LOG_FILE_NOT_FOUND);
