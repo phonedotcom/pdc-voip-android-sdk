@@ -49,6 +49,9 @@ class SipLogger extends LogWriter {
                 Logger.error("SIP -> " + entry.getThreadName(), ERR_LOG_FILE_NOT_FOUND);
                 return;
             }
+
+
+
             try (FileWriter fileWriter = new FileWriter(logFile, true)) {
                 fileWriter.write("SIP -> ");
                 fileWriter.write(entry.getThreadName());
