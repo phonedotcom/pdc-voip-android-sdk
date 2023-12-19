@@ -171,8 +171,9 @@ public interface SipServiceConstants {
     String ERROR_INITIALIZE_MISSING_PARAMS = "Missing parameters required for library initialization. Please refer this document, https://github.com/phonedotcom/pdc-voip-android-sdk#4-phonecom-service-configuration-and-initialization";
     String ERR_MICROPHONE_PERMISSION_NOT_ALLOWED = "Microphone permission is not allowed by user. Please ask user to allow Microphone Permission in order to use the VOIP calling";
 
-    String ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED = "Storage permission is not allowed by user to write file. Please ask user to allow External Storage Permission.";
-    String ERR_LOG_FILE_NOT_FOUND = "File not found to store logs, Please see the enable logging section from document here.";
+    String ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED = "There is an error in creating or writing in the file, Please verify if storage permission is allowed or not by user to write file.";
+    String ERR_LOG_FILE_NOT_FOUND = "File not found to store logs, Please provide valid file path or see instruction on how to enable the SIP file logging from document.";
+    String ERR_LOG_FILE_FOUND_LOG_DISABLED = "Log file path is provided but File logging is disabled, Hence logs will not be written in the file.";
 
     long DELAY_ACCEPT_INCOMING_CALL = 1000L;
 }

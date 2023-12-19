@@ -767,16 +767,26 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      */
     public static void setSipFileLoggingEnabled(boolean enableSipFileLogging, @NotNull String logFilePath, @NotNull Context context) {
         if(enableSipFileLogging){
-            File file = new File(logFilePath);
-            if (!file.exists()) {
-                try {
-                    if(!file.createNewFile()) {
+            if(logFilePath.trim().isEmpty()){
+                Logger.error(TAG, ERR_LOG_FILE_NOT_FOUND);
+                new BroadcastEventEmitter(context).errorCallback(ERR_LOG_FILE_NOT_FOUND);
+            } else {
+                File file = new File(logFilePath);
+                if (!file.exists()) {
+                    try {
+                        if(!file.createNewFile()) {
+                            Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
+                            new BroadcastEventEmitter(context).errorCallback(ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
+                        }
+                    } catch (IOException e) {
                         Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
+                        new BroadcastEventEmitter(context).errorCallback(ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
                     }
-                } catch (IOException e) {
-                    Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
                 }
             }
+        } else if(!logFilePath.trim().isEmpty()){
+            Logger.error(TAG, ERR_LOG_FILE_FOUND_LOG_DISABLED);
+            new BroadcastEventEmitter(context).errorCallback(ERR_LOG_FILE_FOUND_LOG_DISABLED);
         }
         SipApplication.setSipFileLoggingEnabled(enableSipFileLogging, logFilePath, context);
     }

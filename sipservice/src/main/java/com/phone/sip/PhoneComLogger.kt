@@ -28,9 +28,9 @@ class PhoneComLogger(
 
         fun setContext(context: Context) = apply { this.context = context }
 
-        fun setSipFileLoggingEnabled(enableSipFileLogging: Boolean, logFilePath: String) = apply {
+        fun setSipFileLoggingEnabled(enableSipFileLogging: Boolean, logFilePath: String? = "") = apply {
             this.enableSipFileLogging = enableSipFileLogging
-            this.logFilePath = logFilePath
+            this.logFilePath = logFilePath ?: ""
         }
 
         fun setSipConsoleLoggingEnabled(enableSipConsoleLogging: Boolean) =
