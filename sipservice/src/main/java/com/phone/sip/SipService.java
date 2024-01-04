@@ -623,26 +623,26 @@ public class SipService extends BackgroundService implements SipServiceConstants
     private void handleHangUpActiveCalls(Intent intent) {
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this));
         SipAccount account = mActiveSipAccounts.get(accountID);
         if (account == null) {
-            startAndStopForegroundService(null);
+            stopForeground(true);
             return;
         }
 
         Set<Integer> activeCallIDs = account.getCallIDs();
 
         if (activeCallIDs == null || activeCallIDs.isEmpty()) {
-            startAndStopForegroundService(account);
+            stopForeground(true);
             return;
         }
-
-        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this));
 
         for (int callID : activeCallIDs) {
             try {
                 // stopCallForegroundService() has to call before hangupCall() here, because from the hangup we receives the broadcast and remove the call from that event hence, putting the stopCallForegroundService() after will falsify the condition.
                 //stopCallForegroundService(account);
                 hangupCall(accountID, callID);
+                stopForeground(true);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while hanging up call", exc);
                 notifyCallDisconnected(accountID, callID);

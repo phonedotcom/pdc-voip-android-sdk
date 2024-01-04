@@ -36,7 +36,8 @@ public class SipServiceUtils {
      * Applies only for debug builds
      */
     public static void setSipLogger(Context context, EpConfig epConfig) {
-        if (SharedPreferencesHelper.getInstance(context).getBooleanPreference(SharedPreferenceConstant.ENABLE_SIP_CONSOLE_LOGS, false)) {
+        if (SharedPreferencesHelper.getInstance(context).getBooleanPreference(SharedPreferenceConstant.ENABLE_SIP_CONSOLE_LOGS, false) ||
+                SharedPreferencesHelper.getInstance(context).getBooleanPreference(SharedPreferenceConstant.ENABLE_SIP_FILE_LOGS, false)) {
             LogConfig logCfg = epConfig.getLogConfig();
             sipLogger = new SipLogger(context);
             logCfg.setWriter(sipLogger);

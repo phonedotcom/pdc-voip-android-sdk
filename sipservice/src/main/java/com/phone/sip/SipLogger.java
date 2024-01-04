@@ -34,7 +34,9 @@ class SipLogger extends LogWriter {
     }
 
     public void write(LogEntry entry) {
-        Logger.debug("SIP -> " + entry.getThreadName(), entry.getMsg());
+        if (SharedPreferencesHelper.getInstance(context).getBooleanPreference(SharedPreferenceConstant.ENABLE_SIP_CONSOLE_LOGS, false)) {
+            Logger.debug("SIP -> " + entry.getThreadName(), entry.getMsg());
+        }
 
         if (SharedPreferencesHelper.getInstance(context).getBooleanPreference(SharedPreferenceConstant.ENABLE_SIP_FILE_LOGS, false)) {
             String logFileName = SharedPreferencesHelper.getInstance(context).getStringSharedPreference(SharedPreferenceConstant.LOGS_FILE_NAME);
@@ -49,8 +51,6 @@ class SipLogger extends LogWriter {
                 Logger.error("SIP -> " + entry.getThreadName(), ERR_LOG_FILE_NOT_FOUND);
                 return;
             }
-
-
 
             try (FileWriter fileWriter = new FileWriter(logFile, true)) {
                 fileWriter.write("SIP -> ");
