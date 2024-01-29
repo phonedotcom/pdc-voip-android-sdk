@@ -56,20 +56,30 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SipService extends BackgroundService implements SipServiceConstants {
 
     private static final String TAG = SipService.class.getSimpleName();
-
+    private static final ConcurrentHashMap<String, SipAccount> mActiveSipAccounts = new ConcurrentHashMap<>();
     private List<SipAccountData> mConfiguredAccounts = new ArrayList<>();
     private SipAccountData mConfiguredGuestAccount;
-    private static final ConcurrentHashMap<String, SipAccount> mActiveSipAccounts = new ConcurrentHashMap<>();
     private BroadcastEventEmitter mBroadcastEmitter;
     private SipEndpoint mEndpoint;
+    private SharedPreferencesHelper mSharedPreferencesHelper;
+    private volatile boolean mStarted;
+    private int callStatus;
+
+    public static ConcurrentHashMap<String, SipAccount> getActiveSipAccounts() {
+        return mActiveSipAccounts;
+    }
+
+    public static SipAccount getActiveSipAccount(final String accountID) {
+        return mActiveSipAccounts.get(accountID);
+    }
+
+    public static SipAccount getActiveSipAccount(Context context) {
+        return mActiveSipAccounts.get(SharedPreferencesHelper.getInstance(context).getAccountID());
+    }
 
     public SharedPreferencesHelper getSharedPreferencesHelper() {
         return mSharedPreferencesHelper;
     }
-
-    private SharedPreferencesHelper mSharedPreferencesHelper;
-    private volatile boolean mStarted;
-    private int callStatus;
 
     /***   Service Lifecycle Callbacks    ***/
 
@@ -252,7 +262,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             }
         }
 
-       // stopForegroundService(sipAccount);
+        // stopForegroundService(sipAccount);
         Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Completed-----");
     }
 
@@ -497,20 +507,30 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void handleSetCallMute(Intent intent) {
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
-        int callID = intent.getIntExtra(PARAM_CALL_ID, 0);
+        SipAccount sipAccount;
+        if (accountID == null) {
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
+            return;
+        } else {
+            sipAccount = mActiveSipAccounts.get(accountID);
+            if (sipAccount == null) {
+                mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
+                return;
+            }
+        }
 
-        // TODO for lift master - as there is no multi call support we can fetch the peek call from active calls, in other case we will need call id from application
-
-        SipCall sipCall = getCall(accountID, callID);
+        SipCall sipCall = sipAccount.getActiveCall();
         if (sipCall != null) {
             boolean mute = intent.getBooleanExtra(PARAM_MUTE, false);
             try {
                 sipCall.setMute(mute);
+                AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setMicrophoneMute(mute);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while setting mute. AccountID: "
-                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                        + getValue(getApplicationContext(), accountID) + ", CallID: " + sipCall.getId());
                 mBroadcastEmitter.errorCallback("Error while setting mute. AccountID: "
-                        + getValue(getApplicationContext(), accountID) + ", CallID: " + callID);
+                        + getValue(getApplicationContext(), accountID) + ", CallID: " + sipCall.getId());
             }
         } else {
             mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_CALL_NULL);
@@ -1479,18 +1499,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
         return mBroadcastEmitter;
     }
 
-    public static ConcurrentHashMap<String, SipAccount> getActiveSipAccounts() {
-        return mActiveSipAccounts;
-    }
-
-    public static SipAccount getActiveSipAccount(final String accountID) {
-        return mActiveSipAccounts.get(accountID);
-    }
-
-    public static SipAccount getActiveSipAccount(Context context) {
-        return mActiveSipAccounts.get(SharedPreferencesHelper.getInstance(context).getAccountID());
-    }
-
     public void removeGuestAccount() {
         removeAccount(mConfiguredGuestAccount.getIdUri(getApplicationContext()));
         mConfiguredGuestAccount = null;
@@ -1517,8 +1525,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private synchronized void stopForegroundService(final SipAccount sipAccount, final boolean isRegistration) {
-        Logger.debug(TAG, "stopForegroundService() -> isRegistration : "+isRegistration);
-        if(isRegistration && !sipAccount.isActiveCallPresent()) {
+        Logger.debug(TAG, "stopForegroundService() -> isRegistration : " + isRegistration);
+        if (isRegistration && !sipAccount.isActiveCallPresent()) {
             Logger.debug(TAG, "stopForegroundService() -> No Active Call Present");
             stopForegroundService(sipAccount);
         }
