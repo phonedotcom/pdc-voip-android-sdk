@@ -30,7 +30,8 @@ lint
 .idea/kotlinc.xml
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
-.idea/kotlinc.xml
+.idea/gradle.xml
+.idea/migrations.xml
 .idea/markdown*
 *.iml
 
