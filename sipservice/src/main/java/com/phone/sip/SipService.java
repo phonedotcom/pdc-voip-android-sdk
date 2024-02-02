@@ -322,6 +322,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
         }
         sipAccount.setActiveIncomingCall(iCall);
         //TODO : If required, put notification here
+        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMicrophoneMute(false);
 
         notifyIncomingCallNotification(intent, iCall);
     }
@@ -523,7 +525,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         if (sipCall != null) {
             boolean mute = intent.getBooleanExtra(PARAM_MUTE, false);
             try {
-                sipCall.setMute(mute);
+//                sipCall.setMute(mute);
                 AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
                 audioManager.setMicrophoneMute(mute);
             } catch (Exception exc) {
@@ -581,6 +583,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     incomingLinkedUuid,
                     isVideo);
 
+            AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+            audioManager.setMicrophoneMute(false);
         } catch (Exception exc) {
             Logger.error(TAG, "Error while declining incoming call. AccountID: "
                     + getValue(getApplicationContext(), accountID));
@@ -663,6 +667,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 //stopCallForegroundService(account);
                 hangupCall(accountID, callID);
                 stopForeground(true);
+                AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setMicrophoneMute(false);
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while hanging up call", exc);
                 notifyCallDisconnected(accountID, callID);
