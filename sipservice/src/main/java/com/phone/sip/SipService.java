@@ -525,7 +525,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         if (sipCall != null) {
             boolean mute = intent.getBooleanExtra(PARAM_MUTE, false);
             try {
-//                sipCall.setMute(mute);
+                //sipCall.setMute(mute);
                 AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
                 audioManager.setMicrophoneMute(mute);
             } catch (Exception exc) {
