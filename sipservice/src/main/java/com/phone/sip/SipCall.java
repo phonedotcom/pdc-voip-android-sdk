@@ -184,9 +184,10 @@ public class SipCall extends Call implements ICall {
             if (callState == pjsip_inv_state.PJSIP_INV_STATE_DISCONNECTED) {
                 account.getService().setLastCallStatus(0);
                 //delete();
-
+                if(account.noActiveCallPresent()){
+                    account.getService().stopForegroundService(account);
+                }
             }
-
         } catch (Exception exc) {
             Logger.error(LOG_TAG, "onCallState: error while getting call info", exc);
         }

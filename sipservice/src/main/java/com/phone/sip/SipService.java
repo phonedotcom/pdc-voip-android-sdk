@@ -5,6 +5,7 @@ import static com.phone.sip.constants.PhoneComServiceConstants.SERVICE_FOREGROUN
 
 import android.Manifest;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.service.notification.StatusBarNotification;
 import android.view.Surface;
 
 import androidx.core.app.NotificationCompat;
@@ -508,6 +510,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetCallMute(Intent intent) {
+
+        Notification notification = getCurrentForegroundNotification();
+        if (notification != null) {
+            startForeground(notification);
+        }
+
         String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
         SipAccount sipAccount;
         if (accountID == null) {
@@ -764,6 +772,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         final Bundle bundle = intent.getExtras();
         if (sipCall != null && bundle != null) {
+            Notification notification = getCurrentForegroundNotification();
+            if (notification != null) {
+                startForeground(notification);
+            }
             Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Surface NOT NULL");
             Surface surface = bundle.getParcelable(PARAM_SURFACE);
             sipCall.setIncomingVideoFeed(surface);
@@ -1536,5 +1548,15 @@ public class SipService extends BackgroundService implements SipServiceConstants
             Logger.debug(TAG, "stopForegroundService() -> No Active Call Present");
             stopForegroundService(sipAccount);
         }
+    }
+
+    private Notification getCurrentForegroundNotification() {
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
+        for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
+            if (notification.getId() == SERVICE_FOREGROUND_NOTIFICATION_ID) {
+                return notification.getNotification();
+            }
+        }
+        return null;
     }
 }
