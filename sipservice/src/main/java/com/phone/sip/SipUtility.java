@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
  */
 public class SipUtility {
 
+    public static final String TAG = SipUtility.class.getSimpleName();
+
     /**
      * This method is used to get uri of Sip user
      *

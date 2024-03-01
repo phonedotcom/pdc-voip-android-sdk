@@ -897,6 +897,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     public static void unregisterPushAndLogout(Context context) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(SipServiceConstants.ACTION_UNREGISTER_PUSH_LOGOUT);
+        SharedPreferencesHelper.getInstance(context).putInSharedPreference(ACTION_UNREGISTER_PUSH_LOGOUT, true);
         executeSipServiceAction(context, intent);
     }
 
