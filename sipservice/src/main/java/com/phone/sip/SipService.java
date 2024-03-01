@@ -944,7 +944,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
         }
 
         final String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
-
+        final SipAccount sipAccount = getActiveSipAccount(accountID);
+        if (sipAccount == null) {
+            stopForeground(true);
+            mBroadcastEmitter.callState(CallEvent.DISCONNECTED);
+            return;
+        }
         final IncomingCall incomingCall = (IncomingCall) getActiveSipAccount(accountID).getActiveIncomingCall();
 
         if (incomingCall == null) {
