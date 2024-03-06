@@ -277,7 +277,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     }
                     stopForegroundService(null);
                     SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
-                }, 1000);
+                }, DELAY_1000);
                 /*new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     try {
                         Logger.debug(TAG, "handleUnregisterPushAndLogout - Try Handler");

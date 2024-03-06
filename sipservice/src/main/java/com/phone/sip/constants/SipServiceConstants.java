@@ -176,4 +176,5 @@ public interface SipServiceConstants {
     String ERR_LOG_FILE_FOUND_LOG_DISABLED = "Log file path is provided but File logging is disabled, Hence logs will not be written in the file.";
 
     long DELAY_ACCEPT_INCOMING_CALL = 1000L;
+    long DELAY_1000 = 1000L;
 }
