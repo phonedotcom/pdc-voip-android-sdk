@@ -262,8 +262,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
             try {
                 /*Logger.debug(TAG,"IdURI => "+ sipAccount.getData().getIdUri(this));
                 Logger.debug(TAG,"Username =>"+  sipAccount.getData().getUsername());*/
-                //sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
-                sipAccount.setRegistration(false);
+                sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
+                //sipAccount.setRegistration(false);
                 enqueueDelayedJob(() -> {
                     try {
                         Logger.debug(TAG, "handleUnregisterPushAndLogout - Try Handler");
