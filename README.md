@@ -188,6 +188,16 @@ class CallEventBroadcastReceiver : com.phone.sip.BroadcastEventReceiver() {
   override fun onCallMediaState(stateType: MediaState?, stateValue: Boolean) {
     super.onCallMediaState(stateType, stateValue)
   }
+
+  override fun onDeregistration(status: DeregisterStatus?) {
+    super.onDeregistration(status)
+
+    when(status) {
+      is DeregisterStatus.InProgress -> TODO()
+      is DeregisterStatus.Success -> TODO()
+      is DeregisterStatus.Failure -> TODO()
+    }
+  }
 }
 ```
 - Register `CallEventBroadcastReceiver` and start receiving callbacks
