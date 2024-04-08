@@ -21,6 +21,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.phone.sip.constants.CallEvent;
+import com.phone.sip.constants.DeregisterStatus;
 import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
 import com.phone.sip.models.IncomingCallData;
@@ -242,67 +243,70 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Initiated for "
                 + getApplicationInfo().loadLabel(getPackageManager()));
+        //Send in-progress status on initiating de-registration process
+        mBroadcastEmitter.deregister(new DeregisterStatus.InProgress("SIP account de-registration is currently in progress."));
 
         final SipAccount sipAccount = getActiveSipAccount(this);
-        enqueueJob(() -> {
-            if (sipAccount != null) {
-                final String accountID = SharedPreferencesHelper.getInstance(this).getAccountID();
-                handleHangUpActiveCalls(new Intent().putExtra(PARAM_ACCOUNT_ID, accountID));
-            }
-        });
 
         startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this, NotificationCompat.PRIORITY_MIN));
 
         if (sipAccount != null) {
 
             final String accountID = SharedPreferencesHelper.getInstance(this).getAccountID();
-            handleHangUpActiveCalls(new Intent().putExtra(PARAM_ACCOUNT_ID, accountID));
-
             Logger.debug(TAG, "handleUnregisterPushAndLogout - SipAccount != NULL");
             try {
-                /*Logger.debug(TAG,"IdURI => "+ sipAccount.getData().getIdUri(this));
-                Logger.debug(TAG,"Username =>"+  sipAccount.getData().getUsername());*/
-                sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
+
                 //sipAccount.setRegistration(false);
+
+                //Hang up all active calls on initiating deregistering process
                 enqueueDelayedJob(() -> {
                     try {
-                        Logger.debug(TAG, "handleUnregisterPushAndLogout - Try Handler");
+                        Logger.debug(TAG, "handleUnregisterPushAndLogout - handleHangUpActiveCalls");
+                        handleHangUpActiveCalls(new Intent().putExtra(PARAM_ACCOUNT_ID, accountID));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
 
-                        removeAllActiveAccounts();
-                        //SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
-                    } catch (Exception e) {
-                        Logger.error(TAG, "handleUnregisterPushAndLogout - Catch");
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
-                    }
-                    stopForegroundService(null);
-                    SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
-                }, DELAY_1000);
-                /*new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    try {
-                        Logger.debug(TAG, "handleUnregisterPushAndLogout - Try Handler");
-                        sipAccount.setRegistration(false);
-                        removeAllActiveAccounts();
-                        //SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
-                    } catch (Exception e) {
-                        Logger.error(TAG, "handleUnregisterPushAndLogout - Catch");
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
-                    }
-                    stopForegroundService(null);
-                }, 0);*/
+                    //Modify existing account with X-Action to Logout
+                    enqueueDelayedJob(() -> {
+                        try {
+                            Logger.debug(TAG, "handleUnregisterPushAndLogout - modify");
+                            sipAccount.modify(sipAccount.getData().getAccountConfigForUnregister(getApplicationContext()));
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        //Remove All Active Accounts once modification done to logout
+                        enqueueDelayedJob(() -> {
+                            try {
+                                Logger.debug(TAG, "handleUnregisterPushAndLogout - removeAllActiveAccounts");
+                                removeAllActiveAccounts();
+                            } catch (Exception e) {
+                                Logger.error(TAG, "handleUnregisterPushAndLogout - Catch");
+                                e.printStackTrace();
+                                throw new RuntimeException(e);
+                            }
+                            SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
+                            mBroadcastEmitter.deregister(new DeregisterStatus.Success("Success"));
+                            stopForegroundService(null);
+                            Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Completed-----");
+                        }, DELAY_500);
+
+                    }, DELAY_1000);
+
+                }, DELAY_50);
             } catch (Exception e) {
                 Logger.error(TAG, "handleUnregisterPushAndLogout - Catch 2");
                 e.printStackTrace();
+                stopForegroundService(null);
+                mBroadcastEmitter.deregister(new DeregisterStatus.Failure(e.getLocalizedMessage()));
             }
         } else {
-            Logger.error(TAG, "handleUnregisterPushAndLogout - Else NULL");
+            Logger.error(TAG, "handleUnregisterPushAndLogout - SipAccount NULL");
             SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
             stopForegroundService(null);
+            mBroadcastEmitter.deregister(new DeregisterStatus.Success("Success"));
         }
-
-        // stopForegroundService(sipAccount);
-        Logger.debug(TAG, "handleUnregisterPushAndLogout -> ------Logout Completed-----");
     }
 
     private void handleIncomingCallDisconnected(Intent intent) {
@@ -580,6 +584,9 @@ public class SipService extends BackgroundService implements SipServiceConstants
                         + getValue(getApplicationContext(), accountID) + ", CallID: " + sipCall.getId());
             }
         } else {
+            Logger.debug(TAG, "handleSetCallMute() -> SipCall NULL");
+            startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this));
+            enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
             mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_CALL_NULL);
         }
     }
@@ -802,7 +809,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             try {
                 sipCall = getCall(accountID, callID);
             } catch (Exception exc) {
-                Logger.error(TAG, "Error while hanging up call", exc);
+                Logger.error(TAG, "handleSetIncomingVideoFeed -> Error while getting Sip call details", exc);
                 notifyCallDisconnected(accountID, callID);
             }
         }
@@ -811,6 +818,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         if (sipCall != null && bundle != null) {
             Notification notification = getCurrentForegroundNotification();
             if (notification != null) {
+                Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Notification NOT NULL");
                 startForeground(notification);
             }
             Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Surface NOT NULL");
@@ -990,7 +998,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 Logger.error(TAG, "Error while making outgoing call", exc);
                 mBroadcastEmitter.callState(CallEvent.DISCONNECTED);
             }
-        }, DELAY_ACCEPT_INCOMING_CALL);
+        }, DELAY_1000);
 
         mBroadcastEmitter.callState(CallEvent.CONNECTING);
     }
@@ -1485,8 +1493,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void addAllConfiguredAccounts() {
         Logger.debug(TAG, "addAllConfiguredAccounts - UnregisterFlag : "+ SharedPreferencesHelper.getInstance(this).getBooleanPreference("unregisterPushAndLogout", false));
-        if (!mConfiguredAccounts.isEmpty()
-                && !SharedPreferencesHelper.getInstance(this).getBooleanPreference(ACTION_UNREGISTER_PUSH_LOGOUT, false)) {
+        if (!mConfiguredAccounts.isEmpty()) {
             Logger.debug(TAG, "addAllConfiguredAccounts - If");
             for (SipAccountData accountData : mConfiguredAccounts) {
                 try {
