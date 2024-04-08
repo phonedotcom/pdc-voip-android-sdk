@@ -93,6 +93,7 @@ public interface SipServiceConstants {
     String PARAM_INCOMING_CALL_DATA = "incomingCallData";
     String PARAM_MISSED_CALL_DATA = "missedCallData";
     String PARAM_INITIALIZE_STATUS = "initializeStatus";
+    String PARAM_STATUS = "status";
 
     /**
      * Specific Parameters passed in the broadcast intents for call stats.
@@ -175,6 +176,8 @@ public interface SipServiceConstants {
     String ERR_LOG_FILE_NOT_FOUND = "File not found to store logs, Please provide valid file path or see instruction on how to enable the SIP file logging from document.";
     String ERR_LOG_FILE_FOUND_LOG_DISABLED = "Log file path is provided but File logging is disabled, Hence logs will not be written in the file.";
 
-    long DELAY_ACCEPT_INCOMING_CALL = 1000L;
     long DELAY_1000 = 1000L;
+    long DELAY_500 = 500L;
+    long DELAY_50 = 50L;
+
 }
