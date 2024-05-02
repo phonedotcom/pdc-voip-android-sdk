@@ -853,12 +853,12 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
-        //TODO: Enable to gracefully handle multiple incoming calls
-        /*final SipAccount sipAccount = SipService.getActiveSipAccount(accountID);
+        //Enabled to gracefully handle multiple incoming calls
+        final SipAccount sipAccount = SipService.getActiveSipAccount(accountID);
         if(sipAccount != null && sipAccount.isActiveCallPresent() && status == null) {
             Logger.info(TAG, "The second incoming call from "+callerName+" <"+from+"> is not being answered.");
             return;
-        }*/
+        }
 
         final Intent intent = new Intent(context, SipService.class);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
