@@ -8,6 +8,8 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.CallStyle
+import androidx.core.app.Person
 import com.phone.sip.constants.PhoneComServiceConstants.SERVICE_NOTIFICATION_CHANNEL_ID
 
 class NotificationCreator private constructor() {
@@ -39,6 +41,7 @@ class NotificationCreator private constructor() {
         fun createForegroundServiceNotification(context: Context?, priority: Int): Notification {
             return createForegroundServiceNotification(context, "", priority)
         }
+
         /**
          * Method for creating an ongoing call notification
          *
@@ -53,6 +56,9 @@ class NotificationCreator private constructor() {
             notificationBody: String = "",
             priority: Int = NotificationCompat.PRIORITY_MAX
         ): Notification {
+
+            val prevNotification = SipServiceUtils.getCurrentForegroundNotification(context);
+
             var contentText = notificationBody
             Logger.debug(
                 TAG, "createForegroundServiceNotification(context, notificationBody, priority)"

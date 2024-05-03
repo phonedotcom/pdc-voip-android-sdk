@@ -56,6 +56,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         final Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_ACCOUNT);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_DATA, sipAccountData);
         executeSipServiceAction(context, intent);
         //context.startService(intent);
@@ -84,6 +85,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_ACCOUNT);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_DATA, sipAccount);
         intent.putParcelableArrayListExtra(PARAM_CODEC_PRIORITIES, codecPriorities);
         context.startService(intent);
@@ -102,6 +104,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_REMOVE_ACCOUNT);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         context.startService(intent);
     }
@@ -132,6 +135,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     public static void restartSipStack(Context context) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_RESTART_SIP_STACK);
+        intent.setPackage(context.getPackageName());
         context.startService(intent);
     }
 
@@ -150,6 +154,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_MAKE_CALL);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_NUMBER, numberToCall);
         intent.putExtra(PARAM_IS_VIDEO, isVideo);
@@ -186,6 +191,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_MAKE_SILENT_CALL);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_NUMBER, numberToCall);
         context.startService(intent);
@@ -205,6 +211,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     public static void makeDirectCall(Context context, String guestName, Uri sipUri, String host, boolean isVideo, boolean isVideoConference, SipAccountTransport transport) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_MAKE_DIRECT_CALL);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_GUEST_NAME, guestName);
         intent.putExtra(PARAM_DIRECT_CALL_URI, sipUri);
         intent.putExtra(PARAM_DIRECT_CALL_SIP_SERVER, host);
@@ -221,7 +228,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     /**
      * Checks the status of a call. You will receive the result in
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID used to make the call
      * @param callID    call ID
      */
@@ -230,6 +238,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_GET_CALL_STATUS);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         context.startService(intent);
@@ -239,7 +248,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Hangs up an active call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID to hang up
      */
@@ -248,6 +258,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_HANG_UP_CALL);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         executeSipServiceAction(context, intent);
@@ -264,6 +275,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_HANG_UP_CALLS);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         executeSipServiceAction(context, intent);
     }
@@ -279,6 +291,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_HOLD_CALLS);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         context.startService(intent);
     }
@@ -287,7 +300,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Send DTMF. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID to hang up
      * @param dtmfTone  DTMF tone to send (e.g. number from 0 to 9 or # or *).
@@ -298,6 +312,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SEND_DTMF);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_DTMF, dtmfTone);
@@ -308,7 +323,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Send DTMF. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context  application context
      * @param dtmfTone DTMF tone to send (e.g. number from 0 to 9 or # or *).
      *                 You can send only one DTMF at a time.
      */
@@ -319,6 +335,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         final Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SEND_DTMF);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_DTMF, dtmfTone);
         executeSipServiceAction(context, intent);
@@ -328,7 +345,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Accept an incoming call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID to hang up
      * @param isVideo   video call or not
@@ -338,6 +356,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_ACCEPT_INCOMING_CALL);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_IS_VIDEO, isVideo);
@@ -348,6 +367,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Accept an incoming call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
+     *
      * @param context application context
      *                //@param accountID account ID
      * @param isVideo video call or not
@@ -359,6 +379,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         Logger.debug(TAG, "acceptIncomingCall()");
         final Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_ACCEPT_INCOMING_CALL);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_IS_VIDEO, isVideo);
         executeSipServiceAction(context, intent);
@@ -372,6 +393,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Decline an incoming call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
+     *
      * @param context application context
      */
     public static void declineIncomingCall(Context context) {
@@ -380,6 +402,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_DECLINE_INCOMING_CALL);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         executeSipServiceAction(context, intent);
     }
@@ -388,7 +411,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Blind call transfer. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID
      * @param number    number to which to transfer the call
@@ -398,6 +422,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_TRANSFER_CALL);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_NUMBER, number);
@@ -408,8 +433,9 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Attended call transfer. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
-     * @param accountID account ID
+     *
+     * @param context    application context
+     * @param accountID  account ID
      * @param callIdOrig call ID of the original call
      * @param callIdDest call ID of the destination call
      */
@@ -418,6 +444,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_ATTENDED_TRANSFER_CALL);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callIdOrig);
         intent.putExtra(PARAM_CALL_ID_DEST, callIdDest);
@@ -428,7 +455,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Sets hold status for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID
      * @param hold      true to hold the call, false to un-hold it
@@ -438,6 +466,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_HOLD);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_HOLD, hold);
@@ -448,7 +477,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Toggle hold status for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID
      */
@@ -457,6 +487,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_TOGGLE_HOLD);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         context.startService(intent);
@@ -466,6 +497,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Sets mute status for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
+     *
      * @param context application context
      * @param mute    true to mute the call, false to un-mute it
      */
@@ -476,6 +508,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_MUTE);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_MUTE, mute);
         executeSipServiceAction(context, intent);
@@ -485,7 +518,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Toggle mute status for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID
      */
@@ -494,6 +528,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_TOGGLE_MUTE);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         context.startService(intent);
@@ -508,6 +543,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     public static void getCodecPriorities(Context context) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_GET_CODEC_PRIORITIES);
+        intent.setPackage(context.getPackageName());
         context.startService(intent);
     }
 
@@ -521,6 +557,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     public static void setCodecPriorities(Context context, ArrayList<CodecPriority> codecPriorities) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_CODEC_PRIORITIES);
+        intent.setPackage(context.getPackageName());
         intent.putParcelableArrayListExtra(PARAM_CODEC_PRIORITIES, codecPriorities);
         context.startService(intent);
     }
@@ -542,6 +579,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_GET_REGISTRATION_STATUS);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         context.startService(intent);
     }
@@ -551,6 +589,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_REFRESH_REGISTRATION);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_REG_EXP_TIMEOUT, regExpTimeout);
         intent.putExtra(PARAM_REG_CONTACT_PARAMS, regContactParams);
@@ -560,6 +599,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     public static void setDND(Context context, boolean dnd) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_DND);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_DND, dnd);
         context.startService(intent);
     }
@@ -568,7 +608,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Sets up the incoming video feed. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID
      * @param surface   surface on which to render the incoming video
@@ -578,6 +619,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_INCOMING_VIDEO);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_SURFACE, surface);
@@ -588,6 +630,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Sets up the incoming video feed. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
+     *
      * @param context application context
      * @param surface surface on which to render the incoming video
      */
@@ -599,6 +642,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         final Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_INCOMING_VIDEO);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_SURFACE, surface);
         executeSipServiceAction(context, intent);
@@ -608,6 +652,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Mutes and Un-Mutes video for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
+     *
      * @param context application context
      * @param mute    whether to mute or un-mute the video
      */
@@ -618,6 +663,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_VIDEO_MUTE);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_VIDEO_MUTE, mute);
         executeSipServiceAction(context, intent);
@@ -627,7 +673,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Starts the preview for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID
      * @param surface   surface on which to render the preview
@@ -637,6 +684,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_START_VIDEO_PREVIEW);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_SURFACE, surface);
@@ -647,9 +695,10 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Rotates the transmitting video (heads up always), according to the device orientation.
      * If the call does not exist or has been terminated, a disconnected state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
-     * @param accountID account ID
-     * @param callID call ID
+     *
+     * @param context     application context
+     * @param accountID   account ID
+     * @param callID      call ID
      * @param orientation call ID
      */
     public static void changeVideoOrientation(Context context, String accountID, int callID, int orientation) {
@@ -657,6 +706,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_SELF_VIDEO_ORIENTATION);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_ORIENTATION, orientation);
@@ -667,7 +717,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Stops the preview for a call. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID
      */
@@ -676,6 +727,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_STOP_VIDEO_PREVIEW);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         context.startService(intent);
@@ -685,7 +737,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * Switches between front and back camera. If the call does not exist or has been terminated, a disconnected
      * state will be sent to
      * {@link BroadcastEventReceiver#onCallEvent(String, int, int, int, long)}
-     * @param context application context
+     *
+     * @param context   application context
      * @param accountID account ID
      * @param callID    call ID
      */
@@ -694,6 +747,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SWITCH_VIDEO_CAPTURE_DEVICE);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         context.startService(intent);
@@ -715,6 +769,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     public static void reconnectCall(Context context) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_RECONNECT_CALL);
+        intent.setPackage(context.getPackageName());
         context.startService(intent);
     }
 
@@ -760,21 +815,22 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * This method sets the file path in sdk for saving the VoIP logs.
      * If file path is a valid path then VoIP logging is enabled,
      * else not
+     *
      * @param enableSipFileLogging to set weather to enable sip logging in provided file or not
      * @param logFilePath          file path for saving the voip logs
      * @param context              Activity context
      *                             //@see org.pjsip.pjsua2.app.MyApp#init(MyAppObserver, String, boolean, boolean, Context)
      */
-     static void setSipFileLoggingEnabled(boolean enableSipFileLogging, @NotNull String logFilePath, @NotNull Context context) {
-        if(enableSipFileLogging){
-            if(logFilePath.trim().isEmpty()){
+    static void setSipFileLoggingEnabled(boolean enableSipFileLogging, @NotNull String logFilePath, @NotNull Context context) {
+        if (enableSipFileLogging) {
+            if (logFilePath.trim().isEmpty()) {
                 Logger.error(TAG, ERR_LOG_FILE_NOT_FOUND);
                 new BroadcastEventEmitter(context).errorCallback(ERR_LOG_FILE_NOT_FOUND);
             } else {
                 File file = new File(logFilePath);
                 if (!file.exists()) {
                     try {
-                        if(!file.createNewFile()) {
+                        if (!file.createNewFile()) {
                             Logger.error(TAG, ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
                             new BroadcastEventEmitter(context).errorCallback(ERR_WRITE_STORAGE_PERMISSION_NOT_ALLOWED);
                         }
@@ -784,7 +840,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
                     }
                 }
             }
-        } else if(!logFilePath.trim().isEmpty()){
+        } else if (!logFilePath.trim().isEmpty()) {
             Logger.error(TAG, ERR_LOG_FILE_FOUND_LOG_DISABLED);
             new BroadcastEventEmitter(context).errorCallback(ERR_LOG_FILE_FOUND_LOG_DISABLED);
         }
@@ -857,8 +913,10 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         if ("canceled".equalsIgnoreCase(status) || "answered".equalsIgnoreCase(status)) {
             intent.setAction(ACTION_INCOMING_CALL_DISCONNECTED);
+            intent.setPackage(context.getPackageName());
         } else {
             intent.setAction(ACTION_INCOMING_CALL_NOTIFICATION);
+            intent.setPackage(context.getPackageName());
         }
         intent.putExtra(PARAM_INCOMING_FROM, from);
         intent.putExtra(PARAM_INCOMING_SERVER, server);
@@ -880,6 +938,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         final Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_REJECT_CALL_USER_BUSY);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, SharedPreferencesHelper.getInstance(context).getAccountID());
         intent.putExtra(PARAM_ERROR_CODE_WHILE_REJECTING_INCOMING_CALL, ErrorCodes.USER_BUSY.toString());
         executeSipServiceAction(context, intent);
@@ -897,6 +956,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     public static void unregisterPushAndLogout(Context context) {
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(SipServiceConstants.ACTION_UNREGISTER_PUSH_LOGOUT);
+        intent.setPackage(context.getPackageName());
         executeSipServiceAction(context, intent);
     }
 
@@ -906,6 +966,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_TOGGLE_HOLD);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         executeSipServiceAction(context, intent);
     }
@@ -916,6 +977,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_TOGGLE_HOLD);
+        intent.setPackage(context.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         executeSipServiceAction(context, intent);
     }

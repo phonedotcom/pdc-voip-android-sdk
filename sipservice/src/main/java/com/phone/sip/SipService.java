@@ -511,7 +511,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void handleSetCallMute(Intent intent) {
 
-        Notification notification = getCurrentForegroundNotification();
+        Notification notification = SipServiceUtils.getCurrentForegroundNotification(this);
         if (notification != null) {
             startForeground(notification);
         }
@@ -772,7 +772,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         final Bundle bundle = intent.getExtras();
         if (sipCall != null && bundle != null) {
-            Notification notification = getCurrentForegroundNotification();
+            Notification notification = SipServiceUtils.getCurrentForegroundNotification(this);
             if (notification != null) {
                 startForeground(notification);
             }
@@ -898,7 +898,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleMakeCallForIncomingCall(Intent intent) {
-        Logger.debug(TAG, "handleMakeCallForIncomingCall()");
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
             handleDeclineIncomingCall(intent);
@@ -921,20 +920,14 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final String incomingLinkedUuid = incomingCall.getLinkedUUID();
         final String callerName = incomingCall.getCallerName();
 
-        /*final String incomingFrom = intent.getStringExtra(PARAM_INCOMING_FROM);
-        final String incomingSlot = intent.getStringExtra(PARAM_INCOMING_SLOT);
-        final String incomingServer = intent.getStringExtra(PARAM_INCOMING_SERVER);
-        final String incomingLinkedUuid = intent.getStringExtra(PARAM_INCOMING_LINKED_UUID);*/
-
         boolean isVideo = intent.getBooleanExtra(PARAM_IS_VIDEO, false);
-        boolean isVideoConference = false;
 
         Logger.debug(TAG, "Making call to " + getValue(getApplicationContext(), incomingFrom));
 
         enqueueDelayedJob(() -> {
             try {
 //            SipCall call = mActiveSipAccounts.get(accountID).addOutgoingCall(number, isVideo, isVideoConference, isTransfer);
-                final SipCall call = getActiveSipAccount(accountID).addOutgoingForIncomingCall(
+                getActiveSipAccount(accountID).addOutgoingForIncomingCall(
                         incomingFrom,
                         incomingSlot,
                         incomingServer,
@@ -1548,15 +1541,5 @@ public class SipService extends BackgroundService implements SipServiceConstants
             Logger.debug(TAG, "stopForegroundService() -> No Active Call Present");
             stopForegroundService(sipAccount);
         }
-    }
-
-    private Notification getCurrentForegroundNotification() {
-        NotificationManager notificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
-        for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
-            if (notification.getId() == SERVICE_FOREGROUND_NOTIFICATION_ID) {
-                return notification.getNotification();
-            }
-        }
-        return null;
     }
 }

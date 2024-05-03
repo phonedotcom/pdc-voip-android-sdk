@@ -1,12 +1,17 @@
 package com.phone.sip;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+import static com.phone.sip.constants.PhoneComServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_HEIGHT;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_WIDTH;
 import static com.phone.sip.constants.SipServiceConstants.OPENH264_CODEC_ID;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_HEADER;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_JANUS_BRIDGE;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.service.notification.StatusBarNotification;
 
 import org.pjsip.pjsua2.CodecFmtpVector;
 import org.pjsip.pjsua2.CodecInfo;
@@ -107,5 +112,15 @@ public class SipServiceUtils {
         }
         vidCodecParam.setDecFmtp(codecFmtpVector);
         sipEndpoint.setVideoCodecParam(OPENH264_CODEC_ID, vidCodecParam);
+    }
+
+    static Notification getCurrentForegroundNotification(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
+            if (notification.getId() == SERVICE_FOREGROUND_NOTIFICATION_ID) {
+                return notification.getNotification();
+            }
+        }
+        return null;
     }
 }
