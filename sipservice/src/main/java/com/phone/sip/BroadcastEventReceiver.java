@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 
 import com.phone.sip.constants.CallEvent;
 import com.phone.sip.constants.CallMediaEvent;
+import com.phone.sip.constants.DeregisterStatus;
 import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
 import com.phone.sip.models.IncomingCallData;
@@ -108,10 +109,15 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
 
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.CALL_MEDIA_EVENT).equals(action)) {
             onCallMediaEvent(intent.getParcelableExtra(PARAM_CALL_MEDIA_EVENT_TYPE));
+
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.HOLD_CALL).equals(action)) {
             onHoldCall();
+
         } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.RESUME_CALL).equals(action)) {
             onResumeCall();
+
+        } else if (BroadcastEventEmitter.getAction(BroadcastEventEmitter.BroadcastAction.DEREGISTRATION).equals(action)) {
+            onDeregistration(intent.getParcelableExtra(PARAM_STATUS));
         }
     }
 
@@ -170,6 +176,8 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
                 BroadcastEventEmitter.BroadcastAction.HOLD_CALL));
         intentFilter.addAction(BroadcastEventEmitter.getAction(
                 BroadcastEventEmitter.BroadcastAction.RESUME_CALL));
+        intentFilter.addAction(BroadcastEventEmitter.getAction(
+                BroadcastEventEmitter.BroadcastAction.DEREGISTRATION));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.registerReceiver(
                     context,
@@ -309,5 +317,9 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
 
     public void onResumeCall() {
         Logger.debug(LOG_TAG, "onResumeCall");
+    }
+
+    public void onDeregistration(DeregisterStatus status) {
+        Logger.debug(LOG_TAG, "onDeregistration - "+status.toString());
     }
 }

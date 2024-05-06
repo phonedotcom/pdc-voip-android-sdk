@@ -564,7 +564,7 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
 
     private static void checkAccount(String accountID) {
         if (accountID == null || !accountID.startsWith("sip:")) {
-            throw new IllegalArgumentException("Invalid or Null/Empty accountID! Example: sip:user@domain");
+            throw new IllegalArgumentException("It appears that no user is registered or has provided an invalid or null/empty account ID. Example: sip:user@domain");
         }
     }
 
@@ -909,6 +909,13 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
         checkAccount(accountID);
 
+        //TODO: Enable to gracefully handle multiple incoming calls
+        /*final SipAccount sipAccount = SipService.getActiveSipAccount(accountID);
+        if(sipAccount != null && sipAccount.isActiveCallPresent() && status == null) {
+            Logger.info(TAG, "The second incoming call from "+callerName+" <"+from+"> is not being answered.");
+            return;
+        }*/
+
         final Intent intent = new Intent(context, SipService.class);
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         if ("canceled".equalsIgnoreCase(status) || "answered".equalsIgnoreCase(status)) {
@@ -954,6 +961,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
      * @param context Android context needed for talking to SDK service
      */
     public static void unregisterPushAndLogout(Context context) {
+        final String accountID = SharedPreferencesHelper.getInstance(context).getAccountID();
+        checkAccount(accountID);
         Intent intent = new Intent(context, SipService.class);
         intent.setAction(SipServiceConstants.ACTION_UNREGISTER_PUSH_LOGOUT);
         intent.setPackage(context.getPackageName());

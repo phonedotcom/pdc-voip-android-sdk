@@ -40,7 +40,7 @@ public class SipAccountData implements Parcelable {
     private boolean tcpTransport = false;
     private String authenticationType = AUTH_TYPE_DIGEST;
     private String contactUriParams = "";
-    private int regExpirationTimeout = 300;     // 300s
+    private int regExpirationTimeout = 0;     // 300s
     private String guestDisplayName = "";
     private String callId = "";
     private int srtpUse = pjmedia_srtp_use.PJMEDIA_SRTP_OPTIONAL;
@@ -267,7 +267,6 @@ public class SipAccountData implements Parcelable {
             return "sip:" + username;
 
         return "sip:" + username + "@" + realm;*/
-        Logger.debug(TAG, "Context: "+context);
         return SipUtility.getSipUserUri(username, context);
     }
 

@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 import com.phone.sip.constants.CallEvent;
 import com.phone.sip.constants.CallMediaEvent;
+import com.phone.sip.constants.DeregisterStatus;
 import com.phone.sip.constants.InitializeStatus;
 import com.phone.sip.constants.SipServiceConstants;
 import com.phone.sip.models.IncomingCallData;
@@ -55,7 +56,8 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         CALLBACK_GENERIC_ERROR,
         INITIALIZE,
         HOLD_CALL,
-        RESUME_CALL
+        RESUME_CALL,
+        DEREGISTRATION
     }
 
     public BroadcastEventEmitter(Context context) {
@@ -435,5 +437,12 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.setAction(getAction(BroadcastAction.RESUME_CALL));
         intent.setPackage(mContext.getPackageName());
         mContext.sendBroadcast(intent);
+    }
+
+    public void deregister(DeregisterStatus status) {
+        final Intent intent = new Intent();
+        intent.setAction(getAction(BroadcastAction.DEREGISTRATION));
+        intent.putExtra(PARAM_STATUS, status);
+        sendExplicitBroadcast(intent);
     }
 }
