@@ -17,6 +17,7 @@ lint
 # Signing files
 .signing/
 
+/.idea
 # User-specific configurations
 .idea/libraries/
 .idea/workspace.xml
