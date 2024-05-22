@@ -1209,11 +1209,11 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 addAccount(data);
                 mConfiguredAccounts.add(data);
                 persistConfiguredAccounts();
-                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
+//                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
                 enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
-                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
+//                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
                 return;
             }
         } else {
@@ -1225,10 +1225,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 addAccount(data);
                 mConfiguredAccounts.set(index, data);
                 persistConfiguredAccounts();
-                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
+//                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
             } catch (Exception exc) {
                 Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
-                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
+//                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
                 enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
                 return;
             }
