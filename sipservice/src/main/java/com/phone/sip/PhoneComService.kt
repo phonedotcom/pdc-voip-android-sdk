@@ -53,21 +53,8 @@ class PhoneComService(
                 context
             )
 
-
-//            PhoneComServiceCommand.saveInformationForSipLibraryInitialization(
-//                configureSip,
-//                context
-//            )
             PhoneComServiceCommand.saveInformationForSipLibraryInitialization(
-                ConfigureSip(
-                    sipUsername="574360",
-                    sipPassword="g9UVU9dnn8rJ7J",
-                    domainName="liftmaster.myq.sip.phone.com",
-                    port=6060,
-                    securePort=5061,
-                    secureProtocolName="transport=tls",
-                    protocolName="transport=tcp"
-                ),
+                configureSip,
                 context
             )
 
