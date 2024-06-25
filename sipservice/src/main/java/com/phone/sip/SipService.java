@@ -1199,38 +1199,40 @@ public class SipService extends BackgroundService implements SipServiceConstants
             return;
         }
 
-        int index = mConfiguredAccounts.indexOf(data);
-        if (index == -1) {
-            handleResetAccounts();
-            Logger.debug(TAG, "Adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
+        if(NetworkUtility.INSTANCE.isConnectedToInternet(this)){
+            int index = mConfiguredAccounts.indexOf(data);
+            if (index == -1) {
+                handleResetAccounts();
+                Logger.debug(TAG, "Adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
 
-            try {
-                handleSetCodecPriorities(intent);
-                addAccount(data);
-                mConfiguredAccounts.add(data);
-                persistConfiguredAccounts();
+                try {
+                    handleSetCodecPriorities(intent);
+                    addAccount(data);
+                    mConfiguredAccounts.add(data);
+                    persistConfiguredAccounts();
 //                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
-            } catch (Exception exc) {
-                Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
-                enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
+                } catch (Exception exc) {
+                    Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                    enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
 //                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
-                return;
-            }
-        } else {
-            Logger.debug(TAG, "Reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
+                    return;
+                }
+            } else {
+                Logger.debug(TAG, "Reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
 
-            try {
-                //removeAccount(data.getIdUri());
-                handleSetCodecPriorities(intent);
-                addAccount(data);
-                mConfiguredAccounts.set(index, data);
-                persistConfiguredAccounts();
+                try {
+                    //removeAccount(data.getIdUri());
+                    handleSetCodecPriorities(intent);
+                    addAccount(data);
+                    mConfiguredAccounts.set(index, data);
+                    persistConfiguredAccounts();
 //                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
-            } catch (Exception exc) {
-                Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                } catch (Exception exc) {
+                    Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
 //                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
-                enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
-                return;
+                    enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
+                    return;
+                }
             }
         }
 
