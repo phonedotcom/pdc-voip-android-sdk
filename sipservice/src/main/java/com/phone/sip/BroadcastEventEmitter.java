@@ -442,6 +442,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public void deregister(DeregisterStatus status) {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.DEREGISTRATION));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_STATUS, status);
         sendExplicitBroadcast(intent);
     }

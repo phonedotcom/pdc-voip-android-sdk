@@ -5,7 +5,6 @@ import static com.phone.sip.constants.PhoneComServiceConstants.SERVICE_FOREGROUN
 
 import android.Manifest;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.service.notification.StatusBarNotification;
 import android.view.Surface;
 
 import androidx.core.app.NotificationCompat;
@@ -283,7 +281,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
                                 removeAllActiveAccounts();
                             } catch (Exception e) {
                                 Logger.error(TAG, "handleUnregisterPushAndLogout - Catch");
-                                e.printStackTrace();
                                 throw new RuntimeException(e);
                             }
                             SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
@@ -297,7 +294,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 }, DELAY_50);
             } catch (Exception e) {
                 Logger.error(TAG, "handleUnregisterPushAndLogout - Catch 2");
-                e.printStackTrace();
                 stopForegroundService(null);
                 mBroadcastEmitter.deregister(new DeregisterStatus.Failure(e.getLocalizedMessage()));
             }
@@ -1199,7 +1195,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             return;
         }
 
-        if(NetworkUtility.INSTANCE.isConnectedToInternet(this)){
+        if (NetworkUtility.INSTANCE.isConnectedToInternet(this)) {
             int index = mConfiguredAccounts.indexOf(data);
             if (index == -1) {
                 handleResetAccounts();
@@ -1234,6 +1230,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     return;
                 }
             }
+        } else {
+            mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Network error. Please check your internet connection and try again."));
         }
 
         enqueueDelayedJob(() -> stopForegroundService(getActiveSipAccount(this), true), SipServiceConstants.DELAY_STOP_SERVICE);
