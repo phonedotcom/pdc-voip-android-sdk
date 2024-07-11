@@ -474,7 +474,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             try {
                 SipUtility.playSound(dtmf + ".wav", this.getApplicationContext());
                 sipCall.dialDtmf(dtmf);
-                if (dtmf.equals(DTMFCodes.NINE.toString())) {
+                if (dtmf != null && dtmf.equals(DTMFCodes.NINE.toString())) {
                     final SipAccount sipAccount = mActiveSipAccounts.get(accountID);
                     if (sipAccount != null)
                         stopForegroundService(sipAccount);
@@ -1210,7 +1210,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 } catch (Exception exc) {
                     Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
                     enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
-//                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
+                    mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
                     return;
                 }
             } else {
@@ -1225,7 +1225,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 //                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
                 } catch (Exception exc) {
                     Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
-//                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
+                    mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
                     enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
                     return;
                 }
