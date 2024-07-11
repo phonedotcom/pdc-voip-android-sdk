@@ -487,7 +487,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             try {
                 SipUtility.playSound(dtmf + ".wav", this.getApplicationContext());
                 sipCall.dialDtmf(dtmf);
-                if (dtmf.equals(DTMFCodes.NINE.toString())) {
+                if (dtmf != null && dtmf.equals(DTMFCodes.NINE.toString())) {
                     final SipAccount sipAccount = mActiveSipAccounts.get(accountID);
                     if (sipAccount != null)
                         stopForegroundService(sipAccount);

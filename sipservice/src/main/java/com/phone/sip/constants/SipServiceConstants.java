@@ -183,4 +183,6 @@ public interface SipServiceConstants {
     long DELAY_500 = 500L;
     long DELAY_50 = 50L;
 
+    int INVALID_CODE = -1;
+
 }
