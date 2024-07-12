@@ -88,6 +88,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.INCOMING_CALL));
+        intent.setPackage(mContext.getPackageName());
         //intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_INCOMING_FROM, number);
         intent.putExtra(PARAM_INCOMING_SERVER, server);
@@ -112,6 +113,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.INCOMING_CALL));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_INCOMING_CALL_DATA, incomingCallData);
         intent.putExtra(PARAM_ANY_ACTIVE_CALL, isAnyActiveCall);
 
@@ -133,6 +135,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.INCOMING_CALL));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_DISPLAY_NAME, displayName);
@@ -153,6 +156,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.REGISTRATION));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_REGISTRATION_CODE, registrationStateCode);
 
@@ -172,6 +176,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         /*final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.CALL_STATE));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountID);
         intent.putExtra(PARAM_CALL_ID, callID);
         intent.putExtra(PARAM_CALL_STATE, callStateCode);
@@ -191,6 +196,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_EVENT, (Parcelable) event);
         intent.setAction(getAction(BroadcastAction.CALL_EVENT));
+        intent.setPackage(mContext.getPackageName());
         mContext.sendBroadcast(intent);
     }
 
@@ -228,6 +234,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.STACK_STATUS));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_STACK_STARTED, started);
 
         mContext.sendBroadcast(intent);
@@ -237,6 +244,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.CODEC_PRIORITIES));
+        intent.setPackage(mContext.getPackageName());
         intent.putParcelableArrayListExtra(PARAM_CODEC_PRIORITIES_LIST, codecPriorities);
 
         mContext.sendBroadcast(intent);
@@ -246,6 +254,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.CODEC_PRIORITIES_SET_STATUS));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_SUCCESS, success);
 
         mContext.sendBroadcast(intent);
@@ -255,6 +264,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.MISSED_CALL));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_DISPLAY_NAME, displayName);
         intent.putExtra(PARAM_REMOTE_URI, uri);
 
@@ -265,6 +275,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
 
         intent.setAction(getAction(BroadcastAction.VIDEO_SIZE));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_INCOMING_VIDEO_WIDTH, width);
         intent.putExtra(PARAM_INCOMING_VIDEO_HEIGHT, height);
 
@@ -286,6 +297,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     void callReconnectionState(CallReconnectionState state) {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.CALL_RECONNECTION_STATE));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_CALL_RECONNECTION_STATE, state);
         mContext.sendBroadcast(intent);
     }
@@ -293,6 +305,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     void silentCallStatus(boolean status, String number) {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.SILENT_CALL_STATUS));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_SILENT_CALL_STATUS, status);
         intent.putExtra(PARAM_NUMBER, number);
         sendExplicitBroadcast(intent);
@@ -301,12 +314,14 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     void notifyTlsVerifyStatusFailed() {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.NOTIFY_TLS_VERIFY_STATUS_FAILED));
+        intent.setPackage(mContext.getPackageName());
         sendExplicitBroadcast(intent);
     }
 
     void onInitialize(InitializeStatus initializeStatus) {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.INITIALIZE));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_INITIALIZE_STATUS, initializeStatus);
         sendExplicitBroadcast(intent);
     }
@@ -314,6 +329,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public void removeAccount(String accountIDtoRemove) {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.CALLBACK_REMOVE_ACCOUNT));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_ACCOUNT_ID, accountIDtoRemove);
         sendExplicitBroadcast(intent);
     }
@@ -328,6 +344,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, mediaEventType);
         intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));
+        intent.setPackage(mContext.getPackageName());
         mContext.sendBroadcast(intent);
     }
 
@@ -341,12 +358,14 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         final Intent intent = new Intent();
         intent.putExtra(PARAM_CALL_MEDIA_EVENT_TYPE, (Parcelable) mediaEventType);
         intent.setAction(getAction(BroadcastAction.CALL_MEDIA_EVENT));
+        intent.setPackage(mContext.getPackageName());
         mContext.sendBroadcast(intent);
     }
 
     public void errorCallback(String message) {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.CALLBACK_GENERIC_ERROR));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_ERROR_MESSAGE, message);
         sendExplicitBroadcast(intent);
     }
@@ -362,6 +381,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         intent.putExtra(PARAM_SECONDS, seconds);
         intent.putExtra(PARAM_CALL_TYPE, callType);
         intent.setAction(getAction(BroadcastAction.MISSED_CALL));
+        intent.setPackage(mContext.getPackageName());
         mContext.sendBroadcast(intent);
     }*/
 
@@ -369,6 +389,7 @@ public class BroadcastEventEmitter implements SipServiceConstants {
         Intent intent = new Intent();
         intent.putExtra(PARAM_MISSED_CALL_DATA, missedCallData);
         intent.setAction(getAction(BroadcastAction.MISSED_CALL));
+        intent.setPackage(mContext.getPackageName());
         mContext.sendBroadcast(intent);
     }
 
@@ -407,18 +428,21 @@ public class BroadcastEventEmitter implements SipServiceConstants {
     public void holdCall() {
         Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.HOLD_CALL));
+        intent.setPackage(mContext.getPackageName());
         mContext.sendBroadcast(intent);
     }
 
     public void resumeCall() {
         Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.RESUME_CALL));
+        intent.setPackage(mContext.getPackageName());
         mContext.sendBroadcast(intent);
     }
 
     public void deregister(DeregisterStatus status) {
         final Intent intent = new Intent();
         intent.setAction(getAction(BroadcastAction.DEREGISTRATION));
+        intent.setPackage(mContext.getPackageName());
         intent.putExtra(PARAM_STATUS, status);
         sendExplicitBroadcast(intent);
     }

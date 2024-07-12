@@ -17,6 +17,8 @@ lint
 # Signing files
 .signing/
 
+/.idea
+/.idea/gradle.xml
 # User-specific configurations
 .idea/libraries/
 .idea/workspace.xml

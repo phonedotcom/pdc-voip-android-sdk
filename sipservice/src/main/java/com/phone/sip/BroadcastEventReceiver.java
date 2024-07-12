@@ -6,8 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.phone.sip.constants.CallEvent;
 import com.phone.sip.constants.CallMediaEvent;
@@ -176,7 +178,16 @@ public class BroadcastEventReceiver extends BroadcastReceiver implements SipServ
                 BroadcastEventEmitter.BroadcastAction.RESUME_CALL));
         intentFilter.addAction(BroadcastEventEmitter.getAction(
                 BroadcastEventEmitter.BroadcastAction.DEREGISTRATION));
-        context.registerReceiver(this, intentFilter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.registerReceiver(
+                    context,
+                    this,
+                    intentFilter,
+                    ContextCompat.RECEIVER_NOT_EXPORTED
+            );
+        } else {
+            context.registerReceiver(this, intentFilter);
+        }
     }
 
     /**

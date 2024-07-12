@@ -5,7 +5,6 @@ import static com.phone.sip.constants.PhoneComServiceConstants.SERVICE_FOREGROUN
 
 import android.Manifest;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.service.notification.StatusBarNotification;
 import android.view.Surface;
 
 import androidx.core.app.NotificationCompat;
@@ -283,7 +281,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
                                 removeAllActiveAccounts();
                             } catch (Exception e) {
                                 Logger.error(TAG, "handleUnregisterPushAndLogout - Catch");
-                                e.printStackTrace();
                                 throw new RuntimeException(e);
                             }
                             SharedPreferencesHelper.getInstance(SipService.this).clearAllSharedPreferences();
@@ -297,7 +294,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
                 }, DELAY_50);
             } catch (Exception e) {
                 Logger.error(TAG, "handleUnregisterPushAndLogout - Catch 2");
-                e.printStackTrace();
                 stopForegroundService(null);
                 mBroadcastEmitter.deregister(new DeregisterStatus.Failure(e.getLocalizedMessage()));
             }
@@ -478,7 +474,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             try {
                 SipUtility.playSound(dtmf + ".wav", this.getApplicationContext());
                 sipCall.dialDtmf(dtmf);
-                if (dtmf.equals(DTMFCodes.NINE.toString())) {
+                if (dtmf != null && dtmf.equals(DTMFCodes.NINE.toString())) {
                     final SipAccount sipAccount = mActiveSipAccounts.get(accountID);
                     if (sipAccount != null)
                         stopForegroundService(sipAccount);
@@ -552,7 +548,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
     private void handleSetCallMute(Intent intent) {
 
-        Notification notification = getCurrentForegroundNotification();
+        Notification notification = SipServiceUtils.getCurrentForegroundNotification(this);
         if (notification != null) {
             startForeground(notification);
         }
@@ -816,7 +812,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
         final Bundle bundle = intent.getExtras();
         if (sipCall != null && bundle != null) {
-            Notification notification = getCurrentForegroundNotification();
+            Notification notification = SipServiceUtils.getCurrentForegroundNotification(this);
             if (notification != null) {
                 Logger.debug(TAG, "handleSetIncomingVideoFeed() -> Notification NOT NULL");
                 startForeground(notification);
@@ -943,7 +939,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleMakeCallForIncomingCall(Intent intent) {
-        Logger.debug(TAG, "handleMakeCallForIncomingCall()");
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
             handleDeclineIncomingCall(intent);
@@ -971,20 +966,14 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final String incomingLinkedUuid = incomingCall.getLinkedUUID();
         final String callerName = incomingCall.getCallerName();
 
-        /*final String incomingFrom = intent.getStringExtra(PARAM_INCOMING_FROM);
-        final String incomingSlot = intent.getStringExtra(PARAM_INCOMING_SLOT);
-        final String incomingServer = intent.getStringExtra(PARAM_INCOMING_SERVER);
-        final String incomingLinkedUuid = intent.getStringExtra(PARAM_INCOMING_LINKED_UUID);*/
-
         boolean isVideo = intent.getBooleanExtra(PARAM_IS_VIDEO, false);
-        boolean isVideoConference = false;
 
         Logger.debug(TAG, "Making call to " + getValue(getApplicationContext(), incomingFrom));
 
         enqueueDelayedJob(() -> {
             try {
 //            SipCall call = mActiveSipAccounts.get(accountID).addOutgoingCall(number, isVideo, isVideoConference, isTransfer);
-                final SipCall call = getActiveSipAccount(accountID).addOutgoingForIncomingCall(
+                getActiveSipAccount(accountID).addOutgoingForIncomingCall(
                         incomingFrom,
                         incomingSlot,
                         incomingServer,
@@ -1206,39 +1195,43 @@ public class SipService extends BackgroundService implements SipServiceConstants
             return;
         }
 
-        int index = mConfiguredAccounts.indexOf(data);
-        if (index == -1) {
-            handleResetAccounts();
-            Logger.debug(TAG, "Adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
+        if (NetworkUtility.INSTANCE.isConnectedToInternet(this)) {
+            int index = mConfiguredAccounts.indexOf(data);
+            if (index == -1) {
+                handleResetAccounts();
+                Logger.debug(TAG, "Adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
 
-            try {
-                handleSetCodecPriorities(intent);
-                addAccount(data);
-                mConfiguredAccounts.add(data);
-                persistConfiguredAccounts();
-                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
-            } catch (Exception exc) {
-                Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
-                enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
-                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
-                return;
+                try {
+                    handleSetCodecPriorities(intent);
+                    addAccount(data);
+                    mConfiguredAccounts.add(data);
+                    persistConfiguredAccounts();
+//                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
+                } catch (Exception exc) {
+                    Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                    enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
+                    mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
+                    return;
+                }
+            } else {
+                Logger.debug(TAG, "Reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
+
+                try {
+                    //removeAccount(data.getIdUri());
+                    handleSetCodecPriorities(intent);
+                    addAccount(data);
+                    mConfiguredAccounts.set(index, data);
+                    persistConfiguredAccounts();
+//                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
+                } catch (Exception exc) {
+                    Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                    mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
+                    enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
+                    return;
+                }
             }
         } else {
-            Logger.debug(TAG, "Reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
-
-            try {
-                //removeAccount(data.getIdUri());
-                handleSetCodecPriorities(intent);
-                addAccount(data);
-                mConfiguredAccounts.set(index, data);
-                persistConfiguredAccounts();
-                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
-            } catch (Exception exc) {
-                Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
-                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
-                enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
-                return;
-            }
+            mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Network error. Please check your internet connection and try again."));
         }
 
         enqueueDelayedJob(() -> stopForegroundService(getActiveSipAccount(this), true), SipServiceConstants.DELAY_STOP_SERVICE);
@@ -1613,15 +1606,5 @@ public class SipService extends BackgroundService implements SipServiceConstants
             Logger.debug(TAG, "stopForegroundService() -> No Active Call Present");
             stopForegroundService(sipAccount);
         }
-    }
-
-    private Notification getCurrentForegroundNotification() {
-        NotificationManager notificationManager = (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
-        for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
-            if (notification.getId() == SERVICE_FOREGROUND_NOTIFICATION_ID) {
-                return notification.getNotification();
-            }
-        }
-        return null;
     }
 }

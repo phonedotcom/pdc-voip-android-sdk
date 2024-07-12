@@ -1,6 +1,11 @@
 package com.phone.sip;
 
+import static com.phone.sip.ObfuscationHelper.getValue;
+import static com.phone.sip.constants.SipServiceConstants.INVALID_CODE;
+
 import android.os.Build;
+
+import com.phone.sip.constants.InitializeStatus;
 
 import org.pjsip.pjsua2.Account;
 import org.pjsip.pjsua2.CallOpParam;
@@ -8,6 +13,7 @@ import org.pjsip.pjsua2.OnIncomingCallParam;
 import org.pjsip.pjsua2.OnRegStateParam;
 import org.pjsip.pjsua2.SipHeader;
 import org.pjsip.pjsua2.SipHeaderVector;
+import org.pjsip.pjsua2.pjsip_status_code;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +34,8 @@ public class SipAccount extends Account {
     private final SipService service;
     private boolean isGuest = false;
     private ICall activeIncomingCall;
+
+    private int lastStatusCode = INVALID_CODE;
 
     protected SipAccount(SipService service, SipAccountData data) {
         super();
@@ -79,7 +87,7 @@ public class SipAccount extends Account {
         SipCall call = new SipCall(this, callId);
         activeCalls.put(callId, call);
         Logger.debug(LOG_TAG, "Added incoming call with ID " + callId
-                + " to " + ObfuscationHelper.getValue(service.getApplicationContext(), data.getIdUri(service.getApplicationContext()))
+                + " to " + getValue(service.getApplicationContext(), data.getIdUri(service.getApplicationContext()))
         );
         return call;
     }
@@ -361,6 +369,17 @@ public class SipAccount extends Account {
     @Override
     public void onRegState(OnRegStateParam prm) {
         service.getBroadcastEmitter().registrationState(data.getIdUri(service.getApplicationContext()), prm.getCode());
+
+        //Only get inside if last status is not equal to current code, because onRegState gets callback
+        //every interval whatever value set by expiry time
+        if (lastStatusCode != prm.getCode()) {
+            if (prm.getCode() == pjsip_status_code.PJSIP_SC_OK) {
+                service.getBroadcastEmitter().onInitialize(new InitializeStatus.Success(data.getUsername()));
+            } else {
+                service.getBroadcastEmitter().onInitialize(new InitializeStatus.Failure("Reason: " + prm.getReason() + " -> Error while adding " + getValue(service.getApplicationContext(), data.getIdUri(service.getApplicationContext()))));
+            }
+        }
+        lastStatusCode = prm.getCode();
     }
 
     @Override
