@@ -9,6 +9,8 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Keep;
+
 import com.phone.sip.constants.SipServiceConstants;
 
 import org.pjsip.pjsua2.AccountConfig;
@@ -26,6 +28,7 @@ import java.util.UUID;
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
+@Keep
 public class SipAccountData implements Parcelable {
 
     public static final String TAG = SipAccountData.class.getSimpleName();

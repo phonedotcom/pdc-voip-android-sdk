@@ -3,6 +3,7 @@ package com.phone.sip;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.Keep;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
@@ -21,6 +22,8 @@ import java.util.List;
  * Created by Vincenzo Esposito on 25/11/19.
  * Copyright © 2019 VoiSmart S.r.l. All rights reserved.
  */
+
+@Keep
 @SuppressWarnings("unused")
 class SharedPreferencesHelper {
 

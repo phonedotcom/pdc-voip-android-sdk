@@ -6,6 +6,8 @@ import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.view.Surface;
 
+import androidx.annotation.Keep;
+
 import com.phone.sip.constants.SipServiceConstants;
 import com.phone.sip.models.ConfigureFCMPushNotification;
 import com.phone.sip.models.ConfigurePhoneServiceNotification;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
+@Keep
 public final class PhoneComServiceCommand extends ServiceExecutor implements SipServiceConstants {
 
     public static final String TAG = PhoneComServiceCommand.class.getSimpleName();
