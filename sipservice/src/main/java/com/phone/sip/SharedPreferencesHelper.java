@@ -2,6 +2,7 @@ package com.phone.sip;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 
 import androidx.annotation.Keep;
 import androidx.security.crypto.EncryptedSharedPreferences;
@@ -57,7 +58,9 @@ class SharedPreferencesHelper {
     }
 
     List<SipAccountData> retrieveConfiguredAccounts() {
+        Logger.debug(TAG, "R8 -> retrieveConfiguredAccounts");
         String accounts = encryptedSharedPreferences.getString(PREFS_KEY_ACCOUNTS, "");
+        Logger.debug(TAG, "R8 -> retrieveConfiguredAccounts -> accounts -> " + accounts);
         return getAccounts(accounts);
     }
 
@@ -120,6 +123,7 @@ class SharedPreferencesHelper {
      */
     private synchronized List<SipAccountData> getDecryptedConfiguredAccounts(List<SipAccountData> accounts) {
         for (int i = 0; i < accounts.size(); i++) {
+            Logger.debug("SIP LOG ====> accounts ->", accounts.toString());
             accounts.get(i).setUsername(decrypt(accounts.get(i).getUsername()));
             accounts.get(i).setPassword(decrypt(accounts.get(i).getPassword()));
         }
@@ -128,10 +132,15 @@ class SharedPreferencesHelper {
 
     private List<SipAccountData> getAccounts(String accounts) {
         if (accounts.isEmpty() || accounts.equals("[]")) {
+            Logger.debug(TAG, "R8 -> getAccounts -> accounts is empty.");
             return new ArrayList<>();
         } else {
+            Logger.debug(TAG, "R8 -> getAccounts -> accounts -> " + accounts);
             Type listType = new TypeToken<ArrayList<SipAccountData>>() {
             }.getType();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                Logger.debug(TAG, "R8 -> getAccounts -> listType -> " + listType.getTypeName());
+            }
             return gson.fromJson(accounts, listType);
         }
     }
