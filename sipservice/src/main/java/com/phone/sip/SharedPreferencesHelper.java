@@ -50,6 +50,7 @@ class SharedPreferencesHelper {
     private static final String TAG = "SharedPreferenceHelper";
 
     private SharedPreferencesHelper(Context context) {
+        Logger.debug(TAG, "R8 -> SharedPreferencesHelper()");
         gson = new Gson();
         sharedPreferences = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
         encryptedSharedPreferences = initializeEncryptedSharedPreferences(context);
@@ -65,6 +66,7 @@ class SharedPreferencesHelper {
     }
 
     void persistConfiguredAccounts(List<SipAccountData> configuredAccounts) {
+        Logger.debug(TAG, "R8 -> persistConfiguredAccounts -> configuredAccounts -> " + configuredAccounts);
         encryptedSharedPreferences
                 .edit()
                 .putString(PREFS_KEY_ACCOUNTS, gson.toJson(configuredAccounts))
@@ -303,6 +305,7 @@ class SharedPreferencesHelper {
      */
     public void clearAllSharedPreferences() {
         sharedPreferences.edit().clear().apply();
+        encryptedSharedPreferences.edit().clear().apply();
     }
 }
 
