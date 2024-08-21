@@ -55,7 +55,13 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
         }*/
 
         String accountID = sipAccountData.getIdUri(context);
-        checkAccount(accountID);
+//        checkAccount(accountID);
+
+        Logger.debug(TAG, "R8 -> setAccount() -> accountId -> " + accountID);
+
+        if (accountID == null || !accountID.startsWith("sip:")) {
+            Logger.debug(TAG, "R8 -> It appears that no user is registered or has provided an invalid or null/empty account ID. Example: sip:user@domain");
+        }
 
         final Intent intent = new Intent(context, SipService.class);
         intent.setAction(ACTION_SET_ACCOUNT);
@@ -566,7 +572,8 @@ public final class PhoneComServiceCommand extends ServiceExecutor implements Sip
     }
 
     private static void checkAccount(String accountID) {
-        if (accountID == null || !accountID.startsWith("sip:")) {
+        Logger.debug(TAG, "R8 -> checkAccount() -> accountId -> " + accountID);
+        if (!StringUtility.validate(accountID) || !accountID.startsWith("sip:")) {
             throw new IllegalArgumentException("It appears that no user is registered or has provided an invalid or null/empty account ID. Example: sip:user@domain");
         }
     }

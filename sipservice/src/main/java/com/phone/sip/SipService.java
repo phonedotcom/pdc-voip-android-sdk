@@ -116,6 +116,10 @@ public class SipService extends BackgroundService implements SipServiceConstants
 
             if (action == null) return;
 
+            if (mConfiguredAccounts.isEmpty()) {
+                mConfiguredAccounts = SharedPreferencesHelper.getInstance(this).retrieveConfiguredAccounts();
+            }
+
             switch (action) {
                 case ACTION_SET_ACCOUNT:
                     handleSetAccount(intent);
@@ -356,6 +360,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
         final ICall iCall = SipUtility.createIncomingCallObject(intent);
         SipAccount sipAccount = mActiveSipAccounts.get(accountID);
         if (sipAccount == null) {
+            startAndStopForegroundService(null);
             mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
             return;
         }
