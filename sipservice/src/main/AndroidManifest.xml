@@ -16,6 +16,7 @@
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -37,7 +38,7 @@
             android:name="com.phone.sip.SipService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="phoneCall"
+            android:foregroundServiceType="phoneCall|shortService"
             android:stopWithTask="false" />
 
     </application>

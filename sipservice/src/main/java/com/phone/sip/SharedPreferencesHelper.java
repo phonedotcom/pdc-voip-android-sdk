@@ -307,5 +307,11 @@ class SharedPreferencesHelper {
         sharedPreferences.edit().clear().apply();
         encryptedSharedPreferences.edit().clear().apply();
     }
+
+    public void clearAccounts() {
+        Logger.debug(TAG, "R8 -> clearAccounts()");
+        sharedPreferences.edit().remove(PREFS_KEY_ACCOUNTS).apply();
+        encryptedSharedPreferences.edit().remove(PREFS_KEY_ACCOUNTS).apply();
+    }
 }
 

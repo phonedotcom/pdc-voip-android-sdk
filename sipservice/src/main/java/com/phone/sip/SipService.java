@@ -92,11 +92,14 @@ public class SipService extends BackgroundService implements SipServiceConstants
     public void onCreate() {
         super.onCreate();
 
+        Logger.debug(TAG, "R8 -> SipService onCreate");
+
         enqueueJob(() -> {
             Logger.debug(TAG, "Creating SipService with priority: " + Thread.currentThread().getPriority());
 
             //loadNativeLibraries();
             mSharedPreferencesHelper = SharedPreferencesHelper.getInstance(SipService.this);
+            mSharedPreferencesHelper.clearAccounts();
             mBroadcastEmitter = new BroadcastEventEmitter(SipService.this);
             loadConfiguredAccounts();
             addAllConfiguredAccounts();
@@ -115,10 +118,6 @@ public class SipService extends BackgroundService implements SipServiceConstants
             Logger.debug(TAG, "onStartCommand - Action: "+action);
 
             if (action == null) return;
-
-            if (mConfiguredAccounts.isEmpty()) {
-                mConfiguredAccounts = SharedPreferencesHelper.getInstance(this).retrieveConfiguredAccounts();
-            }
 
             switch (action) {
                 case ACTION_SET_ACCOUNT:
@@ -217,6 +216,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     break;
                 case ACTION_INCOMING_CALL_NOTIFICATION:
                     //TODO: Handle Incoming Call Notification
+                    Logger.debug(TAG, "R8 -> SipService ACTION_INCOMING_CALL_NOTIFICATION");
                     handleIncomingCallNotification(intent);
                     break;
                 case ACTION_INCOMING_CALL_DISCONNECTED:
@@ -353,23 +353,29 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleIncomingCallNotification(Intent intent) {
-        //Stop Music (if any)
-        MediaPlayerController.getInstance(this).stopMusicPlayer();
-        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+        Logger.debug(TAG, "R8 -> handleIncomingCallNotification()");
+        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this, NotificationCompat.PRIORITY_MIN));
+        enqueueDelayedJob(() -> {
+            //Stop Music (if any)
+            MediaPlayerController.getInstance(this).stopMusicPlayer();
+            String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
-        final ICall iCall = SipUtility.createIncomingCallObject(intent);
-        SipAccount sipAccount = mActiveSipAccounts.get(accountID);
-        if (sipAccount == null) {
-            startAndStopForegroundService(null);
-            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
-            return;
-        }
-        sipAccount.setActiveIncomingCall(iCall);
-        //TODO : If required, put notification here
-        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-        audioManager.setMicrophoneMute(false);
+            final ICall iCall = SipUtility.createIncomingCallObject(intent);
+            SipAccount sipAccount = mActiveSipAccounts.get(accountID);
+            if (sipAccount == null) {
+                Logger.debug(TAG, "R8 -> handleIncomingCallNotification() -> SipAccount is null");
+                startAndStopForegroundService(null);
+                mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
+                return;
+            }
+            Logger.debug(TAG, "R8 -> handleIncomingCallNotification() -> SipAccount is not null");
+            sipAccount.setActiveIncomingCall(iCall);
+            //TODO : If required, put notification here
+            AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+            audioManager.setMicrophoneMute(false);
 
-        notifyIncomingCallNotification(intent, iCall);
+            notifyIncomingCallNotification(intent, iCall);
+        }, 2000);
     }
 
     private void notifyIncomingCallNotification(Intent intent, ICall iCall) {

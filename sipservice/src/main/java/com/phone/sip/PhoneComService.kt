@@ -50,9 +50,6 @@ class PhoneComService(
             configureSip ?: throw IllegalArgumentException(SipServiceConstants.ERROR_INITIALIZE_MISSING_PARAMS)
             configureServiceNotification ?: throw IllegalArgumentException(SipServiceConstants.ERROR_INITIALIZE_MISSING_PARAMS)
 
-            Logger.debug("Phone.com", "R8 -> clearAllSharedPreferences()")
-            SharedPreferencesHelper.getInstance(context).clearAllSharedPreferences()
-
             PhoneComServiceCommand.saveInformationForPushRegistration(
                 configurePushNotification,
                 context
