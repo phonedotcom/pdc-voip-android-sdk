@@ -308,10 +308,14 @@ class SharedPreferencesHelper {
         encryptedSharedPreferences.edit().clear().apply();
     }
 
-    public void clearAccounts() {
-        Logger.debug(TAG, "R8 -> clearAccounts()");
+    public void clearKeyAccounts () {
+        Logger.debug(TAG, "R8 - clearKeyAccounts()");
         sharedPreferences.edit().remove(PREFS_KEY_ACCOUNTS).apply();
         encryptedSharedPreferences.edit().remove(PREFS_KEY_ACCOUNTS).apply();
+    }
+
+    public boolean hasKey(final String key) {
+        return sharedPreferences.contains(key);
     }
 }
 

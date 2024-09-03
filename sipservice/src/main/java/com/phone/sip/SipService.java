@@ -1,6 +1,7 @@
 package com.phone.sip;
 
 import static com.phone.sip.ObfuscationHelper.getValue;
+import static com.phone.sip.SharedPreferenceConstant.DATA_CLEARED;
 import static com.phone.sip.constants.PhoneComServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID;
 
 import android.Manifest;
@@ -64,6 +65,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
     private SharedPreferencesHelper mSharedPreferencesHelper;
     private volatile boolean mStarted;
     private int callStatus;
+    private boolean isDataCleared;
 
     public static ConcurrentHashMap<String, SipAccount> getActiveSipAccounts() {
         return mActiveSipAccounts;
@@ -91,15 +93,21 @@ public class SipService extends BackgroundService implements SipServiceConstants
     @Override
     public void onCreate() {
         super.onCreate();
-
-        Logger.debug(TAG, "R8 -> SipService onCreate");
-
+        Logger.debug(TAG, "SipService -> onCreate()");
         enqueueJob(() -> {
             Logger.debug(TAG, "Creating SipService with priority: " + Thread.currentThread().getPriority());
 
             //loadNativeLibraries();
             mSharedPreferencesHelper = SharedPreferencesHelper.getInstance(SipService.this);
-            mSharedPreferencesHelper.clearAccounts();
+
+            //Clear key accounts
+            isDataCleared = mSharedPreferencesHelper.hasKey(DATA_CLEARED);
+            Logger.debug(TAG, "R8 -> isDataCleared: " + isDataCleared);
+            if(!isDataCleared) {
+                mSharedPreferencesHelper.putInSharedPreference(DATA_CLEARED, true);
+                SharedPreferencesHelper.getInstance(this).clearKeyAccounts();
+            }
+
             mBroadcastEmitter = new BroadcastEventEmitter(SipService.this);
             loadConfiguredAccounts();
             addAllConfiguredAccounts();
@@ -216,8 +224,8 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     break;
                 case ACTION_INCOMING_CALL_NOTIFICATION:
                     //TODO: Handle Incoming Call Notification
-                    Logger.debug(TAG, "R8 -> SipService ACTION_INCOMING_CALL_NOTIFICATION");
-                    handleIncomingCallNotification(intent);
+                    enqueueDelayedJob(() -> handleIncomingCallNotification(intent), isDataCleared ? 0 : 2000L);
+                    //handleIncomingCallNotification(intent);
                     break;
                 case ACTION_INCOMING_CALL_DISCONNECTED:
                     handleIncomingCallDisconnected(intent);
@@ -232,7 +240,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     break;
             }
 
-            if (mConfiguredAccounts.isEmpty() && mConfiguredGuestAccount == null) {
+            if (mConfiguredAccounts.isEmpty() && mConfiguredGuestAccount == null && isDataCleared) {
                 Logger.debug(TAG, "No more configured accounts. Shutting down service");
                 stopSelf();
             }
@@ -353,29 +361,23 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleIncomingCallNotification(Intent intent) {
-        Logger.debug(TAG, "R8 -> handleIncomingCallNotification()");
-        startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this, NotificationCompat.PRIORITY_MIN));
-        enqueueDelayedJob(() -> {
-            //Stop Music (if any)
-            MediaPlayerController.getInstance(this).stopMusicPlayer();
-            String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
+        //Stop Music (if any)
+        MediaPlayerController.getInstance(this).stopMusicPlayer();
+        String accountID = intent.getStringExtra(PARAM_ACCOUNT_ID);
 
-            final ICall iCall = SipUtility.createIncomingCallObject(intent);
-            SipAccount sipAccount = mActiveSipAccounts.get(accountID);
-            if (sipAccount == null) {
-                Logger.debug(TAG, "R8 -> handleIncomingCallNotification() -> SipAccount is null");
-                startAndStopForegroundService(null);
-                mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
-                return;
-            }
-            Logger.debug(TAG, "R8 -> handleIncomingCallNotification() -> SipAccount is not null");
-            sipAccount.setActiveIncomingCall(iCall);
-            //TODO : If required, put notification here
-            AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-            audioManager.setMicrophoneMute(false);
+        final ICall iCall = SipUtility.createIncomingCallObject(intent);
+        SipAccount sipAccount = mActiveSipAccounts.get(accountID);
+        if (sipAccount == null) {
+            startAndStopForegroundService(null);
+            mBroadcastEmitter.errorCallback(SipServiceConstants.ERR_SIP_ACCOUNT_NULL);
+            return;
+        }
+        sipAccount.setActiveIncomingCall(iCall);
+        //TODO : If required, put notification here
+        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMicrophoneMute(false);
 
-            notifyIncomingCallNotification(intent, iCall);
-        }, 2000);
+        notifyIncomingCallNotification(intent, iCall);
     }
 
     private void notifyIncomingCallNotification(Intent intent, ICall iCall) {
@@ -1198,10 +1200,12 @@ public class SipService extends BackgroundService implements SipServiceConstants
     }
 
     private void handleSetAccount(Intent intent) {
+        Logger.debug(TAG, "R8 - handleSetAccount()");
         startForeground(NotificationCreator.Companion.createForegroundServiceNotification(this, NotificationCompat.PRIORITY_MIN));
         SipAccountData data = intent.getParcelableExtra(PARAM_ACCOUNT_DATA);
 
         if(!StringUtility.validate(SharedPreferencesHelper.getInstance(this).getStringSharedPreference(SharedPreferenceConstant.SIP_USER_NAME))) {
+            Logger.debug(TAG, "R8 - handleSetAccount() -> User name is not valid");
             enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
             return;
         }
@@ -1210,7 +1214,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             int index = mConfiguredAccounts.indexOf(data);
             if (index == -1) {
                 handleResetAccounts();
-                Logger.debug(TAG, "Adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
+                Logger.debug(TAG, "R8 - Adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
 
                 try {
                     handleSetCodecPriorities(intent);
@@ -1219,13 +1223,13 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     persistConfiguredAccounts();
 //                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
                 } catch (Exception exc) {
-                    Logger.error(TAG, "Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                    Logger.error(TAG, "R8 - Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
                     enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
 //                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
                     return;
                 }
             } else {
-                Logger.debug(TAG, "Reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
+                Logger.debug(TAG, "R8 - Reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())));
 
                 try {
                     //removeAccount(data.getIdUri());
@@ -1235,7 +1239,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
                     persistConfiguredAccounts();
 //                mBroadcastEmitter.onInitialize(new InitializeStatus.Success(data.getUsername()));
                 } catch (Exception exc) {
-                    Logger.error(TAG, "Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
+                    Logger.error(TAG, "R8 - Error while reconfiguring " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext())), exc);
 //                mBroadcastEmitter.onInitialize(new InitializeStatus.Failure("Error while adding " + getValue(getApplicationContext(), data.getIdUri(getApplicationContext()))));
                     enqueueDelayedJob(() -> stopForeground(true), SipServiceConstants.DELAY_STOP_SERVICE);
                     return;
