@@ -17,6 +17,8 @@ lint
 # Signing files
 .signing/
 
+/.idea
+/.idea/gradle.xml
 # User-specific configurations
 .idea/libraries/
 .idea/workspace.xml
@@ -27,8 +29,11 @@ lint
 .idea/encodings.xml
 .idea/misc.xml
 .idea/modules.xml
+.idea/kotlinc.xml
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
+.idea/gradle.xml
+.idea/migrations.xml
 .idea/markdown*
 *.iml
 
