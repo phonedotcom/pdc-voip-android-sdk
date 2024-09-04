@@ -24,7 +24,6 @@ import java.util.List;
  * Copyright © 2019 VoiSmart S.r.l. All rights reserved.
  */
 
-@Keep
 @SuppressWarnings("unused")
 class SharedPreferencesHelper {
 

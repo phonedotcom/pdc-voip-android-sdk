@@ -7,7 +7,6 @@ import com.phone.sip.models.ConfigureFCMPushNotification
 import com.phone.sip.models.ConfigurePhoneServiceNotification
 import com.phone.sip.models.ConfigureSip
 
-@Keep
 class PhoneComService(
     var context: Context? = null,
     var configureSip: ConfigureSip?,

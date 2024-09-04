@@ -3,7 +3,6 @@ package com.phone.sip
 import android.content.Context
 import androidx.annotation.Keep
 
-@Keep
 class PhoneComLogger(
     var context: Context? = null,
     var enableSipConsoleLogging: Boolean,

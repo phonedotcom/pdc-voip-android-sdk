@@ -26,7 +26,6 @@ import java.util.ArrayList;
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
-@Keep
 public final class PhoneComServiceCommand extends ServiceExecutor implements SipServiceConstants {
 
     public static final String TAG = PhoneComServiceCommand.class.getSimpleName();

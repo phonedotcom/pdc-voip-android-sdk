@@ -2,7 +2,6 @@ package com.phone.sip;
 
 import androidx.annotation.Keep;
 
-@Keep
 public final class SharedPreferenceConstant {
 
     public static final String SIP_USER_NAME = "sipUsername";

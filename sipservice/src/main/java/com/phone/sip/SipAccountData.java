@@ -29,7 +29,6 @@ import java.util.UUID;
  * @author gotev (Aleksandar Gotev)
  */
 @SuppressWarnings("unused")
-@Keep
 public class SipAccountData implements Parcelable {
 
     public static final String TAG = SipAccountData.class.getSimpleName();
