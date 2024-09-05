@@ -2,6 +2,7 @@ package com.phone.sip;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
@@ -21,6 +22,7 @@ import java.util.List;
  * Created by Vincenzo Esposito on 25/11/19.
  * Copyright © 2019 VoiSmart S.r.l. All rights reserved.
  */
+
 @SuppressWarnings("unused")
 class SharedPreferencesHelper {
 
@@ -46,6 +48,7 @@ class SharedPreferencesHelper {
     private static final String TAG = "SharedPreferenceHelper";
 
     private SharedPreferencesHelper(Context context) {
+        Logger.debug(TAG, "R8 -> SharedPreferencesHelper()");
         gson = new Gson();
         sharedPreferences = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
         encryptedSharedPreferences = initializeEncryptedSharedPreferences(context);
@@ -54,11 +57,14 @@ class SharedPreferencesHelper {
     }
 
     List<SipAccountData> retrieveConfiguredAccounts() {
+        Logger.debug(TAG, "R8 -> retrieveConfiguredAccounts");
         String accounts = encryptedSharedPreferences.getString(PREFS_KEY_ACCOUNTS, "");
+        Logger.debug(TAG, "R8 -> retrieveConfiguredAccounts -> accounts -> " + accounts);
         return getAccounts(accounts);
     }
 
     void persistConfiguredAccounts(List<SipAccountData> configuredAccounts) {
+        Logger.debug(TAG, "R8 -> persistConfiguredAccounts -> configuredAccounts -> " + configuredAccounts);
         encryptedSharedPreferences
                 .edit()
                 .putString(PREFS_KEY_ACCOUNTS, gson.toJson(configuredAccounts))
@@ -117,6 +123,7 @@ class SharedPreferencesHelper {
      */
     private synchronized List<SipAccountData> getDecryptedConfiguredAccounts(List<SipAccountData> accounts) {
         for (int i = 0; i < accounts.size(); i++) {
+            Logger.debug("SIP LOG ====> accounts ->", accounts.toString());
             accounts.get(i).setUsername(decrypt(accounts.get(i).getUsername()));
             accounts.get(i).setPassword(decrypt(accounts.get(i).getPassword()));
         }
@@ -125,10 +132,15 @@ class SharedPreferencesHelper {
 
     private List<SipAccountData> getAccounts(String accounts) {
         if (accounts.isEmpty() || accounts.equals("[]")) {
+            Logger.debug(TAG, "R8 -> getAccounts -> accounts is empty.");
             return new ArrayList<>();
         } else {
+            Logger.debug(TAG, "R8 -> getAccounts -> accounts -> " + accounts);
             Type listType = new TypeToken<ArrayList<SipAccountData>>() {
             }.getType();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                Logger.debug(TAG, "R8 -> getAccounts -> listType -> " + listType.getTypeName());
+            }
             return gson.fromJson(accounts, listType);
         }
     }
@@ -291,6 +303,17 @@ class SharedPreferencesHelper {
      */
     public void clearAllSharedPreferences() {
         sharedPreferences.edit().clear().apply();
+        encryptedSharedPreferences.edit().clear().apply();
+    }
+
+    public void clearKeyAccounts () {
+        Logger.debug(TAG, "R8 - clearKeyAccounts()");
+        sharedPreferences.edit().remove(PREFS_KEY_ACCOUNTS).apply();
+        encryptedSharedPreferences.edit().remove(PREFS_KEY_ACCOUNTS).apply();
+    }
+
+    public boolean hasKey(final String key) {
+        return sharedPreferences.contains(key);
     }
 }
 

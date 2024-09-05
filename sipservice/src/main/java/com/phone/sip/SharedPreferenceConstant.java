@@ -1,5 +1,6 @@
 package com.phone.sip;
 
+
 public final class SharedPreferenceConstant {
 
     public static final String SIP_USER_NAME = "sipUsername";
@@ -26,6 +27,8 @@ public final class SharedPreferenceConstant {
     public static final String SIP_ACCOUNT_ID = "SIP_ACCOUNT_ID";
     public static final String ENABLE_SIP_CONSOLE_LOGS = "enableSipConsoleLogging";
     public static final String ENABLE_SIP_FILE_LOGS = "enableSipFileLogging";
+
+    public static final String DATA_CLEARED = "dataCleared";
 
     private SharedPreferenceConstant() {
     }

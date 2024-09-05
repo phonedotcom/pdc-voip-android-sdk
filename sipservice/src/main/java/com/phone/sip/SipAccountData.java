@@ -9,6 +9,8 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+
+import com.google.gson.annotations.SerializedName;
 import com.phone.sip.constants.SipServiceConstants;
 
 import org.pjsip.pjsua2.AccountConfig;
@@ -32,23 +34,52 @@ public class SipAccountData implements Parcelable {
     public static final String AUTH_TYPE_DIGEST = "digest";
     public static final String AUTH_TYPE_PLAIN = "plain";
 
+
+    @SerializedName("username")
     private String username;
+
+    @SerializedName("password")
     private String password;
+
+    @SerializedName("realm")
     private String realm;
+
+    @SerializedName("host")
     private String host;
+
+    @SerializedName("port")
     private long port = DEFAULT_SIP_PORT;
+
+    @SerializedName("tcpTransport")
     private boolean tcpTransport = false;
+
+    @SerializedName("authenticationType")
     private String authenticationType = AUTH_TYPE_DIGEST;
+
+    @SerializedName("contactUriParams")
     private String contactUriParams = "";
+
+    @SerializedName("regExpirationTimeout")
     private int regExpirationTimeout = 0;     // 300s
+
+    @SerializedName("guestDisplayName")
     private String guestDisplayName = "";
+
+    @SerializedName("callId")
     private String callId = "";
+
+    @SerializedName("srtpUse")
     private int srtpUse = pjmedia_srtp_use.PJMEDIA_SRTP_OPTIONAL;
+
+    @SerializedName("srtpSecureSignalling")
     private int srtpSecureSignalling = 0; // not required
+
+    @SerializedName("transport")
     private SipAccountTransport transport = SipAccountTransport.UDP;
     private Context mContext;
 
-    public SipAccountData() { }
+    public SipAccountData() {
+    }
 
     public SipAccountData(Context context) {
         this.mContext = context;
@@ -115,6 +146,7 @@ public class SipAccountData implements Parcelable {
     }
 
     public SipAccountData setUsername(String username) {
+        Logger.debug("SIP LOG ====> username ->", username);
         this.username = username;
         return this;
     }
@@ -267,6 +299,7 @@ public class SipAccountData implements Parcelable {
             return "sip:" + username;
 
         return "sip:" + username + "@" + realm;*/
+        Logger.debug(TAG, "R8 -> getIdUri -> Username: "+username);
         return SipUtility.getSipUserUri(username, context);
     }
 
@@ -281,8 +314,10 @@ public class SipAccountData implements Parcelable {
 
     String getTransportString() {
         switch (transport) {
-            case TCP: return ";transport=tcp";
-            case TLS: return ";transport=tls";
+            case TCP:
+                return ";transport=tcp";
+            case TLS:
+                return ";transport=tls";
             case UDP:
             default: {
                 // backward compatibility
