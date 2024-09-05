@@ -1,6 +1,5 @@
 package com.phone.sip;
 
-import androidx.annotation.Keep;
 
 public final class SharedPreferenceConstant {
 

@@ -1,6 +1,5 @@
 package com.phone.sip.constants
 
-import androidx.annotation.Keep
 
 public object PhoneComServiceConstants {
     const val SERVICE_NOTIFICATION_CHANNEL_NAME = "Phone Service Channel"

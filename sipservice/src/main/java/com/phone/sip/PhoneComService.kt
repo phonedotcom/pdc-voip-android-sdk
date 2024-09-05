@@ -1,7 +1,6 @@
 package com.phone.sip
 
 import android.content.Context
-import androidx.annotation.Keep
 import com.phone.sip.constants.SipServiceConstants
 import com.phone.sip.models.ConfigureFCMPushNotification
 import com.phone.sip.models.ConfigurePhoneServiceNotification

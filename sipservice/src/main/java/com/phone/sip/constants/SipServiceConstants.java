@@ -1,6 +1,5 @@
 package com.phone.sip.constants;
 
-import androidx.annotation.Keep;
 
 public interface SipServiceConstants {
 

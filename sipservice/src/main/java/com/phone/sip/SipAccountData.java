@@ -9,7 +9,6 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.Keep;
 
 import com.google.gson.annotations.SerializedName;
 import com.phone.sip.constants.SipServiceConstants;

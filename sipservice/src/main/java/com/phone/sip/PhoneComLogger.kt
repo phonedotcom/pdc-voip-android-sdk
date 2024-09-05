@@ -1,7 +1,6 @@
 package com.phone.sip
 
 import android.content.Context
-import androidx.annotation.Keep
 
 class PhoneComLogger(
     var context: Context? = null,
