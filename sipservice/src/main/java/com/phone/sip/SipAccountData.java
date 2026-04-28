@@ -342,7 +342,7 @@ public class SipAccountData implements Parcelable {
 
         // account registration stuff configs
         //if (callId != null && !callId.isEmpty()) {
-            accountConfig.getRegConfig().setCallID(UUID.randomUUID().toString());
+//            accountConfig.getRegConfig().setCallID(UUID.randomUUID().toString());
             //accountConfig.getRegConfig().setCallID(callId);
         //}
         accountConfig.getRegConfig().setRegistrarUri(getRegistrarUri(appContext));
