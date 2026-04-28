@@ -9,6 +9,7 @@ import androidx.security.crypto.MasterKeys;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.voismart.crypto.BuildConfig;
 import com.voismart.crypto.Crypto;
 import com.voismart.crypto.EncryptionHelper;
 
@@ -306,7 +307,7 @@ class SharedPreferencesHelper {
         encryptedSharedPreferences.edit().clear().apply();
     }
 
-    public void clearKeyAccounts () {
+    public void clearKeyAccounts() {
         Logger.debug(TAG, "R8 - clearKeyAccounts()");
         sharedPreferences.edit().remove(PREFS_KEY_ACCOUNTS).apply();
         encryptedSharedPreferences.edit().remove(PREFS_KEY_ACCOUNTS).apply();

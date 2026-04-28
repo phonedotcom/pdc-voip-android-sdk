@@ -5,11 +5,12 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    compileSdk 34
+    namespace "com.phone.sip"
+    compileSdk 35
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode 33
         versionName "2.1.0"
 
@@ -25,6 +26,11 @@ android {
 
     sourceSets.main {
         jniLibs.srcDir 'libs'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
