@@ -11,7 +11,7 @@ android {
     defaultConfig {
         minSdkVersion 23
         targetSdkVersion 35
-        versionCode 33
+        versionCode 34
         versionName "2.1.1-alpha.33"
 
         manifestPlaceholders = [consumerAppId: "com.phone"]
