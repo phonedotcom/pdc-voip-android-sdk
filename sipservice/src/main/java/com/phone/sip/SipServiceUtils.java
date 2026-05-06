@@ -66,20 +66,34 @@ public class SipServiceUtils {
             }
             Logger.debug(TAG, log.toString());
         } else {
-            sipEndpoint.codecSetPriority("OPUS", (short) (CodecPriority.PRIORITY_MAX - 1));
-            sipEndpoint.codecSetPriority("PCMA/8000", (short) (CodecPriority.PRIORITY_MAX - 2));
-            sipEndpoint.codecSetPriority("PCMU/8000", (short) (CodecPriority.PRIORITY_MAX - 3));
-            sipEndpoint.codecSetPriority("G729/8000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("speex/8000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("speex/16000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("speex/32000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("GSM/8000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("G722/16000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("G7221/16000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("G7221/32000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("ilbc/8000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("AMR-WB/16000", (short) CodecPriority.PRIORITY_DISABLED);
-            sipEndpoint.codecSetPriority("AMR/8000", (short) CodecPriority.PRIORITY_DISABLED);
+            sipEndpoint.codecSetPriority("opus/48000/2", (short) (CodecPriority.PRIORITY_MAX - 1));
+            sipEndpoint.codecSetPriority("PCMA/8000/1", (short) (CodecPriority.PRIORITY_MAX - 2));
+            sipEndpoint.codecSetPriority("PCMU/8000/1", (short) (CodecPriority.PRIORITY_MAX - 3));
+            sipEndpoint.codecSetPriority("speex/8000/1", (short) CodecPriority.PRIORITY_DISABLED);
+            sipEndpoint.codecSetPriority("speex/16000/1", (short) CodecPriority.PRIORITY_DISABLED);
+            sipEndpoint.codecSetPriority("speex/32000/1", (short) CodecPriority.PRIORITY_DISABLED);
+            sipEndpoint.codecSetPriority("GSM/8000/1", (short) CodecPriority.PRIORITY_DISABLED);
+            sipEndpoint.codecSetPriority("G722/16000/1", (short) CodecPriority.PRIORITY_DISABLED);
+            sipEndpoint.codecSetPriority("ilbc/8000/1", (short) CodecPriority.PRIORITY_DISABLED);
+            sipEndpoint.codecSetPriority("AMR-WB/16000/1", (short) CodecPriority.PRIORITY_DISABLED);
+            sipEndpoint.codecSetPriority("AMR/8000/1", (short) CodecPriority.PRIORITY_DISABLED);
+//                mEndpoint.codecSetPriority("G729/8000/1", (short) CodecPriority.PRIORITY_DISABLED);
+//                mEndpoint.codecSetPriority("G7221/16000/1", (short) CodecPriority.PRIORITY_DISABLED);
+//                mEndpoint.codecSetPriority("G7221/32000/1", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("OPUS", (short) (CodecPriority.PRIORITY_MAX - 1));
+//            sipEndpoint.codecSetPriority("PCMA/8000", (short) (CodecPriority.PRIORITY_MAX - 2));
+//            sipEndpoint.codecSetPriority("PCMU/8000", (short) (CodecPriority.PRIORITY_MAX - 3));
+//            sipEndpoint.codecSetPriority("G729/8000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("speex/8000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("speex/16000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("speex/32000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("GSM/8000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("G722/16000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("G7221/16000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("G7221/32000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("ilbc/8000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("AMR-WB/16000", (short) CodecPriority.PRIORITY_DISABLED);
+//            sipEndpoint.codecSetPriority("AMR/8000", (short) CodecPriority.PRIORITY_DISABLED);
             Logger.debug(TAG, "Default codec priorities set!");
         }
     }
