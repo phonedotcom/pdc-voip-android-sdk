@@ -2,9 +2,9 @@ package com.phone.sip;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.phone.sip.constants.PhoneComServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID;
+import static com.phone.sip.constants.SipServiceConstants.ANDROID_H264_CODEC_ID;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_HEIGHT;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_WIDTH;
-import static com.phone.sip.constants.SipServiceConstants.OPENH264_CODEC_ID;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_HEADER;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_JANUS_BRIDGE;
 
@@ -99,10 +99,10 @@ public class SipServiceUtils {
     }
 
     public static void setVideoCodecPriorities(SipEndpoint sipEndpoint) throws Exception {
-        sipEndpoint.videoCodecSetPriority(OPENH264_CODEC_ID, (short) (CodecPriority.PRIORITY_MAX_VIDEO - 1));
+        sipEndpoint.videoCodecSetPriority(ANDROID_H264_CODEC_ID, (short) (CodecPriority.PRIORITY_MAX_VIDEO - 1));
 
         for (CodecInfo codecInfo : sipEndpoint.videoCodecEnum2()) {
-            if (!OPENH264_CODEC_ID.equals(codecInfo.getCodecId())) {
+            if (!ANDROID_H264_CODEC_ID.equals(codecInfo.getCodecId())) {
                 sipEndpoint.videoCodecSetPriority(
                         codecInfo.getCodecId(),
                         (short) CodecPriority.PRIORITY_DISABLED
@@ -111,7 +111,7 @@ public class SipServiceUtils {
         }
 
         // Set H264 Parameters
-        VidCodecParam vidCodecParam = sipEndpoint.getVideoCodecParam(OPENH264_CODEC_ID);
+        VidCodecParam vidCodecParam = sipEndpoint.getVideoCodecParam(ANDROID_H264_CODEC_ID);
         CodecFmtpVector codecFmtpVector = vidCodecParam.getDecFmtp();
         MediaFormatVideo mediaFormatVideo = vidCodecParam.getEncFmt();
         mediaFormatVideo.setWidth(H264_DEF_WIDTH);
@@ -125,7 +125,7 @@ public class SipServiceUtils {
             }
         }
         vidCodecParam.setDecFmtp(codecFmtpVector);
-        sipEndpoint.setVideoCodecParam(OPENH264_CODEC_ID, vidCodecParam);
+        sipEndpoint.setVideoCodecParam(ANDROID_H264_CODEC_ID, vidCodecParam);
     }
 
     static Notification getCurrentForegroundNotification(Context context) {
