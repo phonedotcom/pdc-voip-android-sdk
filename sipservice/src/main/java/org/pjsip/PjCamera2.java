@@ -18,6 +18,7 @@
 package org.pjsip;
 
 import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
@@ -35,8 +36,6 @@ import android.view.SurfaceHolder;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.pjsip.PjCameraInfo2;
 
 public class PjCamera2
 {
@@ -257,8 +256,12 @@ public class PjCamera2
 
         try {
             cm.openCamera(ci.id, camStateCallback, handler);
-        } catch (Exception e) {
-            Log.d(TAG, e.getMessage());
+        } catch (SecurityException e) {
+            Log.e(TAG, "Camera permission denied: " + e.getMessage());
+            Stop();
+            return -11;
+        } catch (CameraAccessException e) {
+            Log.d(TAG, "Camera access error: " + e.getMessage());
             Stop();
             return -10;
         }
