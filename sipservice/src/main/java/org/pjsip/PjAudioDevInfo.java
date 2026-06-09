@@ -23,6 +23,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
+
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -36,18 +37,15 @@ public class PjAudioDevInfo {
     public int[] supportedClockRates;
     public int[] supportedChannelCounts;
 
-    public static int GetCount()
-    {
+    public static int GetCount() {
         return devices.size();
     }
 
-    public static PjAudioDevInfo GetInfo(int idx)
-    {
+    public static PjAudioDevInfo GetInfo(int idx) {
         return devices.valueAt(idx);
     }
 
-    public static void RefreshDevices(Context context)
-    {
+    public static void RefreshDevices(Context context) {
         devices = new SparseArray<>();
 
         /* Default device */
@@ -59,8 +57,8 @@ public class PjAudioDevInfo {
 
         /* Enumerate devices (for API level 23 or later) */
 
-        AudioManager am = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-        AudioDeviceInfo[] devs = am.getDevices(AudioManager.GET_DEVICES_ALL);
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        AudioDeviceInfo[] devs = am.getDevices(AudioManager.GET_DEVICES_INPUTS | AudioManager.GET_DEVICES_OUTPUTS);
 
         HashMap<String, Integer> micNamesCounterMap = new HashMap<>();
 
@@ -80,7 +78,7 @@ public class PjAudioDevInfo {
         }
 
         Log.i("Oboe", "Enumerating AudioManager devices..");
-        for (AudioDeviceInfo adi: devs) {
+        for (AudioDeviceInfo adi : devs) {
             LogDevInfo(adi);
             String productName = adi.getProductName().toString();
             StringBuilder nameStringBuilder = new StringBuilder().append(DevTypeStr(adi.getType())).append(" - ").append(productName);
@@ -93,7 +91,7 @@ public class PjAudioDevInfo {
             pj_adi.name = nameStringBuilder.toString();
             pj_adi.direction = 0;
             if (adi.isSource()) pj_adi.direction |= 1;
-            if (adi.isSink())   pj_adi.direction |= 2;
+            if (adi.isSink()) pj_adi.direction |= 2;
             pj_adi.supportedChannelCounts = adi.getChannelCounts();
             pj_adi.supportedClockRates = adi.getSampleRates();
             devices.put(adi.getId(), pj_adi);
@@ -101,7 +99,7 @@ public class PjAudioDevInfo {
     }
 
     /* Private members */
-    
+
     private static SparseArray<PjAudioDevInfo> devices;
 
     private static String DevTypeStr(int type) {
@@ -163,7 +161,7 @@ public class PjAudioDevInfo {
             case AudioDeviceInfo.TYPE_USB_HEADSET:
                 return "USB Headset";
             default:
-                return "Unknown ("+ type +")";
+                return "Unknown (" + type + ")";
         }
     }
 
