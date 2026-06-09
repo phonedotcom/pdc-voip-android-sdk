@@ -1325,6 +1325,7 @@ public class SipService extends BackgroundService implements SipServiceConstants
             epConfig.getMedConfig().setEcOptions(1);
             epConfig.getMedConfig().setEcTailLen(200);
             epConfig.getMedConfig().setThreadCnt(2);
+            epConfig.getMedConfig().setSndAutoCloseTime(0);
 
             //TODO: Keep watch
             /*final StringVector stun_servers = new StringVector();
