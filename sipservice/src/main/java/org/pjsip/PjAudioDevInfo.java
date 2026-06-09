@@ -58,15 +58,25 @@ public class PjAudioDevInfo {
         devices.put(0, pj_adi);
 
         /* Enumerate devices (for API level 23 or later) */
-        if (Build.VERSION.SDK_INT < 23)
-            return;
 
         AudioManager am = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         AudioDeviceInfo[] devs = am.getDevices(AudioManager.GET_DEVICES_ALL);
 
         HashMap<String, Integer> micNamesCounterMap = new HashMap<>();
+
         for (AudioDeviceInfo adi : devs) {
-            micNamesCounterMap.merge(adi.getProductName().toString(), 1, Integer::sum);
+            String deviceName = String.valueOf(adi.getProductName());
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                micNamesCounterMap.merge(deviceName, 1, Integer::sum);
+            } else {
+                Integer count = micNamesCounterMap.get(deviceName);
+                if (count == null) {
+                    micNamesCounterMap.put(deviceName, 1);
+                } else {
+                    micNamesCounterMap.put(deviceName, count + 1);
+                }
+            }
         }
 
         Log.i("Oboe", "Enumerating AudioManager devices..");
