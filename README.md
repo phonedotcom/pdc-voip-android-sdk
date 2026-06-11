@@ -33,7 +33,8 @@ All the commands that you will send to the service will get executed in the back
 
 ### Used Libraries versions
 
-- PJSIP: 2.12.1
+- PJSIP: 2.16
+- OBOE: 1.10
 - GSON: 2.9.1
 - RxJava: 2.2.18
 
