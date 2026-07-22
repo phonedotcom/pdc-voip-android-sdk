@@ -3,6 +3,8 @@ package com.phone.sip;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.phone.sip.constants.PhoneComServiceConstants.SERVICE_FOREGROUND_NOTIFICATION_ID;
 import static com.phone.sip.constants.SipServiceConstants.ANDROID_H264_CODEC_ID;
+import static com.phone.sip.constants.SipServiceConstants.ANDROID_VP8_CODEC_ID;
+import static com.phone.sip.constants.SipServiceConstants.ANDROID_VP9_CODEC_ID;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_HEIGHT;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_WIDTH;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_HEADER;
@@ -21,6 +23,8 @@ import org.pjsip.pjsua2.MediaFormatVideo;
 import org.pjsip.pjsua2.VidCodecParam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * connect
@@ -99,33 +103,47 @@ public class SipServiceUtils {
     }
 
     public static void setVideoCodecPriorities(SipEndpoint sipEndpoint) throws Exception {
-        sipEndpoint.videoCodecSetPriority(ANDROID_H264_CODEC_ID, (short) (CodecPriority.PRIORITY_MAX_VIDEO - 1));
+        List<String> preferredCodecs = Arrays.asList("H264", "VP8", "VP9");
 
         for (CodecInfo codecInfo : sipEndpoint.videoCodecEnum2()) {
-            if (!ANDROID_H264_CODEC_ID.equals(codecInfo.getCodecId())) {
-                sipEndpoint.videoCodecSetPriority(
-                        codecInfo.getCodecId(),
-                        (short) CodecPriority.PRIORITY_DISABLED
-                );
+            String codecId = codecInfo.getCodecId();
+            String upperCodecId = codecId.toUpperCase();
+
+            // Check if the current codec matches any of our preferred types
+            int priorityIndex = -1;
+            for (int i = 0; i < preferredCodecs.size(); i++) {
+                if (upperCodecId.contains(preferredCodecs.get(i))) {
+                    priorityIndex = i;
+                    break;
+                }
+            }
+
+            if (priorityIndex != -1) {
+                short priority = (short) (CodecPriority.PRIORITY_MAX_VIDEO - 1 - priorityIndex);
+                sipEndpoint.videoCodecSetPriority(codecId, priority);
+
+                VidCodecParam vidCodecParam = sipEndpoint.getVideoCodecParam(codecId);
+                MediaFormatVideo mediaFormatVideo = vidCodecParam.getEncFmt();
+                mediaFormatVideo.setWidth(H264_DEF_WIDTH);
+                mediaFormatVideo.setHeight(H264_DEF_HEIGHT);
+                vidCodecParam.setEncFmt(mediaFormatVideo);
+
+                if (upperCodecId.contains("H264")) {
+                    CodecFmtpVector codecFmtpVector = vidCodecParam.getDecFmtp();
+                    for (int j = 0; j < codecFmtpVector.size(); j++) {
+                        if (PROFILE_LEVEL_ID_HEADER.equals(codecFmtpVector.get(j).getName())) {
+                            codecFmtpVector.get(j).setVal(PROFILE_LEVEL_ID_JANUS_BRIDGE);
+                            break;
+                        }
+                    }
+                    vidCodecParam.setDecFmtp(codecFmtpVector);
+                }
+
+                sipEndpoint.setVideoCodecParam(codecId, vidCodecParam);
+            } else {
+                sipEndpoint.videoCodecSetPriority(codecId, (short) CodecPriority.PRIORITY_DISABLED);
             }
         }
-
-        // Set H264 Parameters
-        VidCodecParam vidCodecParam = sipEndpoint.getVideoCodecParam(ANDROID_H264_CODEC_ID);
-        CodecFmtpVector codecFmtpVector = vidCodecParam.getDecFmtp();
-        MediaFormatVideo mediaFormatVideo = vidCodecParam.getEncFmt();
-        mediaFormatVideo.setWidth(H264_DEF_WIDTH);
-        mediaFormatVideo.setHeight(H264_DEF_HEIGHT);
-        vidCodecParam.setEncFmt(mediaFormatVideo);
-
-        for (int i = 0; i < codecFmtpVector.size(); i++) {
-            if (PROFILE_LEVEL_ID_HEADER.equals(codecFmtpVector.get(i).getName())) {
-                codecFmtpVector.get(i).setVal(PROFILE_LEVEL_ID_JANUS_BRIDGE);
-                break;
-            }
-        }
-        vidCodecParam.setDecFmtp(codecFmtpVector);
-        sipEndpoint.setVideoCodecParam(ANDROID_H264_CODEC_ID, vidCodecParam);
     }
 
     static Notification getCurrentForegroundNotification(Context context) {
