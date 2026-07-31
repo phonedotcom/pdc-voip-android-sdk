@@ -14,5 +14,6 @@ public final class pjmedia_conf_op_type {
   public final static int PJMEDIA_CONF_OP_REMOVE_PORT = PJMEDIA_CONF_OP_ADD_PORT + 1;
   public final static int PJMEDIA_CONF_OP_CONNECT_PORTS = PJMEDIA_CONF_OP_REMOVE_PORT + 1;
   public final static int PJMEDIA_CONF_OP_DISCONNECT_PORTS = PJMEDIA_CONF_OP_CONNECT_PORTS + 1;
+  public final static int PJMEDIA_CONF_OP_ADJUST_CONN_LEVEL = PJMEDIA_CONF_OP_DISCONNECT_PORTS + 1;
 }
 
