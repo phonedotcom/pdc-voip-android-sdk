@@ -982,6 +982,30 @@ public class pjsua2JNI {
   public final static native void AudioMediaPort_onFrameReceivedSwigExplicitAudioMediaPort(long jarg1, AudioMediaPort jarg1_, long jarg2, MediaFrame jarg2_);
   public final static native void AudioMediaPort_director_connect(AudioMediaPort obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void AudioMediaPort_change_ownership(AudioMediaPort obj, long cptr, boolean take_or_release);
+  public final static native void AiMediaEvent_type_set(long jarg1, AiMediaEvent jarg1_, int jarg2);
+  public final static native int AiMediaEvent_type_get(long jarg1, AiMediaEvent jarg1_);
+  public final static native void AiMediaEvent_status_set(long jarg1, AiMediaEvent jarg1_, int jarg2);
+  public final static native int AiMediaEvent_status_get(long jarg1, AiMediaEvent jarg1_);
+  public final static native void AiMediaEvent_text_set(long jarg1, AiMediaEvent jarg1_, String jarg2);
+  public final static native String AiMediaEvent_text_get(long jarg1, AiMediaEvent jarg1_);
+  public final static native long new_AiMediaEvent();
+  public final static native void delete_AiMediaEvent(long jarg1);
+  public final static native void AiMediaPortParam_vadEnabled_set(long jarg1, AiMediaPortParam jarg1_, boolean jarg2);
+  public final static native boolean AiMediaPortParam_vadEnabled_get(long jarg1, AiMediaPortParam jarg1_);
+  public final static native void AiMediaPortParam_ptimeMsec_set(long jarg1, AiMediaPortParam jarg1_, long jarg2);
+  public final static native long AiMediaPortParam_ptimeMsec_get(long jarg1, AiMediaPortParam jarg1_);
+  public final static native long new_AiMediaPortParam();
+  public final static native void delete_AiMediaPortParam(long jarg1);
+  public final static native long new_AudioMediaAiPort();
+  public final static native void delete_AudioMediaAiPort(long jarg1);
+  public final static native void AudioMediaAiPort_createPort__SWIG_0(long jarg1, AudioMediaAiPort jarg1_, long jarg2, AiMediaPortParam jarg2_) throws Exception;
+  public final static native void AudioMediaAiPort_createPort__SWIG_1(long jarg1, AudioMediaAiPort jarg1_) throws Exception;
+  public final static native void AudioMediaAiPort_connect(long jarg1, AudioMediaAiPort jarg1_, String jarg2, String jarg3) throws Exception;
+  public final static native void AudioMediaAiPort_disconnect(long jarg1, AudioMediaAiPort jarg1_) throws Exception;
+  public final static native void AudioMediaAiPort_onEvent(long jarg1, AudioMediaAiPort jarg1_, long jarg2, AiMediaEvent jarg2_);
+  public final static native void AudioMediaAiPort_onEventSwigExplicitAudioMediaAiPort(long jarg1, AudioMediaAiPort jarg1_, long jarg2, AiMediaEvent jarg2_);
+  public final static native void AudioMediaAiPort_director_connect(AudioMediaAiPort obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void AudioMediaAiPort_change_ownership(AudioMediaAiPort obj, long cptr, boolean take_or_release);
   public final static native void AudioMediaPlayerInfo_formatId_set(long jarg1, AudioMediaPlayerInfo jarg1_, int jarg2);
   public final static native int AudioMediaPlayerInfo_formatId_get(long jarg1, AudioMediaPlayerInfo jarg1_);
   public final static native void AudioMediaPlayerInfo_payloadBitsPerSample_set(long jarg1, AudioMediaPlayerInfo jarg1_, long jarg2);
@@ -1878,6 +1902,22 @@ public class pjsua2JNI {
   public final static native long OnSendRequestParam_e_get(long jarg1, OnSendRequestParam jarg1_);
   public final static native long new_OnSendRequestParam();
   public final static native void delete_OnSendRequestParam(long jarg1);
+  public final static native long new_AuthChallenge();
+  public final static native void delete_AuthChallenge(long jarg1);
+  public final static native long AuthChallenge_defer(long jarg1, AuthChallenge jarg1_) throws Exception;
+  public final static native int AuthChallenge_respond__SWIG_0(long jarg1, AuthChallenge jarg1_);
+  public final static native int AuthChallenge_respond__SWIG_1(long jarg1, AuthChallenge jarg1_, long jarg2, AuthCredInfoVector jarg2_);
+  public final static native int AuthChallenge_abandon(long jarg1, AuthChallenge jarg1_);
+  public final static native boolean AuthChallenge_isValid(long jarg1, AuthChallenge jarg1_);
+  public final static native void OnAuthChallengeParam_accId_set(long jarg1, OnAuthChallengeParam jarg1_, int jarg2);
+  public final static native int OnAuthChallengeParam_accId_get(long jarg1, OnAuthChallengeParam jarg1_);
+  public final static native void OnAuthChallengeParam_callId_set(long jarg1, OnAuthChallengeParam jarg1_, int jarg2);
+  public final static native int OnAuthChallengeParam_callId_get(long jarg1, OnAuthChallengeParam jarg1_);
+  public final static native void OnAuthChallengeParam_rdata_set(long jarg1, OnAuthChallengeParam jarg1_, long jarg2, SipRxData jarg2_);
+  public final static native long OnAuthChallengeParam_rdata_get(long jarg1, OnAuthChallengeParam jarg1_);
+  public final static native long OnAuthChallengeParam_challenge_get(long jarg1, OnAuthChallengeParam jarg1_);
+  public final static native long new_OnAuthChallengeParam();
+  public final static native void delete_OnAuthChallengeParam(long jarg1);
   public final static native void PresNotifyParam_srvPres_set(long jarg1, PresNotifyParam jarg1_, long jarg2);
   public final static native long PresNotifyParam_srvPres_get(long jarg1, PresNotifyParam jarg1_);
   public final static native void PresNotifyParam_state_set(long jarg1, PresNotifyParam jarg1_, int jarg2);
@@ -1910,11 +1950,16 @@ public class pjsua2JNI {
   public final static native String SendResponseParam_reason_get(long jarg1, SendResponseParam jarg1_);
   public final static native long new_SendResponseParam();
   public final static native void delete_SendResponseParam(long jarg1);
+  public final static native void AccountShutdownParam_force_set(long jarg1, AccountShutdownParam jarg1_, boolean jarg2);
+  public final static native boolean AccountShutdownParam_force_get(long jarg1, AccountShutdownParam jarg1_);
+  public final static native long new_AccountShutdownParam();
+  public final static native void delete_AccountShutdownParam(long jarg1);
   public final static native long new_Account();
   public final static native void delete_Account(long jarg1);
   public final static native void Account_create__SWIG_0(long jarg1, Account jarg1_, long jarg2, AccountConfig jarg2_, boolean jarg3) throws Exception;
   public final static native void Account_create__SWIG_1(long jarg1, Account jarg1_, long jarg2, AccountConfig jarg2_) throws Exception;
   public final static native void Account_shutdown(long jarg1, Account jarg1_);
+  public final static native void Account_shutdown2(long jarg1, Account jarg1_, long jarg2, AccountShutdownParam jarg2_) throws Exception;
   public final static native void Account_modify(long jarg1, Account jarg1_, long jarg2, AccountConfig jarg2_) throws Exception;
   public final static native boolean Account_isValid(long jarg1, Account jarg1_);
   public final static native void Account_setDefault(long jarg1, Account jarg1_) throws Exception;
@@ -1948,6 +1993,8 @@ public class pjsua2JNI {
   public final static native void Account_onTypingIndicationSwigExplicitAccount(long jarg1, Account jarg1_, long jarg2, OnTypingIndicationParam jarg2_);
   public final static native void Account_onMwiInfo(long jarg1, Account jarg1_, long jarg2, OnMwiInfoParam jarg2_);
   public final static native void Account_onMwiInfoSwigExplicitAccount(long jarg1, Account jarg1_, long jarg2, OnMwiInfoParam jarg2_);
+  public final static native void Account_onAuthChallenge(long jarg1, Account jarg1_, long jarg2, OnAuthChallengeParam jarg2_);
+  public final static native void Account_onAuthChallengeSwigExplicitAccount(long jarg1, Account jarg1_, long jarg2, OnAuthChallengeParam jarg2_);
   public final static native void Account_director_connect(Account obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void Account_change_ownership(Account obj, long cptr, boolean take_or_release);
   public final static native void MathStat_n_set(long jarg1, MathStat jarg1_, int jarg2);
@@ -2817,6 +2864,8 @@ public class pjsua2JNI {
   public final static native boolean UaConfig_enableUpnp_get(long jarg1, UaConfig jarg1_);
   public final static native void UaConfig_upnpIfName_set(long jarg1, UaConfig jarg1_, String jarg2);
   public final static native String UaConfig_upnpIfName_get(long jarg1, UaConfig jarg1_);
+  public final static native void UaConfig_noRefersub_set(long jarg1, UaConfig jarg1_, boolean jarg2);
+  public final static native boolean UaConfig_noRefersub_get(long jarg1, UaConfig jarg1_);
   public final static native long new_UaConfig();
   public final static native void UaConfig_readObject(long jarg1, UaConfig jarg1_, long jarg2, ContainerNode jarg2_) throws Exception;
   public final static native void UaConfig_writeObject(long jarg1, UaConfig jarg1_, long jarg2, ContainerNode jarg2_) throws Exception;
@@ -3011,6 +3060,7 @@ public class pjsua2JNI {
   public final static native long MediaFormatVideo_SWIGUpcast(long jarg1);
   public final static native long AudioMedia_SWIGUpcast(long jarg1);
   public final static native long AudioMediaPort_SWIGUpcast(long jarg1);
+  public final static native long AudioMediaAiPort_SWIGUpcast(long jarg1);
   public final static native long AudioMediaPlayer_SWIGUpcast(long jarg1);
   public final static native long AudioMediaRecorder_SWIGUpcast(long jarg1);
   public final static native long ToneDesc_SWIGUpcast(long jarg1);
@@ -3042,6 +3092,9 @@ public class pjsua2JNI {
   }
   public static void SwigDirector_AudioMediaPort_onFrameReceived(AudioMediaPort jself, long frame) {
     jself.onFrameReceived(new MediaFrame(frame, false));
+  }
+  public static void SwigDirector_AudioMediaAiPort_onEvent(AudioMediaAiPort jself, long event) {
+    jself.onEvent(new AiMediaEvent(event, false));
   }
   public static void SwigDirector_AudioMediaPlayer_onEof2(AudioMediaPlayer jself) {
     jself.onEof2();
@@ -3090,6 +3143,9 @@ public class pjsua2JNI {
   }
   public static void SwigDirector_Account_onMwiInfo(Account jself, long prm) {
     jself.onMwiInfo(new OnMwiInfoParam(prm, false));
+  }
+  public static void SwigDirector_Account_onAuthChallenge(Account jself, long prm) {
+    jself.onAuthChallenge(new OnAuthChallengeParam(prm, false));
   }
   public static void SwigDirector_Call_onCallState(Call jself, long prm) {
     jself.onCallState(new OnCallStateParam(prm, false));

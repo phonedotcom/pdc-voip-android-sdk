@@ -14,5 +14,8 @@ public final class pj_file_access {
   public final static int PJ_O_RDWR = 4355;
   public final static int PJ_O_APPEND = 4360;
   public final static int PJ_O_CLOEXEC = 4356;
+  public final static int PJ_O_ASYNC = 512;
+  public final static int PJ_O_SEQUENTIAL = 1024;
+  public final static int PJ_O_RANDOM = 2048;
 }
 
