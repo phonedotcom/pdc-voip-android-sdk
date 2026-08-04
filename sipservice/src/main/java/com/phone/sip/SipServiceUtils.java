@@ -21,6 +21,8 @@ import org.pjsip.pjsua2.MediaFormatVideo;
 import org.pjsip.pjsua2.VidCodecParam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * connect
@@ -121,7 +123,9 @@ public class SipServiceUtils {
         for (int i = 0; i < codecFmtpVector.size(); i++) {
             if (PROFILE_LEVEL_ID_HEADER.equals(codecFmtpVector.get(i).getName())) {
                 codecFmtpVector.get(i).setVal(PROFILE_LEVEL_ID_JANUS_BRIDGE);
-                break;
+            }
+            if ("packetization-mode".equals(codecFmtpVector.get(i).getName())) {
+                codecFmtpVector.get(i).setVal("0");   // force single-NAL, disable FU-A
             }
         }
         vidCodecParam.setDecFmtp(codecFmtpVector);
