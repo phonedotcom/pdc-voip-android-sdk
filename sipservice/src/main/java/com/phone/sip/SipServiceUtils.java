@@ -5,7 +5,6 @@ import static com.phone.sip.constants.PhoneComServiceConstants.SERVICE_FOREGROUN
 import static com.phone.sip.constants.SipServiceConstants.ANDROID_H264_CODEC_ID;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_HEIGHT;
 import static com.phone.sip.constants.SipServiceConstants.H264_DEF_WIDTH;
-import static com.phone.sip.constants.SipServiceConstants.OPENH264_CODEC_ID;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_HEADER;
 import static com.phone.sip.constants.SipServiceConstants.PROFILE_LEVEL_ID_JANUS_BRIDGE;
 
