@@ -3144,9 +3144,9 @@ public class pjsua2JNI {
   public static void SwigDirector_Account_onMwiInfo(Account jself, long prm) {
     jself.onMwiInfo(new OnMwiInfoParam(prm, false));
   }
-  public static void SwigDirector_Account_onAuthChallenge(Account jself, long prm) {
-    jself.onAuthChallenge(new OnAuthChallengeParam(prm, false));
-  }
+//  public static void SwigDirector_Account_onAuthChallenge(Account jself, long prm) {
+//    jself.onAuthChallenge(new OnAuthChallengeParam(prm, false));
+//  }
   public static void SwigDirector_Call_onCallState(Call jself, long prm) {
     jself.onCallState(new OnCallStateParam(prm, false));
   }
