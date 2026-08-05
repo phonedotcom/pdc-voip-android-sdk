@@ -108,8 +108,14 @@ public class Account {
   }
 
   /**
-   * Shutdown the account. This will initiate unregistration if needed,<br>
-   * and delete the corresponding account in the PJSUA-LIB.<br>
+   * Shutdown the account. This will always delete the account<br>
+   * (force=true), initiating unregistration if needed, and deleting the<br>
+   * corresponding account in the PJSUA-LIB. Active calls will not<br>
+   * prevent deletion; a warning will be logged if any exist.<br>
+   * <br>
+   * This method does not throw an exception. Any error will be logged<br>
+   * internally. For safer behavior that checks for active calls, use<br>
+   * shutdown2() instead.<br>
    * <br>
    * Note that application must delete all Buddy instances belong to this<br>
    * account before shutting down the account.<br>
@@ -122,6 +128,22 @@ public class Account {
    */
   public void shutdown() {
     pjsua2JNI.Account_shutdown(swigCPtr, this);
+  }
+
+  /**
+   * Shutdown the account, with additional options. This will initiate<br>
+   * unregistration if needed, and delete the corresponding account in<br>
+   * the PJSUA-LIB.<br>
+   * <br>
+   * Unlike shutdown(), this method throws an Error exception on failure.<br>
+   * By default (force=false), if there are active calls still using this<br>
+   * account, it will throw an Error with PJ_EBUSY status. Set force=true<br>
+   * to always delete the account regardless.<br>
+   * <br>
+   * @param prm               Shutdown parameters.
+   */
+  public void shutdown2(AccountShutdownParam prm) throws Exception {
+    pjsua2JNI.Account_shutdown2(swigCPtr, this, AccountShutdownParam.getCPtr(prm), prm);
   }
 
   /**
@@ -414,6 +436,28 @@ public class Account {
    */
   public void onMwiInfo(OnMwiInfoParam prm) {
     if (getClass() == Account.class) pjsua2JNI.Account_onMwiInfo(swigCPtr, this, OnMwiInfoParam.getCPtr(prm), prm); else pjsua2JNI.Account_onMwiInfoSwigExplicitAccount(swigCPtr, this, OnMwiInfoParam.getCPtr(prm), prm);
+  }
+
+  /**
+   * Called when a 401/407 challenge is received. Override to handle<br>
+   * authentication challenges. Three usage patterns are supported:<br>
+   * <br>
+   * - Synchronous: call prm.challenge.respond() or<br>
+   *   prm.challenge.respond(creds) directly within this callback.<br>
+   * - Asynchronous: call prm.challenge.defer() to obtain a<br>
+   *   heap-allocated AuthChallenge, then call respond() or abandon()<br>
+   *   on it later from any context. The caller owns the returned object.<br>
+   * - Default: if neither respond(), abandon(), nor defer() is called,<br>
+   *   the library handles authentication automatically using configured<br>
+   *   credentials.<br>
+   * <br>
+   * @param prm       Callback parameter.<br>
+   * <br>
+   * @see AuthChallenge<br>
+   * @see OnAuthChallengeParam
+   */
+  public void onAuthChallenge(OnAuthChallengeParam prm) {
+    if (getClass() == Account.class) pjsua2JNI.Account_onAuthChallenge(swigCPtr, this, OnAuthChallengeParam.getCPtr(prm), prm); else pjsua2JNI.Account_onAuthChallengeSwigExplicitAccount(swigCPtr, this, OnAuthChallengeParam.getCPtr(prm), prm);
   }
 
 }

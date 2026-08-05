@@ -387,6 +387,32 @@ public class UaConfig extends PersistentObject {
   }
 
   /**
+   * When set to true, "norefersub" is advertised in the SIP Supported<br>
+   * header per RFC 4488, indicating that this endpoint is capable of<br>
+   * suppressing the implicit REFER event subscription.  The actual<br>
+   * suppression is negotiated per-call via the Refer-Sub header; this<br>
+   * flag only controls whether the capability is announced.<br>
+   * <br>
+   * Default: true
+   */
+  public void setNoRefersub(boolean value) {
+    pjsua2JNI.UaConfig_noRefersub_set(swigCPtr, this, value);
+  }
+
+  /**
+   * When set to true, "norefersub" is advertised in the SIP Supported<br>
+   * header per RFC 4488, indicating that this endpoint is capable of<br>
+   * suppressing the implicit REFER event subscription.  The actual<br>
+   * suppression is negotiated per-call via the Refer-Sub header; this<br>
+   * flag only controls whether the capability is announced.<br>
+   * <br>
+   * Default: true
+   */
+  public boolean getNoRefersub() {
+    return pjsua2JNI.UaConfig_noRefersub_get(swigCPtr, this);
+  }
+
+  /**
    * Default constructor to initialize with default values.
    */
   public UaConfig() {

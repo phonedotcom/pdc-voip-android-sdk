@@ -17,8 +17,8 @@
  */
 package org.pjsip;
 
+import android.Manifest;
 import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
@@ -33,9 +33,13 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
+import androidx.annotation.RequiresPermission;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.pjsip.PjCameraInfo2;
 
 public class PjCamera2
 {
@@ -111,6 +115,7 @@ public class PjCamera2
             Log.i(TAG, "CameraDevice.StateCallback.onDisconnected");
             Stop();
         }
+        @RequiresPermission(Manifest.permission.CAMERA)
         @Override
         public void onError(CameraDevice c, int error) {
             Log.e(TAG, "CameraDevice.StateCallback.onError: " + error);
@@ -165,6 +170,7 @@ public class PjCamera2
         surfaceView = surface;
     }
 
+    @RequiresPermission(Manifest.permission.CAMERA)
     public int SwitchDevice(int idx)
     {
         boolean isCaptureRunning = isRunning;
@@ -233,6 +239,7 @@ public class PjCamera2
         }
     }
 
+    @RequiresPermission(Manifest.permission.CAMERA)
     public int Start()
     {
         PjCameraInfo2 ci = PjCameraInfo2.GetCameraInfo(camIdx);
@@ -256,12 +263,8 @@ public class PjCamera2
 
         try {
             cm.openCamera(ci.id, camStateCallback, handler);
-        } catch (SecurityException e) {
-            Log.e(TAG, "Camera permission denied: " + e.getMessage());
-            Stop();
-            return -11;
-        } catch (CameraAccessException e) {
-            Log.d(TAG, "Camera access error: " + e.getMessage());
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
             Stop();
             return -10;
         }
