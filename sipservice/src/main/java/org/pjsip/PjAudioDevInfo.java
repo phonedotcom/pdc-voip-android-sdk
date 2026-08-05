@@ -17,6 +17,7 @@
  */
 package org.pjsip;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
@@ -62,7 +63,7 @@ public class PjAudioDevInfo {
             return;
 
         AudioManager am = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-        AudioDeviceInfo[] devs = am.getDevices(AudioManager.GET_DEVICES_ALL);
+        @SuppressLint("WrongConstant") AudioDeviceInfo[] devs = am.getDevices(AudioManager.GET_DEVICES_ALL);
 
         HashMap<String, Integer> micNamesCounterMap = new HashMap<>();
         for (AudioDeviceInfo adi : devs) {
