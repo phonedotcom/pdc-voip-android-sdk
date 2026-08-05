@@ -9,7 +9,7 @@ android {
     compileSdk 35
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 35
         versionCode 34
         versionName "3.0.1-alpha"
